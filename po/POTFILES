@@ -1,0 +1,11 @@
+	../data/gjiten-settings.glade \
+	../data/gjiten.schemas.in \
+	../gnome/gjiten.desktop.in \
+	../src/gjiten.c \
+	../src/pref.c \
+	../src/kanjidic.c \
+	../src/conf.c \
+	../src/dicfile.c \
+	../src/dicutil.c \
+	../src/error.c \
+	../src/worddic.c
