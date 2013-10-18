@@ -1176,7 +1176,7 @@ KanjiDic *kanjidic_create() {
   gtk_widget_show(kanjiDic->spinb_plusmin);
   gtk_box_pack_start(GTK_BOX(hbox_spinb), kanjiDic->spinb_plusmin, FALSE, FALSE, 0);
 
-  kanjiDic->button_radtable = gtk_button_new_with_mnemonic(_("Show Radical _List"));
+  kanjiDic->button_radtable = gtk_button_new_with_mnemonic(_("Radica_ls"));
   gtk_widget_show(kanjiDic->button_radtable);
   gtk_table_attach(GTK_TABLE(table_koptions), kanjiDic->button_radtable, 3, 4, 1, 2,
                     (GtkAttachOptions)(0), (GtkAttachOptions)(0), 0, 0);
