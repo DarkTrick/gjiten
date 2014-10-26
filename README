@@ -13,6 +13,12 @@ gjiten 2.6 is Copyright (C) 1999-2005 by Botond Botyanski
 
 See the original README (./README.original).
 
+AMD64 builds are hosted on Bitbucket: <https://bitbucket.org/2ion/gjiten/downloads>.
+
+Note that in current Sid, this package has a FTBS bug which is fixed in
+the current Debian package. Before building again, you should import the
+/debian folder from there.
+
 CHANGES since 2.6
 =================
 
