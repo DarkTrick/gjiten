@@ -5,7 +5,7 @@ gjiten-2.7
 
 A modified version of the original gjiten-2.6, based on the Debian package "gjiten".
 
-Copyright (C) 2013 by Jens Oliver John <asterisk at 2ion dot de>
+Copyright (C) 2013 by Jens Oliver John <dev@2ion.de>
 Licensed under the GNU General Public License v3 or later.
 
 gjiten 2.6 is Copyright (C) 1999-2005 by Botond Botyanski
@@ -18,8 +18,3 @@ CHANGES since 2.6
 
     * Remove superfluous toolbar icons
     * Fix broken GTK stock icon associations in the toolbar
-
-TODO
-====
-
-    * Add more usable keyboard shortcuts
