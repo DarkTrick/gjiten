@@ -781,7 +781,6 @@ static void worddic_close() {
 		if (GTK_IS_WIDGET(wordDic->window) == TRUE) gtk_widget_destroy(wordDic->window);
 		g_free(wordDic);
 		//FIXME: clear combo_entry_glist
-		current_glist_word = NULL;
 		wordDic = NULL;
 		gjitenApp->worddic = NULL;
 	}
@@ -986,7 +985,12 @@ WordDic *worddic_create() {
 	gtk_widget_show(toolbar);
 
 	gnome_app_set_toolbar(GNOME_APP(wordDic->window), GTK_TOOLBAR(toolbar));
-
+	
+	button_exit = gtk_toolbar_insert_stock(GTK_TOOLBAR(toolbar), GTK_STOCK_CLOSE,
+																				 _("Close Gjiten"), "Close", NULL, NULL, -1);
+	g_signal_connect_swapped(G_OBJECT(button_exit), "clicked", 
+													 G_CALLBACK(gtk_widget_destroy), wordDic->window);
+	
 	wordDic->button_back = gtk_toolbar_insert_stock(GTK_TOOLBAR(toolbar), GTK_STOCK_GO_BACK,
 																									_("Previous search result"), "Back", 
 																									on_back_clicked, NULL, -1);
@@ -997,18 +1001,23 @@ WordDic *worddic_create() {
 																										 on_forward_clicked, NULL, -1);
 	gtk_widget_set_sensitive(wordDic->button_forward, FALSE);
 
-  button_kanjidic = gtk_toolbar_insert_stock(GTK_TOOLBAR(toolbar), GTK_STOCK_OPEN,
-        _("Launch KanjiDic"), "KanjiDic", G_CALLBACK(kanjidic_create), NULL, -1);
+	tmpimage = gtk_image_new_from_file(PIXMAPDIR"/kanjidic.png");
+	button_kanjidic = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar), _("KanjiDic"),
+																						_("Launch KanjiDic"), "KanjiDic", tmpimage,
+																						G_CALLBACK(kanjidic_create), NULL);
 
-  /*
 	tmpimage = gtk_image_new_from_file(PIXMAPDIR"/kanjipad.png");
 	button_kanjipad = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar), _("KanjiPad"),
 																						_("Launch KanjiPad"), "KanjiPad", tmpimage,
 																						G_CALLBACK(gjiten_start_kanjipad), NULL);
-  */
-  gtk_toolbar_insert_stock(GTK_TOOLBAR(toolbar), GTK_STOCK_GO_DOWN,
-    _("Show/hide option panel"), "Show/hide option panel", G_CALLBACK(worddic_show_hide_options), NULL, -1);
 
+	button_srch = gtk_toolbar_insert_stock(GTK_TOOLBAR(toolbar), GTK_STOCK_FIND,
+																				 _("Search for entered expression"), "Search", 
+																				 on_text_entered, NULL, -1);
+
+	gtk_toolbar_append_item(GTK_TOOLBAR(toolbar), _("Show/Hide\noptions"),
+													_("Show/Hide options"), "Show/Hide options", NULL,
+													G_CALLBACK(worddic_show_hide_options), NULL);
 
     /*
     button_srch = gtk_toolbar_insert_item(GTK_TOOLBAR(toolbar), _("Search"), "Search", "Search", 
@@ -1154,7 +1163,7 @@ WordDic *worddic_create() {
 									 G_CALLBACK(checkb_searchlimit_toggled), NULL);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wordDic->checkb_searchlimit), gjitenApp->conf->searchlimit_enabled);
 
-	spinb_searchlimit_adj = gtk_adjustment_new(gjitenApp->conf->maxwordmatches, 1, G_MAXFLOAT, 1, 2, 2);
+	spinb_searchlimit_adj = gtk_adjustment_new(gjitenApp->conf->maxwordmatches, 1, G_MAXFLOAT, 1, 2, 0);
   wordDic->spinb_searchlimit = gtk_spin_button_new(GTK_ADJUSTMENT(spinb_searchlimit_adj), 1, 0);
   gtk_widget_show(wordDic->spinb_searchlimit);
   gtk_box_pack_start(GTK_BOX(hbox_searchlimit), wordDic->spinb_searchlimit, FALSE, FALSE, 0);
@@ -1168,14 +1177,12 @@ WordDic *worddic_create() {
   gtk_box_pack_start(GTK_BOX(vbox_main), hbox_entry, FALSE, TRUE, 14);
   gtk_container_set_border_width(GTK_CONTAINER(hbox_entry), 3);
 
-  /*
   label_enter = gtk_label_new(_("Enter expression :"));
   gtk_widget_show(label_enter);
   gtk_box_pack_start(GTK_BOX(hbox_entry), label_enter, FALSE, TRUE, 5);
   gtk_label_set_justify(GTK_LABEL(label_enter), GTK_JUSTIFY_RIGHT);
   gtk_misc_set_alignment(GTK_MISC(label_enter), 1, 0.5);
   gtk_misc_set_padding(GTK_MISC(label_enter), 7, 0);
-  */
 
   wordDic->combo_entry = gtk_combo_new();
   gtk_widget_show(wordDic->combo_entry);
