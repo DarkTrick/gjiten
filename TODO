@@ -17,13 +17,11 @@
 -Kanji result split win separator position
 -Work on vconj a bit more
 -Kanjipad exec: g_spawn_async
--remove background from logo. fuckin ugly ;)
 -update documentation: describe the search options (by key) a little more, real-time explanation, LC_ALL
 -One kanji match: should be added to the history
 -Only print "matches in xx:" if there is any
 -Copy menu for KanjiDic
 -Auto adjust options: last one should be "search all dics"
--Unshade Back when history is full on startup.
 
 Planned:
 -search in results
