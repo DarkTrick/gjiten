@@ -264,6 +264,7 @@ static void up_dict(GtkWidget *button) {
 	GtkTreePath *treepath;
 
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview));
+
 	if (gtk_tree_selection_get_selected(selection, &model, &iter) == FALSE) return;
 	treepath = gtk_tree_model_get_path(model, &iter);
 	if (gtk_tree_path_prev(treepath) == TRUE) {
@@ -271,7 +272,7 @@ static void up_dict(GtkWidget *button) {
 			gtk_list_store_swap(GTK_LIST_STORE(model), &iter, &tmpiter);
 		}
 	}
-	g_free(treepath);
+	gtk_tree_path_free(treepath);
 }
 
 
@@ -284,7 +285,7 @@ static void remove_dict(GtkWidget *button) {
 	treepath = gtk_tree_model_get_path(model, &iter);
 	gtk_list_store_remove(GTK_LIST_STORE(model), &iter);
 	gtk_tree_selection_select_path(selection, treepath);
-	g_free(treepath);
+	gtk_tree_path_free(treepath);
 
 }
 
