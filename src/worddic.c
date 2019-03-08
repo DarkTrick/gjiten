@@ -690,8 +690,7 @@ void button_next_maybe_activate(){
     gtk_widget_set_sensitive(wordDic->button_forward, FALSE);
 }
 
-/* should be "on_search_button_clicked" */
-void on_text_entered() {
+void on_search_clicked() {
   static gchar *new_entry_text = NULL;
 
 	gdk_window_set_cursor(gtk_text_view_get_window(GTK_TEXT_VIEW(wordDic->text_results_view), GTK_TEXT_WINDOW_TEXT), wordDic->regular_cursor);
@@ -737,7 +736,7 @@ static void on_forward_clicked() {
   append_to_history = FALSE;
   current_glist_word = (gchar*) g_list_previous(g_list_find(wordDic->combo_entry_glist, current_glist_word))->data;
   gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(wordDic->combo_entry)->entry), current_glist_word);
-  on_text_entered();  
+  on_search_clicked();  
   append_to_history = TRUE;
 }
 
@@ -756,7 +755,7 @@ static void on_back_clicked() {
     current_glist_word = (gchar*) entry->data;
   }
   gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(wordDic->combo_entry)->entry), current_glist_word);
-  on_text_entered();
+  on_search_clicked();
   append_to_history = TRUE;
 }
 
@@ -1061,7 +1060,7 @@ WordDic *worddic_create() {
 
 	button_srch = gtk_toolbar_insert_stock(GTK_TOOLBAR(toolbar), GTK_STOCK_FIND,
 																				 _("Search for entered expression"), "Search", 
-																				 on_text_entered, NULL, -1);
+																				 on_search_clicked, NULL, -1);
 
 	gtk_toolbar_append_item(GTK_TOOLBAR(toolbar), _("Show/Hide\noptions"),
 													_("Show/Hide options"), "Show/Hide options", NULL,
@@ -1070,7 +1069,7 @@ WordDic *worddic_create() {
     /*
     button_srch = gtk_toolbar_insert_item(GTK_TOOLBAR(toolbar), _("Search"), "Search", "Search", 
                                              GtkWidget *icon,
-					  on_text_entered, NULL, -1);
+					  on_search_clicked, NULL, -1);
     */
     /*
 
@@ -1236,7 +1235,7 @@ WordDic *worddic_create() {
   gtk_widget_show(wordDic->combo_entry);
   gtk_box_pack_start(GTK_BOX(hbox_entry), wordDic->combo_entry, TRUE, TRUE, 0);
   g_signal_connect(G_OBJECT(GTK_COMBO(wordDic->combo_entry)->entry), 
-									 "activate", G_CALLBACK(on_text_entered), NULL);
+									 "activate", G_CALLBACK(on_search_clicked), NULL);
   g_signal_connect(G_OBJECT(wordDic->window), "key_press_event",
 									 G_CALLBACK(set_focus_on_entry), GTK_COMBO(wordDic->combo_entry)->entry);
 
@@ -1251,7 +1250,7 @@ WordDic *worddic_create() {
   button_search = gtk_button_new_with_label(_("Search"));
   gtk_widget_show(button_search);
   gtk_box_pack_start(GTK_BOX(hbox_entry), button_search, FALSE, FALSE, 7);
-  g_signal_connect(G_OBJECT(button_search), "clicked", G_CALLBACK(on_text_entered), NULL);
+  g_signal_connect(G_OBJECT(button_search), "clicked", G_CALLBACK(on_search_clicked), NULL);
 
   button_clear = gtk_button_new_with_mnemonic(_("_Clear"));
   gtk_widget_show(button_clear);
