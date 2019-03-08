@@ -355,49 +355,57 @@ static void print_result(gchar *txt2print, int result_offset, gchar *searchstrg)
   gchar *exp_start;
   GtkTextMark *linestart;
   GtkTextIter startmatch, endmatch;
+  // for readability
+  GtkTextBuffer * text_buffer_results = GTK_TEXT_BUFFER(wordDic->text_results_buffer);
 
-  linestart = gtk_text_buffer_create_mark(GTK_TEXT_BUFFER(wordDic->text_results_buffer),
-																					"linestart", &wordDic->iter, TRUE);
+  linestart = gtk_text_buffer_create_mark(text_buffer_results,"linestart", 
+                                          &wordDic->iter, TRUE);
 
   strg_to_roff = (gchar *) g_strndup(txt2print, result_offset);
   strlen_to_roff = g_utf8_strlen(strg_to_roff, -1);
-  
+
   currentchar = txt2print;
 
-	while (!((*currentchar == '[') || (*currentchar == '/'))) { // find end of [KANJI]
+  // find end of [KANJI]
+	while (!((*currentchar == '[') || (*currentchar == '/'))) { 
     if ((size_t) (currentchar - txt2print) >= strlen(txt2print)) break;
     currentchar = g_utf8_next_char(currentchar);
   }
   currentchar = g_utf8_prev_char(currentchar); // go back to the space
 
-  //print out japanese word == [KANJI]
+  
+  //print out japanese word ([KANJI])
   if (gjitenApp->conf->bigwords == FALSE) {
-    gtk_text_buffer_insert(GTK_TEXT_BUFFER(wordDic->text_results_buffer),
-													 &wordDic->iter, txt2print, currentchar - txt2print); 
+    gtk_text_buffer_insert(text_buffer_results, &wordDic->iter, 
+                          txt2print, currentchar - txt2print); 
   }
   else {
-    gtk_text_buffer_insert_with_tags_by_name(GTK_TEXT_BUFFER(wordDic->text_results_buffer), &wordDic->iter,
+    gtk_text_buffer_insert_with_tags_by_name(text_buffer_results, &wordDic->iter,
 																						 txt2print, currentchar - txt2print, "largefont", NULL);
   }
   
   currentchar = g_utf8_next_char(currentchar);
-  if (*(currentchar) == '[')  { //we have a kana reading
-    gtk_text_buffer_insert(GTK_TEXT_BUFFER(wordDic->text_results_buffer), &wordDic->iter, " (", 2);
+  // Do we have a kana reading? 
+  if (*(currentchar) == '[')  { 
+    gtk_text_buffer_insert(text_buffer_results, &wordDic->iter, " (", 2);
     currentchar = kana_start = g_utf8_next_char(currentchar);
-    while(*(currentchar) != ']') { //find ending ]
+    // find end of kana reading ( ']' )
+    while(*(currentchar) != ']') { 
       currentchar = g_utf8_next_char(currentchar);
     }
-    gtk_text_buffer_insert(GTK_TEXT_BUFFER(wordDic->text_results_buffer),
-													 &wordDic->iter, kana_start, currentchar - kana_start); //print out kana reading
-    gtk_text_buffer_insert(GTK_TEXT_BUFFER(wordDic->text_results_buffer), &wordDic->iter, ") ", 2);
+    // print out kana reading
+    gtk_text_buffer_insert(text_buffer_results, &wordDic->iter, 
+                          kana_start, currentchar - kana_start); 
+    gtk_text_buffer_insert(text_buffer_results, &wordDic->iter, ") ", 2);
     currentchar += 3;
   }
   else {
-    gtk_text_buffer_insert(GTK_TEXT_BUFFER(wordDic->text_results_buffer),
-													 &wordDic->iter, " ", 1); // insert space 
+    // No kana reading, just insert [space]
+    gtk_text_buffer_insert(text_buffer_results, &wordDic->iter, " ", 1);  
     currentchar++;
   }
 
+  // print out the rest of the line
   while (currentchar < txt2print + strlen(txt2print)) {
 		if (*currentchar == '\n') break;
     exp_start = currentchar;
@@ -405,26 +413,32 @@ static void print_result(gchar *txt2print, int result_offset, gchar *searchstrg)
       currentchar = g_utf8_next_char(currentchar);  
     }
 		if (*currentchar == '\n') break;
-    gtk_text_buffer_insert(GTK_TEXT_BUFFER(wordDic->text_results_buffer),
-													 &wordDic->iter, exp_start, currentchar - exp_start); //print out expression
-    gtk_text_buffer_insert(GTK_TEXT_BUFFER(wordDic->text_results_buffer), &wordDic->iter, "; ", 2);
+    //print out expression
+    gtk_text_buffer_insert(text_buffer_results, &wordDic->iter, exp_start, 
+                          currentchar - exp_start); 
+    gtk_text_buffer_insert(text_buffer_results, &wordDic->iter, "; ", 2);
 		currentchar = g_utf8_next_char(currentchar);  
   }
-  gtk_text_buffer_insert(GTK_TEXT_BUFFER(wordDic->text_results_buffer),
-												 &wordDic->iter, "\n", 1); // insert linebreak
+
+  // insert linebreak
+  gtk_text_buffer_insert(text_buffer_results,&wordDic->iter, "\n", 1); 
+  
+  // print a little distance between results
+  gtk_text_buffer_insert_with_tags_by_name(text_buffer_results, &wordDic->iter,
+                                           "\n",1, "small_distance", NULL);
 
   //find searchstrg matches in the line. we print and highlight it.
-  gtk_text_buffer_get_iter_at_mark(GTK_TEXT_BUFFER(wordDic->text_results_buffer), &endmatch, linestart);
+  gtk_text_buffer_get_iter_at_mark(text_buffer_results, &endmatch, linestart);
   
   while (gtk_text_iter_forward_search(&endmatch, searchstrg, 0,
 																			&startmatch, &endmatch, &wordDic->iter) == TRUE) {
-    gtk_text_buffer_apply_tag_by_name(GTK_TEXT_BUFFER(wordDic->text_results_buffer), 
-																			"blue_foreground", &startmatch, &endmatch);
+    gtk_text_buffer_apply_tag_by_name(text_buffer_results, "blue_foreground", 
+                                      &startmatch, &endmatch);
   }
 } 
 
 
-static void search_in_dicfile(GjitenDicfile *dicfile, gchar *srchstrg) {
+static void search_in_dictfile_and_print(GjitenDicfile *dicfile, gchar *srchstrg) {
   gint srchresp, roff, rlen;
   gchar repstr[1024];
   guint32 respos, oldrespos;
@@ -588,14 +602,14 @@ static void worddic_hira_kata_search(GjitenDicfile *dicfile, gchar *srchstrg) {
 	if (gjitenApp->conf->search_kata_on_hira) {
 		if (isKatakanaString(srchstrg) == TRUE) {
 			hirakata = kata2hira(srchstrg);
-			search_in_dicfile(dicfile, hirakata);
+			search_in_dictfile_and_print(dicfile, hirakata);
 			g_free(hirakata);
 		}
 	}
 	if (gjitenApp->conf->search_hira_on_kata) {
 		if (isHiraganaString(srchstrg) == TRUE) {
 			hirakata = hira2kata(srchstrg);
-			search_in_dicfile(dicfile, hirakata);
+			search_in_dictfile_and_print(dicfile, hirakata);
 			g_free(hirakata);
 		}
 	}
@@ -624,21 +638,23 @@ static void worddic_search(gchar *srchstrg) {
 
   truncated = 0;
   while (TRUE) {
+    /* search in all dictionaries */
     if (GTK_TOGGLE_BUTTON(wordDic->radiob_searchall)->active) {
 			dicfile_node = gjitenApp->conf->dicfile_list;
 			while (dicfile_node != NULL) {
 				if (dicfile_node->data != NULL ) {
 					dicfile = dicfile_node->data;
 					dicname_printed = FALSE;
-					search_in_dicfile(dicfile, srchstrg);
+					search_in_dictfile_and_print(dicfile, srchstrg);
 					worddic_hira_kata_search(dicfile, srchstrg);
 					if ((gjitenApp->conf->searchlimit_enabled == TRUE) && (word_matches >= gjitenApp->conf->maxwordmatches)) break;
 				}
 				dicfile_node = g_slist_next(dicfile_node);
       }
     }
+    /* search only in selected dictionary */
     else {
-			search_in_dicfile(gjitenApp->conf->selected_dic, srchstrg);
+			search_in_dictfile_and_print(gjitenApp->conf->selected_dic, srchstrg);
 			worddic_hira_kata_search(gjitenApp->conf->selected_dic, srchstrg);
 		}
 
@@ -669,6 +685,13 @@ void back_button_maybe_activate(){
     gtk_widget_set_sensitive(wordDic->button_back, FALSE);
 }
 
+void next_button_maybe_activate(){
+  if (g_list_previous(g_list_find(wordDic->combo_entry_glist, current_glist_word)) != NULL) {
+    gtk_widget_set_sensitive(wordDic->button_forward, TRUE);
+	}
+  else gtk_widget_set_sensitive(wordDic->button_forward, FALSE);
+}
+
 /* should be "on_search_button_clicked" */
 void on_text_entered() {
   static gchar *new_entry_text = NULL;
@@ -697,11 +720,7 @@ void on_text_entered() {
   }
 
   back_button_maybe_activate();
-
-  if (g_list_previous(g_list_find(wordDic->combo_entry_glist, current_glist_word)) != NULL) {
-    gtk_widget_set_sensitive(wordDic->button_forward, TRUE);
-	}
-  else gtk_widget_set_sensitive(wordDic->button_forward, FALSE);
+  next_button_maybe_activate();
 
   gtk_text_buffer_set_text (GTK_TEXT_BUFFER(wordDic->text_results_buffer), "", 0);
   gtk_text_buffer_get_start_iter(wordDic->text_results_buffer, &wordDic->iter);
@@ -1256,6 +1275,7 @@ WordDic *worddic_create() {
   g_signal_connect(G_OBJECT(wordDic->text_results_view), "motion-notify-event", G_CALLBACK(result_view_motion), NULL);
   
   //set up fonts and tags
+  gtk_text_buffer_create_tag(wordDic->text_results_buffer, "small_distance", "size-points", 2.0, NULL);  
   gtk_text_buffer_create_tag(wordDic->text_results_buffer, "blue_foreground", "foreground", "blue", NULL);  
   gtk_text_buffer_create_tag(wordDic->text_results_buffer, "red_foreground", "foreground", "red", NULL);  
   gtk_text_buffer_create_tag(wordDic->text_results_buffer, "brown_foreground", "foreground", "brown", NULL);  
