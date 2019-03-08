@@ -671,25 +671,23 @@ static void worddic_search(gchar *srchstrg) {
   else gnome_appbar_set_status(GNOME_APPBAR(wordDic->appbar_mainwin), _("No match found!"));
 }
 
-/* Used for enabling "back" button after startup */
-void _set_current_glist_word_to_first_element(){
-  if(g_list_length(wordDic->combo_entry_glist) > 0){
-    current_glist_word = g_list_first(wordDic->combo_entry_glist)->data;
-  }
-}
-
-void back_button_maybe_activate(){
-  if (g_list_next(g_list_find(wordDic->combo_entry_glist, current_glist_word)) != NULL) 
+void button_back_maybe_activate(){
+  /* If: Application just started up && old entries are available? 
+     OR: Can we go back one more time?
+  */ 
+  if ((g_list_length(wordDic->combo_entry_glist) > 0 && NULL == current_glist_word)
+    || g_list_next(g_list_find(wordDic->combo_entry_glist, current_glist_word)) != NULL)
     gtk_widget_set_sensitive(wordDic->button_back, TRUE);
   else 
     gtk_widget_set_sensitive(wordDic->button_back, FALSE);
 }
 
-void next_button_maybe_activate(){
+void button_next_maybe_activate(){
   if (g_list_previous(g_list_find(wordDic->combo_entry_glist, current_glist_word)) != NULL) {
     gtk_widget_set_sensitive(wordDic->button_forward, TRUE);
 	}
-  else gtk_widget_set_sensitive(wordDic->button_forward, FALSE);
+  else 
+    gtk_widget_set_sensitive(wordDic->button_forward, FALSE);
 }
 
 /* should be "on_search_button_clicked" */
@@ -719,8 +717,8 @@ void on_text_entered() {
     }
   }
 
-  back_button_maybe_activate();
-  next_button_maybe_activate();
+  button_back_maybe_activate();
+  button_next_maybe_activate();
 
   gtk_text_buffer_set_text (GTK_TEXT_BUFFER(wordDic->text_results_buffer), "", 0);
   gtk_text_buffer_get_start_iter(wordDic->text_results_buffer, &wordDic->iter);
@@ -745,7 +743,18 @@ static void on_forward_clicked() {
 
 static void on_back_clicked() {
   append_to_history = FALSE;
-  current_glist_word = (gchar*) g_list_next(g_list_find(wordDic->combo_entry_glist, current_glist_word))->data;
+  /* inner if-checks help to make this function independend.
+     So changes in button_back_maybe_activate don't harm.*/
+  if(NULL == current_glist_word){
+    if(g_list_length(wordDic->combo_entry_glist) == 0)
+      return;
+    current_glist_word = (gchar*) g_list_first(wordDic->combo_entry_glist)->data;
+  } else {
+    GList * entry = g_list_next(g_list_find(wordDic->combo_entry_glist, current_glist_word));
+    if(NULL == entry)
+      return;
+    current_glist_word = (gchar*) entry->data;
+  }
   gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(wordDic->combo_entry)->entry), current_glist_word);
   on_text_entered();
   append_to_history = TRUE;
@@ -955,9 +964,8 @@ void _init_word_history(WordDic* wordDic){
   if (wordDic->combo_entry_glist != NULL) {
     gtk_combo_set_popdown_strings(GTK_COMBO(wordDic->combo_entry), wordDic->combo_entry_glist);
     gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(wordDic->combo_entry)->entry), "");
-    back_button_maybe_activate();
+    button_back_maybe_activate();
   }
-  _set_current_glist_word_to_first_element();
 }
 
 WordDic *worddic_create() {
@@ -1238,7 +1246,7 @@ WordDic *worddic_create() {
   GTK_WIDGET_SET_FLAGS(GTK_COMBO(wordDic->combo_entry)->entry, GTK_CAN_DEFAULT);
   gtk_widget_grab_focus(GTK_COMBO(wordDic->combo_entry)->entry);
   gtk_widget_grab_default(GTK_COMBO(wordDic->combo_entry)->entry);
-  back_button_maybe_activate();
+  button_back_maybe_activate();
 
   button_search = gtk_button_new_with_label(_("Search"));
   gtk_widget_show(button_search);
