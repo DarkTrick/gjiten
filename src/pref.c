@@ -264,6 +264,7 @@ static void up_dict(GtkWidget *button) {
 	GtkTreePath *treepath;
 
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview));
+
 	if (gtk_tree_selection_get_selected(selection, &model, &iter) == FALSE) return;
 	treepath = gtk_tree_model_get_path(model, &iter);
 	if (gtk_tree_path_prev(treepath) == TRUE) {
@@ -271,7 +272,7 @@ static void up_dict(GtkWidget *button) {
 			gtk_list_store_swap(GTK_LIST_STORE(model), &iter, &tmpiter);
 		}
 	}
-	g_free(treepath);
+	gtk_tree_path_free(treepath);
 }
 
 
@@ -284,7 +285,7 @@ static void remove_dict(GtkWidget *button) {
 	treepath = gtk_tree_model_get_path(model, &iter);
 	gtk_list_store_remove(GTK_LIST_STORE(model), &iter);
 	gtk_tree_selection_select_path(selection, treepath);
-	g_free(treepath);
+	gtk_tree_path_free(treepath);
 
 }
 
@@ -303,68 +304,71 @@ void preferences_exit() {
 }
 
 void preferences_response_cb(GtkDialog *dialog, gint response, gpointer user_data) {
-  int i;
-  gboolean valid;
-  GjitenDicfile *dicfile;
+	int i;
+	gboolean valid;
+	GjitenDicfile *dicfile;
 	gchar *kanjidic_path = NULL;
 	gchar *kanjipad_path = NULL;
 
-  if (response == GTK_RESPONSE_CANCEL) {
-    preferences_exit();
-    return;
-  }
+	if (response == GTK_RESPONSE_CANCEL) {
+		preferences_exit();
+		return;
+	}
 
-  if (response == GTK_RESPONSE_HELP) {
+	if (response == GTK_RESPONSE_HELP) {
 		gjiten_display_manual(dialog, NULL);
 		return;
 	}
-  //gconf_client_add_dir(gconf_client, "/apps/gjiten", GCONF_CLIENT_PRELOAD_NONE, NULL);
+	//gconf_client_add_dir(gconf_client, "/apps/gjiten", GCONF_CLIENT_PRELOAD_NONE, NULL);
 
-  for (i = 0; i < KCFGNUM; i++) { 
-    if (GTK_TOGGLE_BUTTON(checkb_prefs[i])->active) gjitenApp->conf->kdiccfg[i] = TRUE;
-    else gjitenApp->conf->kdiccfg[i] = FALSE; 
-  }
+	for (i = 0; i < KCFGNUM; i++) { 
+		if (GTK_TOGGLE_BUTTON(checkb_prefs[i])->active) gjitenApp->conf->kdiccfg[i] = TRUE;
+		else gjitenApp->conf->kdiccfg[i] = FALSE; 
+	}
 
 	kanjidic_path = g_strdup(gtk_entry_get_text(GTK_ENTRY(gnome_entry_gtk_entry(GNOME_ENTRY(entry_kanjidic)))));
-  if ((kanjidic_path != NULL) && strlen(kanjidic_path))  {
-    gjitenApp->conf->kanjidic->path = kanjidic_path;
-  }
+	if ((kanjidic_path != NULL) && strlen(kanjidic_path))  {
+		gjitenApp->conf->kanjidic->path = kanjidic_path;
+	}
 
 	kanjipad_path = g_strdup(gtk_entry_get_text(GTK_ENTRY(gnome_entry_gtk_entry(GNOME_ENTRY(entry_kanjipad)))));
-  if ((kanjipad_path != NULL) && strlen(kanjipad_path))  {
-    gjitenApp->conf->kanjipad = kanjipad_path;
-  }
+	if ((kanjipad_path != NULL) && strlen(kanjipad_path))  {
+		gjitenApp->conf->kanjipad = kanjipad_path;
+	}
 
-  gjitenApp->conf->bigwords = GTK_TOGGLE_BUTTON(GETWIDGET("checkbutton_largefont_worddic"))->active;
-  gjitenApp->conf->bigkanji = GTK_TOGGLE_BUTTON(GETWIDGET("checkbutton_largefont_kanjidic"))->active;
-  gjitenApp->conf->gdk_use_xft = GTK_TOGGLE_BUTTON(GETWIDGET("checkbutton_use_xft"))->active;
-  gjitenApp->conf->force_ja_JP = GTK_TOGGLE_BUTTON(GETWIDGET("checkbutton_lc_ctype"))->active;
-  gjitenApp->conf->force_language_c = GTK_TOGGLE_BUTTON(GETWIDGET("checkbutton_language_c"))->active;
-  gjitenApp->conf->envvar_override = GTK_TOGGLE_BUTTON(GETWIDGET("checkbutton_envvar_override"))->active;
-  gjitenApp->conf->normalfont = g_strdup(gtk_entry_get_text(GTK_ENTRY(GETWIDGET("entry_normal_font"))));
-  gjitenApp->conf->largefont = g_strdup(gtk_entry_get_text(GTK_ENTRY(GETWIDGET("entry_large_font"))));
+	#define TOGGLE_BUTTON_ACTIVE(identifier) GTK_TOGGLE_BUTTON(GETWIDGET(identifier))->active
+	gjitenApp->conf->bigwords         = TOGGLE_BUTTON_ACTIVE("checkbutton_largefont_worddic");
+	gjitenApp->conf->bigkanji         = TOGGLE_BUTTON_ACTIVE("checkbutton_largefont_kanjidic");
+	gjitenApp->conf->gdk_use_xft      = TOGGLE_BUTTON_ACTIVE("checkbutton_use_xft");
+	gjitenApp->conf->force_ja_JP      = TOGGLE_BUTTON_ACTIVE("checkbutton_lc_ctype");
+	gjitenApp->conf->force_language_c = TOGGLE_BUTTON_ACTIVE("checkbutton_language_c");
+	gjitenApp->conf->envvar_override 	= TOGGLE_BUTTON_ACTIVE("checkbutton_envvar_override");
 
-	gjitenApp->conf->search_kata_on_hira = GTK_TOGGLE_BUTTON(GETWIDGET("checkbutton_search_kata_on_hira"))->active;	
-	gjitenApp->conf->search_hira_on_kata = GTK_TOGGLE_BUTTON(GETWIDGET("checkbutton_search_hira_on_kata"))->active;	
-	gjitenApp->conf->verb_deinflection = GTK_TOGGLE_BUTTON(GETWIDGET("checkbutton_verb_deinflection"))->active;	
-	gjitenApp->conf->unicode_radicals = GTK_TOGGLE_BUTTON(GETWIDGET("checkbutton_unicode_radicals"))->active;	
-      
-  gjitenApp->conf->numofdics = 0;
+	gjitenApp->conf->normalfont       = g_strdup(gtk_entry_get_text(GTK_ENTRY(GETWIDGET("entry_normal_font"))));
+	gjitenApp->conf->largefont        = g_strdup(gtk_entry_get_text(GTK_ENTRY(GETWIDGET("entry_large_font"))));
+
+	gjitenApp->conf->search_kata_on_hira = TOGGLE_BUTTON_ACTIVE("checkbutton_search_kata_on_hira");
+	gjitenApp->conf->search_hira_on_kata = TOGGLE_BUTTON_ACTIVE("checkbutton_search_hira_on_kata");
+	gjitenApp->conf->verb_deinflection 	 = TOGGLE_BUTTON_ACTIVE("checkbutton_verb_deinflection");
+	gjitenApp->conf->unicode_radicals 	 = TOGGLE_BUTTON_ACTIVE("checkbutton_unicode_radicals");
+	#undef TOGGLE_BUTTON_ACTIVE
+
+	gjitenApp->conf->numofdics = 0;
 
 	dicutil_unload_dic();
 	dicfile_list_free(gjitenApp->conf->dicfile_list);
 	gjitenApp->conf->dicfile_list = NULL;
 
-  valid = gtk_tree_model_get_iter_first(model, &iter);
-  while (valid == TRUE) {
+	valid = gtk_tree_model_get_iter_first(model, &iter);
+	while (valid == TRUE) {
 		dicfile = g_new0(GjitenDicfile, 1);
 		dicfile->status = DICFILE_NOT_INITIALIZED;
-    gtk_tree_model_get(model, &iter, COL_DICPATH, &dicfile->path, COL_DICNAME, &dicfile->name, -1);
+		gtk_tree_model_get(model, &iter, COL_DICPATH, &dicfile->path, COL_DICNAME, &dicfile->name, -1);
 		gjitenApp->conf->dicfile_list = g_slist_append(gjitenApp->conf->dicfile_list, dicfile);
-    valid = gtk_tree_model_iter_next(model, &iter);
-  }
+		valid = gtk_tree_model_iter_next(model, &iter);
+	}
 
-  conf_save(gjitenApp->conf);
+	conf_save(gjitenApp->conf);
 
 	worddic_update_dic_menu();
 	/*

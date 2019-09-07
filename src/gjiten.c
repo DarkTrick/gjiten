@@ -287,7 +287,7 @@ int main (int argc, char **argv) {
     if (gjitenApp->conf->clip_word_lookup) {
       gjitenApp->worddic = worddic_create();
       worddic_paste(gjitenApp->worddic);
-      on_text_entered();
+      on_search_clicked();
     }
     else {
       if (gjitenApp->conf->clip_kanji_lookup){
@@ -319,7 +319,7 @@ int main (int argc, char **argv) {
       if (gjitenApp->conf->word_to_lookup) {
 				gjitenApp->worddic = worddic_create();
 				gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(gjitenApp->worddic->combo_entry)->entry), gjitenApp->conf->word_to_lookup);
-				on_text_entered();
+				on_search_clicked();
       }
       else if (gjitenApp->conf->kanji_to_lookup != NULL) {
 				if (g_utf8_validate(gjitenApp->conf->kanji_to_lookup, -1, NULL) == FALSE) {

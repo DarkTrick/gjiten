@@ -1162,7 +1162,7 @@ KanjiDic *kanjidic_create() {
   gtk_table_attach(GTK_TABLE(table_koptions), hbox_spinb, 1, 2, 0, 1,
                     (GtkAttachOptions)(GTK_FILL), (GtkAttachOptions)(GTK_FILL), 0, 0);
 
-  spinb_strokenum_adj = gtk_adjustment_new(1, 1, 30, 1, 2, 2);
+  spinb_strokenum_adj = gtk_adjustment_new(1, 1, 30, 1, 2, 0);
   kanjiDic->spinb_strokenum = gtk_spin_button_new(GTK_ADJUSTMENT(spinb_strokenum_adj), 1, 0);
   gtk_widget_show(kanjiDic->spinb_strokenum);
   gtk_box_pack_start(GTK_BOX(hbox_spinb), kanjiDic->spinb_strokenum, FALSE, FALSE, 0);
@@ -1171,7 +1171,7 @@ KanjiDic *kanjidic_create() {
   gtk_widget_show(kanjiDic->label_plusmin);
   gtk_box_pack_start(GTK_BOX(hbox_spinb), kanjiDic->label_plusmin, FALSE, FALSE, 0);
 
-  spinb_plusmin_adj = gtk_adjustment_new(0, 0, 10, 1, 10, 10);
+  spinb_plusmin_adj = gtk_adjustment_new(0, 0, 10, 1, 10, 0);
   kanjiDic->spinb_plusmin = gtk_spin_button_new(GTK_ADJUSTMENT(spinb_plusmin_adj), 1, 0);
   gtk_widget_show(kanjiDic->spinb_plusmin);
   gtk_box_pack_start(GTK_BOX(hbox_spinb), kanjiDic->spinb_plusmin, FALSE, FALSE, 0);

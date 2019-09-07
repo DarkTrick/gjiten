@@ -71,7 +71,7 @@ struct vinfl_struct {
 
 WordDic *worddic_create();
 void worddic_paste(WordDic *worddic);
-void on_text_entered();
+void on_search_clicked();
 void worddic_update_dic_menu();
 void worddic_apply_fonts();
 
