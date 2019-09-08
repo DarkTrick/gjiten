@@ -1,3 +1,22 @@
+v2.7 (2019-09-08)
+    - Remove superfluous toolbar icons
+    - Fix broken GTK stock icon associations in the toolbar
+    - Fix FTBS with current dependency versions
+    - Bugfix: move dict up / remove dict => crash
+    - Fixed: GTK-warning: "no adjustment with page-size != 0 allowed"
+    - Bugfix: "Unshade Back when history is full on startup."
+    - Updated TODO and changed the "ugly logo"
+    - Updated "ugly logo"
+    - Delete gjiten-logo.png
+    - pref.c : preferences_response_cb()
+    - created local macro to wrap GTK_TOGGLE_BUTTON(...)->active
+    - Unified: Made all spaces to tabs
+    - Aliged all "equals"
+    - Bugfix: First usage of back button after start would select the second entry
+    - Refactor:    Rename: on_text_entered() -> on_search_clicked()
+    - kanjidic.c: Fix Warning: "GtkSpinButton: setting an adjustment with non-zero page size is deprecated"
+    - changed ugly logo in debian path
+
 v2.6 (2006-10-28)
     - Radicals show up again in KanjiDic.
     - DTD location changed in docbook doc (John Thacker).
