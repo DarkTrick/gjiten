@@ -69,7 +69,8 @@ enum {
   WORD_LOOKUP_KEY     = -2,
   KANJI_LOOKUP_KEY    = -3,
   CLIP_KANJI_KEY      = -4,
-  CLIP_WORD_KEY       = -5
+  CLIP_WORD_KEY       = -5,
+  QUICK_LOOKUP_KEY    = -6
 };
 
 /* Command line arguments via popt */
@@ -91,6 +92,9 @@ static struct poptOption arg_options [] = {
 
   { "clip-word", 'v', POPT_ARG_NONE, NULL, CLIP_WORD_KEY,
     N_("Look up word from clipboard"), NULL },
+
+  { "quick-lookup", '\0', POPT_ARG_NONE, NULL, QUICK_LOOKUP_KEY,
+    N_("Start in quick-lookup-mode: Terminate on Escape or clicking somewhere else."), NULL },
 
   { NULL, '\0', 0, NULL, 0, NULL, NULL }
 
@@ -124,6 +128,8 @@ static void parse_an_arg(poptContext state,
     gjitenApp->conf->clip_word_lookup = TRUE;
     gjitenApp->conf->clip_kanji_lookup = FALSE;
     break;
+  case QUICK_LOOKUP_KEY:
+    gjitenApp->conf->quick_lookup_mode = TRUE;
   default:
     break;
   }
@@ -133,6 +139,9 @@ void gjiten_clear_entry_box(gpointer entrybox) {
   gtk_entry_set_text(GTK_ENTRY(entrybox), "");
 }
 
+/**
+ * Cleanly close gjiten from anywhere in the code
+**/
 void gjiten_exit() {
 	if ((gjitenApp->worddic == NULL) && (gjitenApp->kanjidic == NULL)) {
 		GJITEN_DEBUG("gjiten_exit()\n");
@@ -342,6 +351,11 @@ int main (int argc, char **argv) {
     gjitenApp->worddic = worddic_create();
   }
 	gjiten_flush_errors();
+
+  /* enable quick lookup mode if set */
+  if(gjitenApp->conf->quick_lookup_mode && gjitenApp->worddic)
+    enable_quick_lookup_mode(gjitenApp->worddic);
+
   gtk_main();
   return 0;
 }

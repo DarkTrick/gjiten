@@ -74,5 +74,6 @@ void worddic_paste(WordDic *worddic);
 void on_search_clicked();
 void worddic_update_dic_menu();
 void worddic_apply_fonts();
+void enable_quick_lookup_mode(WordDic *wordDic);
 
 #endif

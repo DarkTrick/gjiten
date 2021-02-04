@@ -967,6 +967,37 @@ void _init_word_history(WordDic* wordDic){
   }
 }
 
+gboolean close_on_focus_out(GtkWidget *window,
+                            GdkEvent  *event,
+                            gpointer   unused)
+{
+  gtk_widget_destroy(window);
+  return TRUE;
+}
+
+gboolean close_on_escape(GtkWidget   *window,
+                         GdkEventKey *event,
+                         gpointer     unused)
+{
+  if (event->keyval == GDK_KEY_Escape){
+    gtk_widget_destroy(window);
+    return TRUE;
+  }
+  return FALSE;
+}
+
+/**
+ * Quick lookup mode is currently defined as:
+ *  - Terminate application on ESC
+ *  - Terminate application on unfocus window
+ **/
+void enable_quick_lookup_mode(WordDic *wordDic) {
+  g_signal_connect (G_OBJECT (wordDic->window), "focus-out-event",
+                    G_CALLBACK(close_on_focus_out), NULL);
+  g_signal_connect (G_OBJECT (wordDic->window), "key-press-event",
+                  G_CALLBACK(close_on_escape), NULL);
+}
+
 WordDic *worddic_create() {
   GtkWidget *vbox_main;
   GtkWidget *dock_main;
