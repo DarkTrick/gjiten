@@ -57,10 +57,10 @@ static void parse_an_arg(poptContext state,
 gchar *clipboard_text = NULL;
 
 /* FIXME: GConfEnumPair also in kanjidic.h */
-gchar *kanjidicstrg[] = { "kanji", "radical", "strokes", "reading", "korean", 
+gchar *kanjidicstrg[] = { "kanji", "radical", "strokes", "reading", "korean",
 													"pinyin", "english", "bushu", "classic", "freq", "jouyou",
 													"deroo", "skip", "fourc", "hindex", "nindex", "vindex",
-													"iindex", "mnindex", "mpindex", "eindex", "kindex", 
+													"iindex", "mnindex", "mpindex", "eindex", "kindex",
 													"lindex", "oindex", "cref", "missc", "unicode", "jisascii" };
 
 
@@ -105,7 +105,7 @@ static void parse_an_arg(poptContext state,
 												 const struct poptOption *opt,
 												 const char *arg, void *data) {
 
-  
+
   switch (opt->val) {
   case KANJIDIC_KEY:
     gjitenApp->conf->startkanjidic = TRUE;
@@ -173,24 +173,24 @@ void gjiten_display_manual(GtkWidget *widget, void *data) {
   gboolean retval = FALSE;
 
   retval = gnome_help_display("gjiten.xml", NULL, &err);
-  
+
   if (retval == FALSE) {
     GtkWidget *dialog;
     dialog = gtk_message_dialog_new(GTK_WINDOW(window),
-																		GTK_DIALOG_DESTROY_WITH_PARENT,       
+																		GTK_DIALOG_DESTROY_WITH_PARENT,
 																		GTK_MESSAGE_ERROR,
 																		GTK_BUTTONS_CLOSE,
 																		_("Could not display help: %s"),
 																		err->message);
-    
+
     g_signal_connect(G_OBJECT(dialog), "response",
 										 G_CALLBACK(gtk_widget_destroy),
 										 NULL);
-    
+
     gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
-    
+
     gtk_widget_show(dialog);
-    
+
     g_error_free(err);
   }
 }
@@ -211,8 +211,8 @@ void gjiten_create_about() {
 
   if (pixbuf != NULL) {
     GdkPixbuf* temp_pixbuf = NULL;
-    
-    temp_pixbuf = gdk_pixbuf_scale_simple(pixbuf, 
+
+    temp_pixbuf = gdk_pixbuf_scale_simple(pixbuf,
 					   gdk_pixbuf_get_width(pixbuf) / 2,
 					   gdk_pixbuf_get_height(pixbuf) / 2,
 					   GDK_INTERP_HYPER);
@@ -226,7 +226,7 @@ void gjiten_create_about() {
 
   /*
     _("Released under the terms of the GNU GPL.\n"
-    "Check out http://gjiten.sourceforge.net for updates"), 
+    "Check out http://gjiten.sourceforge.net for updates"),
   */
   about = gnome_about_new("gjiten", VERSION, "Copyright \xc2\xa9 1999-2005 Botond Botyanszki",
 			  _("gjiten is a Japanese dictionary for Gnome"),
@@ -248,7 +248,7 @@ void gjiten_create_about() {
 /*********************** MAIN ***********************************/
 int main (int argc, char **argv) {
   char *icon_path = PIXMAPDIR"/jiten.png";
- 
+
 	gjitenApp = g_new0(GjitenApp, 1);
   conf_init_handler();
 	gjitenApp->conf = conf_load();
@@ -261,7 +261,7 @@ int main (int argc, char **argv) {
 		if (gjitenApp->conf->force_language_c == TRUE) putenv("LANGUAGE=C");
 	}
 
-  gtk_set_locale();  
+  gtk_set_locale();
 
 #ifdef ENABLE_NLS
   bindtextdomain(PACKAGE, GJITEN_LOCALE_DIR);
@@ -269,9 +269,9 @@ int main (int argc, char **argv) {
   textdomain(PACKAGE);
 #endif
 
-  gnome_program_init("gjiten", VERSION, LIBGNOMEUI_MODULE, argc, argv, 
-										 GNOME_PARAM_POPT_TABLE, arg_options, 
-										 GNOME_PARAM_HUMAN_READABLE_NAME, _("gjiten"), 
+  gnome_program_init("gjiten", VERSION, LIBGNOMEUI_MODULE, argc, argv,
+										 GNOME_PARAM_POPT_TABLE, arg_options,
+										 GNOME_PARAM_HUMAN_READABLE_NAME, _("gjiten"),
 										 GNOME_PARAM_APP_DATADIR, GNOMEDATADIR,
 										 NULL);
 
@@ -315,7 +315,7 @@ int main (int argc, char **argv) {
     if (gjitenApp->conf->startkanjidic) {
       kanjidic_create();
     }
-    else  
+    else
       if (gjitenApp->conf->word_to_lookup) {
 				gjitenApp->worddic = worddic_create();
 				gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(gjitenApp->worddic->combo_entry)->entry), gjitenApp->conf->word_to_lookup);
@@ -335,7 +335,7 @@ int main (int argc, char **argv) {
 					print_kanjinfo(g_utf8_get_char(gjitenApp->conf->kanji_to_lookup));
 				}
 			}
-			else if (!gjitenApp->conf->clip_kanji_lookup && !gjitenApp->conf->clip_word_lookup) 
+			else if (!gjitenApp->conf->clip_kanji_lookup && !gjitenApp->conf->clip_word_lookup)
 				gjitenApp->worddic = worddic_create();
   }
   else {
