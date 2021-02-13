@@ -14,7 +14,7 @@ typedef struct _radpair {
 } radpair;
 __STRUCT__
 
-    
+
 print "radpair radicaltable[] = {\n";
 my %escapes;
 for (0..255) {
@@ -41,10 +41,10 @@ close(NEWHEAD);
 
 
 sub getHex {
-    my ($strg) = @_;
-    my $result = '';
-    foreach $chr (split('', $strg)) {
-	$result .= $escapes{$chr};
-    }
-    return $result;
+  my ($strg) = @_;
+  my $result = '';
+  foreach $chr (split('', $strg)) {
+    $result .= $escapes{$chr};
+  }
+  return $result;
 }

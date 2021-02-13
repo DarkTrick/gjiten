@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 2; indent-tabs-mode: t; c-basic-offset: 2 -*- */
+/* -*- Mode: C; tab-width: 2;   indent-tabs-mode: space; c-basic-offset: 2 -*- */
 /* vi: set ts=2 sw=2: */
 /* gjiten.c
 
@@ -48,9 +48,9 @@
 GjitenApp *gjitenApp = NULL;
 
 static void parse_an_arg(poptContext state,
-												 enum poptCallbackReason reason,
-												 const struct poptOption *opt,
-												 const char *arg, void *data);
+                         enum poptCallbackReason reason,
+                         const struct poptOption *opt,
+                         const char *arg, void *data);
 
 /***************** VARIABLES ***********************/
 
@@ -58,10 +58,10 @@ gchar *clipboard_text = NULL;
 
 /* FIXME: GConfEnumPair also in kanjidic.h */
 gchar *kanjidicstrg[] = { "kanji", "radical", "strokes", "reading", "korean",
-													"pinyin", "english", "bushu", "classic", "freq", "jouyou",
-													"deroo", "skip", "fourc", "hindex", "nindex", "vindex",
-													"iindex", "mnindex", "mpindex", "eindex", "kindex",
-													"lindex", "oindex", "cref", "missc", "unicode", "jisascii" };
+                          "pinyin", "english", "bushu", "classic", "freq", "jouyou",
+                          "deroo", "skip", "fourc", "hindex", "nindex", "vindex",
+                          "iindex", "mnindex", "mpindex", "eindex", "kindex",
+                          "lindex", "oindex", "cref", "missc", "unicode", "jisascii" };
 
 
 enum {
@@ -105,9 +105,9 @@ static struct poptOption arg_options [] = {
 /*================ Functions ===============================================*/
 
 static void parse_an_arg(poptContext state,
-												 enum poptCallbackReason reason,
-												 const struct poptOption *opt,
-												 const char *arg, void *data) {
+                         enum poptCallbackReason reason,
+                         const struct poptOption *opt,
+                         const char *arg, void *data) {
 
 
   switch (opt->val) {
@@ -144,30 +144,30 @@ void gjiten_clear_entry_box(gpointer entrybox) {
  * Cleanly close gjiten from anywhere in the code
 **/
 void gjiten_exit() {
-	if ((gjitenApp->worddic == NULL) && (gjitenApp->kanjidic == NULL)) {
-		GJITEN_DEBUG("gjiten_exit()\n");
-		conf_save_options(gjitenApp->conf);
-		dicutil_unload_dic();
-		dicfile_list_free(gjitenApp->conf->dicfile_list);
-		conf_close_handler();
-		gtk_main_quit();
-	}
+  if ((gjitenApp->worddic == NULL) && (gjitenApp->kanjidic == NULL)) {
+    GJITEN_DEBUG("gjiten_exit()\n");
+    conf_save_options(gjitenApp->conf);
+    dicutil_unload_dic();
+    dicfile_list_free(gjitenApp->conf->dicfile_list);
+    conf_close_handler();
+    gtk_main_quit();
+  }
 }
 
 void gjiten_start_kanjipad() {
   FILE *kanjipad_binary;
   char *kpad_cmd;
-	int32_t len;
+  int32_t len;
 
   kanjipad_binary = fopen(gjitenApp->conf->kanjipad, "r");
   if (kanjipad_binary == NULL) {
     gjiten_print_error(_("Couldn't find the KanjiPad executable!\n"
-												 "Please make sure you have it installed on your system \n"
-												 "and set the correct path to it in the Preferences.\n"
-												 "See the Documentation for more details about KanjiPad."));
+                         "Please make sure you have it installed on your system \n"
+                         "and set the correct path to it in the Preferences.\n"
+                         "See the Documentation for more details about KanjiPad."));
   }
   else {
-		len = strlen(gjitenApp->conf->kanjipad) + 2;
+    len = strlen(gjitenApp->conf->kanjipad) + 2;
     fclose(kanjipad_binary);
     kpad_cmd = g_malloc(len);
     strncpy(kpad_cmd, gjitenApp->conf->kanjipad, len);
@@ -187,15 +187,15 @@ void gjiten_display_manual(GtkWidget *widget, void *data) {
   if (retval == FALSE) {
     GtkWidget *dialog;
     dialog = gtk_message_dialog_new(GTK_WINDOW(window),
-																		GTK_DIALOG_DESTROY_WITH_PARENT,
-																		GTK_MESSAGE_ERROR,
-																		GTK_BUTTONS_CLOSE,
-																		_("Could not display help: %s"),
-																		err->message);
+                                    GTK_DIALOG_DESTROY_WITH_PARENT,
+                                    GTK_MESSAGE_ERROR,
+                                    GTK_BUTTONS_CLOSE,
+                                    _("Could not display help: %s"),
+                                    err->message);
 
     g_signal_connect(G_OBJECT(dialog), "response",
-										 G_CALLBACK(gtk_widget_destroy),
-										 NULL);
+                     G_CALLBACK(gtk_widget_destroy),
+                     NULL);
 
     gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
 
@@ -223,9 +223,9 @@ void gjiten_create_about() {
     GdkPixbuf* temp_pixbuf = NULL;
 
     temp_pixbuf = gdk_pixbuf_scale_simple(pixbuf,
-					   gdk_pixbuf_get_width(pixbuf) / 2,
-					   gdk_pixbuf_get_height(pixbuf) / 2,
-					   GDK_INTERP_HYPER);
+             gdk_pixbuf_get_width(pixbuf) / 2,
+             gdk_pixbuf_get_height(pixbuf) / 2,
+             GDK_INTERP_HYPER);
     g_object_unref(pixbuf);
     pixbuf = temp_pixbuf;
   }
@@ -239,11 +239,11 @@ void gjiten_create_about() {
     "Check out http://gjiten.sourceforge.net for updates"),
   */
   about = gnome_about_new("gjiten", VERSION, "Copyright \xc2\xa9 1999-2005 Botond Botyanszki",
-			  _("gjiten is a Japanese dictionary for Gnome"),
-			  (const char **)authors,
-			  (const char **)documenters,
-			  (const char *)translator,
-			  pixbuf);
+        _("gjiten is a Japanese dictionary for Gnome"),
+        (const char **)authors,
+        (const char **)documenters,
+        (const char *)translator,
+        pixbuf);
 
   gtk_window_set_destroy_with_parent(GTK_WINDOW(about), TRUE);
   if (pixbuf != NULL)  g_object_unref (pixbuf);
@@ -259,17 +259,17 @@ void gjiten_create_about() {
 int main (int argc, char **argv) {
   char *icon_path = PIXMAPDIR"/jiten.png";
 
-	gjitenApp = g_new0(GjitenApp, 1);
+  gjitenApp = g_new0(GjitenApp, 1);
   conf_init_handler();
-	gjitenApp->conf = conf_load();
+  gjitenApp->conf = conf_load();
 
-	if (gjitenApp->conf->envvar_override == TRUE) {
-		if (gjitenApp->conf->gdk_use_xft == TRUE) putenv("GDK_USE_XFT=1");
-		else putenv("GDK_USE_XFT=0");
-		/* if (gjitenApp->conf->force_ja_JP == TRUE) putenv("LC_CTYPE=ja_JP"); */
-		if (gjitenApp->conf->force_ja_JP == TRUE) putenv("LC_ALL=ja_JP");
-		if (gjitenApp->conf->force_language_c == TRUE) putenv("LANGUAGE=C");
-	}
+  if (gjitenApp->conf->envvar_override == TRUE) {
+    if (gjitenApp->conf->gdk_use_xft == TRUE) putenv("GDK_USE_XFT=1");
+    else putenv("GDK_USE_XFT=0");
+    /* if (gjitenApp->conf->force_ja_JP == TRUE) putenv("LC_CTYPE=ja_JP"); */
+    if (gjitenApp->conf->force_ja_JP == TRUE) putenv("LC_ALL=ja_JP");
+    if (gjitenApp->conf->force_language_c == TRUE) putenv("LANGUAGE=C");
+  }
 
   gtk_set_locale();
 
@@ -280,10 +280,10 @@ int main (int argc, char **argv) {
 #endif
 
   gnome_program_init("gjiten", VERSION, LIBGNOMEUI_MODULE, argc, argv,
-										 GNOME_PARAM_POPT_TABLE, arg_options,
-										 GNOME_PARAM_HUMAN_READABLE_NAME, _("gjiten"),
-										 GNOME_PARAM_APP_DATADIR, GNOMEDATADIR,
-										 NULL);
+                     GNOME_PARAM_POPT_TABLE, arg_options,
+                     GNOME_PARAM_HUMAN_READABLE_NAME, _("gjiten"),
+                     GNOME_PARAM_APP_DATADIR, GNOMEDATADIR,
+                     NULL);
 
   if (! g_file_test (icon_path, G_FILE_TEST_EXISTS)) {
     g_warning ("Could not find %s", icon_path);
@@ -301,22 +301,22 @@ int main (int argc, char **argv) {
     }
     else {
       if (gjitenApp->conf->clip_kanji_lookup){
-				clipboard_text = gtk_clipboard_wait_for_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY));
-				/* validate	*/
-				/* FIXME: try to convert EUC-JP to UTF8 if it's non-utf8 */
-				if (g_utf8_validate(clipboard_text, -1, NULL) == FALSE) {
-					gjiten_print_error(_("Unable to look up kanji: NON-UTF8 string received from clipboard!\n"));
-					exit(0);
-				}
-				else if (isKanjiChar(g_utf8_get_char(clipboard_text)) == FALSE) {
-					gjiten_print_error(_("Non-kanji string received from clipboard: %s\n"), clipboard_text);
-					exit(0);
-				}
-				else {
-					if (gjitenApp->kanjidic == NULL) kanjidic_create();
-					print_kanjinfo(g_utf8_get_char(clipboard_text));
-					/* if (clipboard_text !	= NULL) gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(combo_entry)->entry), clipboard_text); */
-				}
+        clipboard_text = gtk_clipboard_wait_for_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY));
+        /* validate  */
+        /* FIXME: try to convert EUC-JP to UTF8 if it's non-utf8 */
+        if (g_utf8_validate(clipboard_text, -1, NULL) == FALSE) {
+          gjiten_print_error(_("Unable to look up kanji: NON-UTF8 string received from clipboard!\n"));
+          exit(0);
+        }
+        else if (isKanjiChar(g_utf8_get_char(clipboard_text)) == FALSE) {
+          gjiten_print_error(_("Non-kanji string received from clipboard: %s\n"), clipboard_text);
+          exit(0);
+        }
+        else {
+          if (gjitenApp->kanjidic == NULL) kanjidic_create();
+          print_kanjinfo(g_utf8_get_char(clipboard_text));
+          /* if (clipboard_text !  = NULL) gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(combo_entry)->entry), clipboard_text); */
+        }
       }
     }
   }
@@ -327,31 +327,31 @@ int main (int argc, char **argv) {
     }
     else
       if (gjitenApp->conf->word_to_lookup) {
-				gjitenApp->worddic = worddic_create();
-				gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(gjitenApp->worddic->combo_entry)->entry), gjitenApp->conf->word_to_lookup);
-				on_search_clicked();
+        gjitenApp->worddic = worddic_create();
+        gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(gjitenApp->worddic->combo_entry)->entry), gjitenApp->conf->word_to_lookup);
+        on_search_clicked();
       }
       else if (gjitenApp->conf->kanji_to_lookup != NULL) {
-				if (g_utf8_validate(gjitenApp->conf->kanji_to_lookup, -1, NULL) == FALSE) {
-					gjiten_print_error(_("Unable to look up kanji: NON-UTF8 string received from clipboard!\n"));
-					exit(0); /* FIXME */
-				}
-				else if (isKanjiChar(g_utf8_get_char(gjitenApp->conf->kanji_to_lookup)) == FALSE) {
-					gjiten_print_error(_("Non-kanji string received from clipboard: %s\n"), gjitenApp->conf->kanji_to_lookup);
-					exit(0); /* FIXME */
-				}
-				else {
-					if (gjitenApp->kanjidic == NULL) kanjidic_create();
-					print_kanjinfo(g_utf8_get_char(gjitenApp->conf->kanji_to_lookup));
-				}
-			}
-			else if (!gjitenApp->conf->clip_kanji_lookup && !gjitenApp->conf->clip_word_lookup)
-				gjitenApp->worddic = worddic_create();
+        if (g_utf8_validate(gjitenApp->conf->kanji_to_lookup, -1, NULL) == FALSE) {
+          gjiten_print_error(_("Unable to look up kanji: NON-UTF8 string received from clipboard!\n"));
+          exit(0); /* FIXME */
+        }
+        else if (isKanjiChar(g_utf8_get_char(gjitenApp->conf->kanji_to_lookup)) == FALSE) {
+          gjiten_print_error(_("Non-kanji string received from clipboard: %s\n"), gjitenApp->conf->kanji_to_lookup);
+          exit(0); /* FIXME */
+        }
+        else {
+          if (gjitenApp->kanjidic == NULL) kanjidic_create();
+          print_kanjinfo(g_utf8_get_char(gjitenApp->conf->kanji_to_lookup));
+        }
+      }
+      else if (!gjitenApp->conf->clip_kanji_lookup && !gjitenApp->conf->clip_word_lookup)
+        gjitenApp->worddic = worddic_create();
   }
   else {
     gjitenApp->worddic = worddic_create();
   }
-	gjiten_flush_errors();
+  gjiten_flush_errors();
 
   /* enable quick lookup mode if set */
   if(gjitenApp->conf->quick_lookup_mode && gjitenApp->worddic)

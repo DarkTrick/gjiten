@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 2; indent-tabs-mode: t; c-basic-offset: 2 -*- */
+/* -*- Mode: C; tab-width: 2;   indent-tabs-mode: space; c-basic-offset: 2 -*- */
 /* vi: set ts=2 sw=2: */
 /* worddic.h
 
@@ -27,36 +27,36 @@ typedef struct _WordDic WordDic;
 struct _WordDic {
 /* GTK variables */
   GtkWidget *hbox_options;
-	GtkWidget *window;
-	GtkWidget *combo_entry;
-	GtkWidget *text_results_view;
-	GtkTextBuffer *text_results_buffer;
-	GtkTextBuffer *info_buffer;
-	GtkWidget *menu_selectdic;
-	GtkWidget *combo_entry_dictfile;
-	GtkWidget *checkb_verb;
-	GtkWidget *checkb_autoadjust;
-	GtkWidget *checkb_searchlimit;
-	GtkWidget *spinb_searchlimit;
-	GtkWidget *radiob_jpexact;
-	GtkWidget *radiob_startw;
-	GtkWidget *radiob_endw;
-	GtkWidget *radiob_any;
-	GtkWidget *radiob_engexact;
-	GtkWidget *radiob_words;
-	GtkWidget *radiob_partial;
-	GtkWidget *radiob_searchdic;
-	GtkWidget *radiob_searchall;
-	GtkWidget *button_back;
-	GtkWidget *button_forward;
-	GtkTextIter iter;
-	GtkWidget *appbar_mainwin;
-	GList *combo_entry_glist;
-	GtkWidget *dicselection_menu;
-	GtkTextTag *tag_large_font;
-	GdkCursor *selection_cursor;
-	GdkCursor *regular_cursor;
-	gboolean is_cursor_regular;
+  GtkWidget *window;
+  GtkWidget *combo_entry;
+  GtkWidget *text_results_view;
+  GtkTextBuffer *text_results_buffer;
+  GtkTextBuffer *info_buffer;
+  GtkWidget *menu_selectdic;
+  GtkWidget *combo_entry_dictfile;
+  GtkWidget *checkb_verb;
+  GtkWidget *checkb_autoadjust;
+  GtkWidget *checkb_searchlimit;
+  GtkWidget *spinb_searchlimit;
+  GtkWidget *radiob_jpexact;
+  GtkWidget *radiob_startw;
+  GtkWidget *radiob_endw;
+  GtkWidget *radiob_any;
+  GtkWidget *radiob_engexact;
+  GtkWidget *radiob_words;
+  GtkWidget *radiob_partial;
+  GtkWidget *radiob_searchdic;
+  GtkWidget *radiob_searchall;
+  GtkWidget *button_back;
+  GtkWidget *button_forward;
+  GtkTextIter iter;
+  GtkWidget *appbar_mainwin;
+  GList *combo_entry_glist;
+  GtkWidget *dicselection_menu;
+  GtkTextTag *tag_large_font;
+  GdkCursor *selection_cursor;
+  GdkCursor *regular_cursor;
+  gboolean is_cursor_regular;
 };
 
 

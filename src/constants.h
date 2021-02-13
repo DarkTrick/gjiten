@@ -15,17 +15,17 @@
 #define GCONF_PATH_KANJIDIC  GCONF_ROOT"/kanjidic"
 
 
-#define EXACT_MATCH 1 		//jp en
-#define START_WITH_MATCH 2 	//jp
-#define END_WITH_MATCH 3 	//jp
-#define ANY_MATCH 4 		//jp en
-#define WORD_MATCH 5 		//en
+#define EXACT_MATCH 1     //jp en
+#define START_WITH_MATCH 2   //jp
+#define END_WITH_MATCH 3   //jp
+#define ANY_MATCH 4     //jp en
+#define WORD_MATCH 5     //en
 
 
-#define SRCH_OK		0
-#define SRCH_FAIL	1
-#define SRCH_START	2
-#define SRCH_CONT	3
+#define SRCH_OK    0
+#define SRCH_FAIL  1
+#define SRCH_START  2
+#define SRCH_CONT  3
 
 
 #endif

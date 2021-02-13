@@ -1,11 +1,11 @@
-/* -*- Mode: C; tab-width: 2; indent-tabs-mode: t; c-basic-offset: 2 -*- */
+/* -*- Mode: C; tab-width: 2;   indent-tabs-mode: space; c-basic-offset: 2 -*- */
 /* vi: set ts=2 sw=2: */
 /* dicfile.c
-   
+
    GJITEN : A JAPANESE DICTIONARY FOR GNOME
-  
+
    Copyright (C) 1999-2005 Botond Botyanszki <boti at rocketmail dot com>
-   
+
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published  by
    the Free Software Foundation; either version 2 of the License, or
@@ -40,94 +40,94 @@
 #include "error.h"
 
 gboolean dicfile_check_all(GSList *dicfile_list) {
-	GSList *node;
-	GjitenDicfile *dicfile;
-	gboolean retval = TRUE;
+  GSList *node;
+  GjitenDicfile *dicfile;
+  gboolean retval = TRUE;
 
-	GJITEN_DEBUG("dicfile_check_all()\n");
+  GJITEN_DEBUG("dicfile_check_all()\n");
 
-	node = dicfile_list;
-	while (node != NULL) {
-		if (node->data != NULL) {
-			dicfile = node->data;
-			if (dicfile_init(dicfile) == FALSE) retval = FALSE;
-			if (dicfile_is_utf8(dicfile) == FALSE) {
-				dicfile_close(dicfile);
-				retval = FALSE;
-			}
-			dicfile_close(dicfile);
-		}
-		node = g_slist_next(node);
-	}
-	GJITEN_DEBUG(" retval: %d\n", retval);
-	return retval;
+  node = dicfile_list;
+  while (node != NULL) {
+    if (node->data != NULL) {
+      dicfile = node->data;
+      if (dicfile_init(dicfile) == FALSE) retval = FALSE;
+      if (dicfile_is_utf8(dicfile) == FALSE) {
+        dicfile_close(dicfile);
+        retval = FALSE;
+      }
+      dicfile_close(dicfile);
+    }
+    node = g_slist_next(node);
+  }
+  GJITEN_DEBUG(" retval: %d\n", retval);
+  return retval;
 }
 
 gboolean dicfile_is_utf8(GjitenDicfile *dicfile) {
-	gchar *testbuffer;
-	gint pos, bytesread;
+  gchar *testbuffer;
+  gint pos, bytesread;
 
-	if (dicfile->file > 0) {
-		testbuffer = (gchar *) g_malloc(3000);
-		bytesread = read(dicfile->file, testbuffer, 3000); // read a chunk into buffer
-		pos = bytesread - 1;
-		while (testbuffer[pos] != '\n') pos--;
-		if (g_utf8_validate(testbuffer, pos, NULL) == FALSE) {
-			gjiten_print_error(_("Dictionary file is non-UTF: %s\nPlease convert it to UTF-8. See the docs for more."), dicfile->path);
-			return FALSE;
-		}
-		g_free(testbuffer);
-	}
-	return TRUE;
+  if (dicfile->file > 0) {
+    testbuffer = (gchar *) g_malloc(3000);
+    bytesread = read(dicfile->file, testbuffer, 3000); // read a chunk into buffer
+    pos = bytesread - 1;
+    while (testbuffer[pos] != '\n') pos--;
+    if (g_utf8_validate(testbuffer, pos, NULL) == FALSE) {
+      gjiten_print_error(_("Dictionary file is non-UTF: %s\nPlease convert it to UTF-8. See the docs for more."), dicfile->path);
+      return FALSE;
+    }
+    g_free(testbuffer);
+  }
+  return TRUE;
 }
 
 gboolean dicfile_init(GjitenDicfile *dicfile) {
 
-	if (dicfile->status != DICFILE_OK) {
-		dicfile->file = open(dicfile->path, O_RDONLY);
+  if (dicfile->status != DICFILE_OK) {
+    dicfile->file = open(dicfile->path, O_RDONLY);
 
-		if (dicfile->file == -1) {
-			gjiten_print_error(_("Error opening dictfile:  %s\nCheck your preferences!"), dicfile->path);
-			dicfile->status = DICFILE_BAD;
-			return FALSE;
-		}
-		else {
-			if (stat(dicfile->path, &dicfile->stat) != 0) {
-				printf("**ERROR** %s: stat() \n", dicfile->path);
-				dicfile->status = DICFILE_BAD;
-				return FALSE;
-			}
-			else {
-				dicfile->size = dicfile->stat.st_size;
-			}
-		}
-		dicfile->status = DICFILE_OK;
-	}
-	return TRUE;
+    if (dicfile->file == -1) {
+      gjiten_print_error(_("Error opening dictfile:  %s\nCheck your preferences!"), dicfile->path);
+      dicfile->status = DICFILE_BAD;
+      return FALSE;
+    }
+    else {
+      if (stat(dicfile->path, &dicfile->stat) != 0) {
+        printf("**ERROR** %s: stat() \n", dicfile->path);
+        dicfile->status = DICFILE_BAD;
+        return FALSE;
+      }
+      else {
+        dicfile->size = dicfile->stat.st_size;
+      }
+    }
+    dicfile->status = DICFILE_OK;
+  }
+  return TRUE;
 }
 
 void dicfile_close(GjitenDicfile *dicfile) {
 
-	if (dicfile->file > 0) {
-		close(dicfile->file);
-	}
-	dicfile->status = DICFILE_NOT_INITIALIZED;
+  if (dicfile->file > 0) {
+    close(dicfile->file);
+  }
+  dicfile->status = DICFILE_NOT_INITIALIZED;
 }
 
 void dicfile_list_free(GSList *dicfile_list) {
-	GSList *node;
-	GjitenDicfile *dicfile;
+  GSList *node;
+  GjitenDicfile *dicfile;
 
-	node = dicfile_list;
-	while (node != NULL) {
-		if (node->data != NULL) {
-			dicfile = node->data;
-			dicfile_close(dicfile);
-			g_free(dicfile);
-		}
-		node = g_slist_next(node);
-	}
+  node = dicfile_list;
+  while (node != NULL) {
+    if (node->data != NULL) {
+      dicfile = node->data;
+      dicfile_close(dicfile);
+      g_free(dicfile);
+    }
+    node = g_slist_next(node);
+  }
 
-	g_slist_free(dicfile_list);
+  g_slist_free(dicfile_list);
 
 }

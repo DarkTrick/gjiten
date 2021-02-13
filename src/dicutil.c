@@ -1,9 +1,9 @@
-/* -*- Mode: C; tab-width: 2; indent-tabs-mode: t; c-basic-offset: 2 -*- */
+/* -*- Mode: C; tab-width: 2;   indent-tabs-mode: space; c-basic-offset: 2 -*- */
 /* vi: set ts=2 sw=2: */
 /* dicutil.c
 
    GJITEN : A GTK+/GNOME BASED JAPANESE DICTIONARY
-  
+
    Copyright (C) 1999 - 2005 Botond Botyanszki <boti@rocketmail.com>
 
    This program is free software; you can redistribute it and/or modify
@@ -51,7 +51,7 @@ int strg_end_compare(gchar *strg1, gchar *strg2) {
   for (i = 0; i < g_utf8_strlen(strg2, -1); i++) {
     strg1_end = g_utf8_prev_char(strg1_end);
     strg2_end = g_utf8_prev_char(strg2_end);
-    if (g_utf8_get_char(strg1_end) != g_utf8_get_char(strg2_end)) 
+    if (g_utf8_get_char(strg1_end) != g_utf8_get_char(strg2_end))
       matching = FALSE;
   }
   return matching;
@@ -70,69 +70,69 @@ gchar *get_eof_line(gchar *ptr, gchar *end_ptr) {
 
 gboolean is_kanji_only(gchar *line) {
   gchar *currentchar;
-	gchar *line_end;
+  gchar *line_end;
 
   currentchar = line;
-	line_end = line + strlen(line);
+  line_end = line + strlen(line);
 
   while (g_unichar_isspace(*currentchar) == FALSE) { // find first space
     if (currentchar == line_end) break;
-		if (isKanjiChar(g_utf8_get_char(currentchar)) == FALSE) return FALSE;
+    if (isKanjiChar(g_utf8_get_char(currentchar)) == FALSE) return FALSE;
    currentchar = g_utf8_next_char(currentchar);
   }
 
-	return TRUE;
+  return TRUE;
 }
 
 
 void dicutil_unload_dic() {
   if (conf.mmaped_dicfile != NULL) {
-    //free mem of previously used dicfile	
-		munmap(conf.mmaped_dicfile->mem, conf.mmaped_dicfile->size);
-		conf.mmaped_dicfile->mem = NULL;
-		conf.mmaped_dicfile = NULL;
-	}
+    //free mem of previously used dicfile
+    munmap(conf.mmaped_dicfile->mem, conf.mmaped_dicfile->size);
+    conf.mmaped_dicfile->mem = NULL;
+    conf.mmaped_dicfile = NULL;
+  }
 }
 
-gint search4string(gint srchtype, GjitenDicfile *dicfile, gchar *srchstrg, guint32 *res_index, gint *hit_pos, gint *res_len, gchar *res_str) { 
+gint search4string(gint srchtype, GjitenDicfile *dicfile, gchar *srchstrg, guint32 *res_index, gint *hit_pos, gint *res_len, gchar *res_str) {
   gint search_result;
-  gchar *linestart, *lineend; 
+  gchar *linestart, *lineend;
   gint copySize = 1023;
   static gchar *linsrchptr;
 
-	if (dicfile->status == DICFILE_NOT_INITIALIZED) {
-		if (dicfile_init(dicfile) == FALSE) return SRCH_FAIL; 
-	}
-	if (dicfile->status != DICFILE_OK) return SRCH_FAIL;
+  if (dicfile->status == DICFILE_NOT_INITIALIZED) {
+    if (dicfile_init(dicfile) == FALSE) return SRCH_FAIL;
+  }
+  if (dicfile->status != DICFILE_OK) return SRCH_FAIL;
 
   if ((dicfile != conf.mmaped_dicfile) && (conf.mmaped_dicfile != NULL)) {
-    //free mem of previously used dicfile	
-		munmap(conf.mmaped_dicfile->mem, conf.mmaped_dicfile->size);
-		conf.mmaped_dicfile->mem = NULL;
-		conf.mmaped_dicfile = NULL;
-	}
+    //free mem of previously used dicfile
+    munmap(conf.mmaped_dicfile->mem, conf.mmaped_dicfile->size);
+    conf.mmaped_dicfile->mem = NULL;
+    conf.mmaped_dicfile = NULL;
+  }
 
-	if (conf.mmaped_dicfile == NULL) {
-    //mmap dicfile into memory	
-		conf.mmaped_dicfile = dicfile;
+  if (conf.mmaped_dicfile == NULL) {
+    //mmap dicfile into memory
+    conf.mmaped_dicfile = dicfile;
     dicfile->mem = (gchar *) mmap(NULL, dicfile->size, PROT_READ, MAP_SHARED, dicfile->file, 0);
     if (dicfile->mem == NULL) gjiten_abort_with_msg("mmap() failed\n");
-		conf.mmaped_dicfile = dicfile;
+    conf.mmaped_dicfile = dicfile;
   }
 
   if (srchtype == SRCH_START) {
     linsrchptr = dicfile->mem;
   }
  bad_hit:
-  search_result = SRCH_FAIL; // assume search fails 
+  search_result = SRCH_FAIL; // assume search fails
   linsrchptr = strstr(linsrchptr, srchstrg);
   if (linsrchptr != NULL) {  // if we have a match
     linestart = linsrchptr;
     while ((*linestart != '\n') && (linestart != dicfile->mem)) linestart--; // find beginning of line
-    if (linestart == dicfile->mem) {   
+    if (linestart == dicfile->mem) {
       if ((isKanjiChar(g_utf8_get_char(linestart)) == FALSE) && (isKanaChar(g_utf8_get_char(linestart)) == FALSE)) {
-				linsrchptr++;
-				goto bad_hit;
+        linsrchptr++;
+        goto bad_hit;
       }
     }
 
@@ -141,18 +141,18 @@ gint search4string(gint srchtype, GjitenDicfile *dicfile, gchar *srchstrg, guint
     *hit_pos = linsrchptr - linestart;
     while (*lineend != '\n') { // find end of line
       lineend++;
-      if (lineend >= dicfile->mem + dicfile->size) { 
-				printf("weird.\n");
-				break;
+      if (lineend >= dicfile->mem + dicfile->size) {
+        printf("weird.\n");
+        break;
       }
     }
-    linsrchptr++;	
+    linsrchptr++;
     if ((lineend - linestart + 1) < 1023) copySize = lineend - linestart + 1;
     else copySize = 1023;
     strncpy(res_str, linestart, copySize);
     res_str[copySize] = 0;
     *res_index  = (guint32)linestart;
-    search_result = SRCH_OK; // search succeeded 
+    search_result = SRCH_OK; // search succeeded
   }
   return search_result;
 }
@@ -169,13 +169,13 @@ int get_jp_match_type(gchar *line, gchar *srchstrg, int offset) {
   else { //Check for Furigana
     if (g_unichar_isalpha(g_utf8_get_char(g_utf8_prev_char(line + offset))) == FALSE) {
       if (g_unichar_isalpha(g_utf8_get_char(line + offset + srchstrglen)) == FALSE) {
-				return EXACT_MATCH;
+        return EXACT_MATCH;
       }
       else return START_WITH_MATCH;
     }
     else { // has an alpha char before
       if (g_unichar_isalpha(g_utf8_get_char(line + offset + srchstrglen)) == FALSE)
-				return END_WITH_MATCH;
+        return END_WITH_MATCH;
     }
   }
   if ((*(line + offset + srchstrglen)) == ' ') return END_WITH_MATCH;
@@ -186,26 +186,26 @@ int get_jp_match_type(gchar *line, gchar *srchstrg, int offset) {
 int get_word(char *dest, char *src, int size, int pos) { /*0 if no more words in src, else new pos*/
 
   int k,j;
-  
+
   k = pos;
   while (src[k] == ' ')  k++;
   if ( (int) (strlen(src) - 1) <= k) return(0);
-  
+
   j = 0;
   if (src[k] == '{') {
-	  while ((src[k] != '}') && (j < size))  {
-		  dest[j] = src[k];
-		  j++;
-		  k++;
-	  }
+    while ((src[k] != '}') && (j < size))  {
+      dest[j] = src[k];
+      j++;
+      k++;
+    }
   }
   else while ((src[k] != ' ') && (j < size)) {
     dest[j] = src[k];
     j++;
     k++;
   }
-	if (j == size) dest[size - 1] = 0;
-	else dest[j] = 0;
+  if (j == size) dest[size - 1] = 0;
+  else dest[j] = 0;
 
   return k;
 }
@@ -271,7 +271,7 @@ gchar *hira2kata(gchar *hirastr) {
     kataptr = g_utf8_next_char(kataptr);
     hiraptr = g_utf8_next_char(hiraptr);
     if (hiraptr == NULL) break;
-  } 
+  }
   return kata;
 }
 
@@ -295,28 +295,28 @@ gchar *kata2hira(gchar *katastr) {
     hiraptr = g_utf8_next_char(hiraptr);
     kataptr = g_utf8_next_char(kataptr);
     if (kataptr == NULL) break;
-  } 
+  }
   return hira;
 }
 
 gboolean isHiraganaString(gchar *strg) {
   gchar *hiraptr;
 
-	hiraptr = strg;
+  hiraptr = strg;
   while (*hiraptr != 0) {
     if (isHiraganaChar(g_utf8_get_char(hiraptr)) == FALSE) return FALSE;
-		hiraptr = g_utf8_next_char(hiraptr);
-	}
-	return TRUE;
+    hiraptr = g_utf8_next_char(hiraptr);
+  }
+  return TRUE;
 }
 
 gboolean isKatakanaString(gchar *strg) {
   gchar *kataptr;
 
-	kataptr = strg;
+  kataptr = strg;
   while (*kataptr != 0) {
     if (isKatakanaChar(g_utf8_get_char(kataptr)) == FALSE) return FALSE;
-		kataptr = g_utf8_next_char(kataptr);
-	}
-	return TRUE;
+    kataptr = g_utf8_next_char(kataptr);
+  }
+  return TRUE;
 }

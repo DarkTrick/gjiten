@@ -1,11 +1,11 @@
-/* -*- Mode: C; tab-width: 2; indent-tabs-mode: t; c-basic-offset: 2 -*- */
+/* -*- Mode: C; tab-width: 2;   indent-tabs-mode: space; c-basic-offset: 2 -*- */
 /* vi: set ts=2 sw=2: */
 /* dicfile.h
-   
+
    GJITEN : A JAPANESE DICTIONARY FOR GNOME
-  
+
    Copyright (C) 1999-2005 Botond Botyanszki <boti at rocketmail dot com>
-   
+
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published  by
    the Free Software Foundation; either version 2 of the License, or
@@ -33,19 +33,19 @@
 typedef struct _GjitenDicfile GjitenDicfile;
 
 struct _GjitenDicfile {
-	gchar *path;
-	gchar *name;
-	gchar *mem;
-	int file;
-	gint status;
+  gchar *path;
+  gchar *name;
+  gchar *mem;
+  int file;
+  gint status;
   struct stat stat;
-	gint size;
+  gint size;
 };
 
 enum {
-	DICFILE_NOT_INITIALIZED,
-	DICFILE_BAD,
-	DICFILE_OK
+  DICFILE_NOT_INITIALIZED,
+  DICFILE_BAD,
+  DICFILE_OK
 };
 
 

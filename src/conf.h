@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 2; indent-tabs-mode: t; c-basic-offset: 2 -*- */
+/* -*- Mode: C; tab-width: 2;   indent-tabs-mode: space; c-basic-offset: 2 -*- */
 /* vi: set ts=2 sw=2: */
 /* conf.h
 
@@ -37,8 +37,8 @@ typedef struct _GjitenConfig GjitenConfig;
 struct _GjitenConfig {
   gchar *version;
 
-	GjitenDicfile *kanjidic;
-	GSList *dicfile_list;
+  GjitenDicfile *kanjidic;
+  GSList *dicfile_list;
 
   char *history[60];
   gboolean toolbar;
@@ -46,7 +46,7 @@ struct _GjitenConfig {
   gboolean kdiccfg[KCFGNUM];
   gboolean bigwords;
   gboolean bigkanji;
-	gboolean override_env;
+  gboolean override_env;
   gchar *kanjipad;
 
   gboolean startkanjidic;
@@ -61,21 +61,21 @@ struct _GjitenConfig {
   gboolean gdk_use_xft;
   gboolean force_ja_JP;
   gboolean force_language_c;
-	gboolean envvar_override;
-	gboolean search_kata_on_hira;
-	gboolean search_hira_on_kata;
+  gboolean envvar_override;
+  gboolean search_kata_on_hira;
+  gboolean search_hira_on_kata;
   gboolean verb_deinflection;
 
   gboolean searchlimit_enabled;
   gboolean autoadjust_enabled;
 
-	gboolean unicode_radicals;
+  gboolean unicode_radicals;
 
   GjitenDicfile *selected_dic;
   GjitenDicfile *mmaped_dicfile;
   PangoFontDescription *normalfont_desc;
 
-	/* DEPRECATED */
+  /* DEPRECATED */
   char *dictpath;
   int numofdics;
 

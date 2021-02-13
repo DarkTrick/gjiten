@@ -1,9 +1,9 @@
-/* -*- Mode: C; tab-width: 2; indent-tabs-mode: t; c-basic-offset: 2 -*- */
+/* -*- Mode: C; tab-width: 2;   indent-tabs-mode: space; c-basic-offset: 2 -*- */
 /* vi: set ts=2 sw=2: */
 /* gjiten.h
 
    GJITEN : A GTK+/GNOME BASED JAPANESE DICTIONARY
-  
+
    Copyright (C) 1999 - 2005 Botond Botyanszki <boti@rocketmail.com>
 
    This program is free software; you can redistribute it and/or modify
@@ -27,10 +27,10 @@
 typedef struct _GjitenApp GjitenApp;
 
 struct _GjitenApp {
-	WordDic *worddic;
-	KanjiDic *kanjidic;
-	GjitenConfig *conf;
-	GtkWidget *pref_dialog;
+  WordDic *worddic;
+  KanjiDic *kanjidic;
+  GjitenConfig *conf;
+  GtkWidget *pref_dialog;
 };
 
 

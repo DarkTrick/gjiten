@@ -1,8 +1,8 @@
-/* -*- Mode: C; tab-width: 2; indent-tabs-mode: t; c-basic-offset: 2 -*- */
+/* -*- Mode: C; tab-width: 2;   indent-tabs-mode: space; c-basic-offset: 2 -*- */
 /* kanjidic.h
 
    GJITEN : A GTK+/GNOME BASED JAPANESE DICTIONARY
-  
+
    Copyright (C) 1999 - 2003 Botond Botyanszki <boti@rocketmail.com>
 
    This program is free software; you can redistribute it and/or modify
@@ -38,7 +38,7 @@
 #define CLASSIC 8
 #define FREQ 9
 #define JOUYOU 10
-#define DEROO 11 
+#define DEROO 11
 #define SKIP 12
 #define FOURC 13
 #define HINDEX 14
@@ -53,7 +53,7 @@
 #define OINDEX 23
 #define CREF 24
 #define MISSC 25
-#define UNI 26 
+#define UNI 26
 #define JIS 27
 #define KCFGNUM 28
 
@@ -63,49 +63,49 @@
 typedef struct _KanjiDic KanjiDic;
 
 typedef struct _RadInfo {
-	gunichar radical;
-	gint strokes;
-	GList *kanji_info_list;
+  gunichar radical;
+  gint strokes;
+  GList *kanji_info_list;
 } RadInfo;
 
 typedef struct _KanjiInfo {
-	gunichar kanji;
-	GList *rad_info_list;
+  gunichar kanji;
+  GList *rad_info_list;
 } KanjiInfo;
 
 struct _KanjiDic {
 /* GTK variables */
-	GtkWidget *window;
-	GtkWidget *window_kanjinfo;
-	GtkWidget *window_radicals;
-	GtkWidget *combo_entry_key;
-	GtkWidget *combo_entry_radical;
-	GtkTextBuffer *text_kanjinfo_buffer;
-	GtkWidget *text_kanjinfo_view;
-	GtkTextIter kinfo_iter;
-	GtkWidget *kanji_results_view;
-	GtkTextBuffer *kanji_results_buffer;
-	GtkTextIter kanji_results_iter;
-	GtkWidget *appbar_kanji;
-	GList *combo_entry_key_glist;
-	GList *combo_entry_radical_glist;
-	GtkWidget *spinb_strokenum;
-	GtkWidget *spinb_plusmin;
-	GtkWidget *label_plusmin;
-	GtkWidget *checkb_ksearch;
-	GtkWidget *checkb_radical;
-	GtkWidget *checkb_stroke;
-	GtkWidget *button_radtable;
-	GtkWidget *button_clearrad;
-	GtkWidget *button_cleark;
-	GtkWidget *vbox_history;
- 	GtkWidget *scrolledwin_history;
-	GSList *kanji_history_list;
-	GtkTextTag *tag_large_font;
-	GHashTable *rad_button_hash;
-	GHashTable *kanji_info_hash;
-	GHashTable *rad_info_hash;
-	GList *rad_info_list;
+  GtkWidget *window;
+  GtkWidget *window_kanjinfo;
+  GtkWidget *window_radicals;
+  GtkWidget *combo_entry_key;
+  GtkWidget *combo_entry_radical;
+  GtkTextBuffer *text_kanjinfo_buffer;
+  GtkWidget *text_kanjinfo_view;
+  GtkTextIter kinfo_iter;
+  GtkWidget *kanji_results_view;
+  GtkTextBuffer *kanji_results_buffer;
+  GtkTextIter kanji_results_iter;
+  GtkWidget *appbar_kanji;
+  GList *combo_entry_key_glist;
+  GList *combo_entry_radical_glist;
+  GtkWidget *spinb_strokenum;
+  GtkWidget *spinb_plusmin;
+  GtkWidget *label_plusmin;
+  GtkWidget *checkb_ksearch;
+  GtkWidget *checkb_radical;
+  GtkWidget *checkb_stroke;
+  GtkWidget *button_radtable;
+  GtkWidget *button_clearrad;
+  GtkWidget *button_cleark;
+  GtkWidget *vbox_history;
+   GtkWidget *scrolledwin_history;
+  GSList *kanji_history_list;
+  GtkTextTag *tag_large_font;
+  GHashTable *rad_button_hash;
+  GHashTable *kanji_info_hash;
+  GHashTable *rad_info_hash;
+  GList *rad_info_list;
 };
 
 KanjiDic *kanjidic_create();
