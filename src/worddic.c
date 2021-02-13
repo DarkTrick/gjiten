@@ -992,9 +992,9 @@ gboolean close_on_escape(GtkWidget   *window,
  *  - Terminate application on unfocus window
  **/
 void enable_quick_lookup_mode(WordDic *wordDic) {
-  g_signal_connect (G_OBJECT (wordDic->window), "focus-out-event",
+  g_signal_connect(G_OBJECT (wordDic->window), "focus-out-event",
                     G_CALLBACK(close_on_focus_out), NULL);
-  g_signal_connect (G_OBJECT (wordDic->window), "key-press-event",
+  g_signal_connect(G_OBJECT (wordDic->window), "key-press-event",
                   G_CALLBACK(close_on_escape), NULL);
 }
 

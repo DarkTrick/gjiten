@@ -130,6 +130,7 @@ static void parse_an_arg(poptContext state,
     break;
   case QUICK_LOOKUP_KEY:
     gjitenApp->conf->quick_lookup_mode = TRUE;
+    break;
   default:
     break;
   }
