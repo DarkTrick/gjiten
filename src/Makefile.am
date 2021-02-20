@@ -3,16 +3,17 @@
 SYSCONFDIR = @sysconfdir@
 bin_PROGRAMS = gjiten
 
-gjiten_SOURCES = 		\
-	gjiten.c gjiten.h	\
-	kanjidic.c kanjidic.h	\
-	pref.c pref.h		\
-	conf.c conf.h		\
-	error.c error.h		\
-	dicfile.c dicfile.h	\
-	worddic.c worddic.h	\
-	dicutil.c dicutil.h	\
-	radical-convtable.h	\
+gjiten_SOURCES = 	      \
+	utils.c utils.h       \
+	gjiten.c gjiten.h     \
+	kanjidic.c kanjidic.h \
+	pref.c pref.h         \
+	conf.c conf.h         \
+	error.c error.h	      \
+	dicfile.c dicfile.h	  \
+	worddic.c worddic.h	  \
+	dicutil.c dicutil.h	  \
+	radical-convtable.h	  \
 	constants.h
 
 radical_convtable: radical-convtable.txt
