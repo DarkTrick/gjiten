@@ -25,7 +25,7 @@
 #  include <config.h>
 #endif
 
-#include <libgnome/libgnome.h>
+#include <gtk/gtk.h>
 #include <unistd.h>
 #ifdef HAVE_INTTYPES_H
 #include <inttypes.h>
@@ -38,6 +38,7 @@
 
 #include "dicfile.h"
 #include "error.h"
+#include "utils.h" // TODO:change: only for _()-function; remove after that function works
 
 gboolean dicfile_check_all(GSList *dicfile_list) {
   GSList *node;

@@ -19,7 +19,7 @@
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
- */
+*/
 
 
 #include <stdarg.h>
@@ -43,9 +43,9 @@ int gjiten_print_error(const char *fmt, ... ) {
   if (pstr != NULL) {
     dialog = gtk_message_dialog_new(NULL, 0, GTK_MESSAGE_ERROR,  GTK_BUTTONS_OK, "%s", pstr );
 
-    g_signal_connect_swapped(GTK_OBJECT(dialog), "response",
+    g_signal_connect_swapped(G_OBJECT(dialog), "response",
                              G_CALLBACK(gtk_widget_destroy),
-                             GTK_OBJECT(dialog));
+                             G_OBJECT(dialog));
 
     gtk_widget_show_all(dialog);
     g_free(pstr);
@@ -127,4 +127,3 @@ void gjiten_abort_with_msg(const char *fmt, ... ) {
   gjiten_print_error_and_wait(pstr);
   exit(1);
 }
-

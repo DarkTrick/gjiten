@@ -22,6 +22,7 @@
  */
 #ifndef __DICUTIL_H__
 #define __DICUTIL_H__
+#include <gtk/gtk.h>
 
 gchar *hira2kata(gchar *hirastr);
 gchar *kata2hira(gchar *hirastr);
