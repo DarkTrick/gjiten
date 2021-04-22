@@ -1,3 +1,14 @@
+IMPORTANT
+=========
+This code is currently undergoing a GTK3 migration. The migration intermediate results are not public, because they don't compile well. 
+I will upload my migrated code as soon as it's finished.
+
+In case you like to contribute, contact me ( IRC: freenode.org #xfce ##programming ).
+
+
+
+Regular Readme
+==============
 gjiten Manual V2.0
 
 Botond Botyanszki
