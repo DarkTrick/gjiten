@@ -47,8 +47,8 @@ ALL_LINGUAS="ja de de_CH"
 #AM_GLIB_GNU_GETTEXT
 AM_GLIB_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.17])
-GJITEN_LOCALE_DIR="${datadir}/locale"
-AC_SUBST(GJITEN_LOCALE_DIR)
+PACKAGE_LOCALE_DIR="${datadir}/locale"
+AC_SUBST(PACKAGE_LOCALE_DIR)
 
 AC_ARG_ENABLE(debug,
 		[  --enable-debug  Print debugging information. This is a feature which should not be usually enabled.],
@@ -63,11 +63,11 @@ AC_SUBST(GJITEN_CFLAGS)
 AC_SUBST(GJITEN_LIBS)
 AC_SUBST(PACKAGE_VERSION)
 
-dnl Set GJITEN_LOCALE_DIR in config.h.
+dnl Set PACKAGE_LOCALE_DIR in config.h.
 gjiten_prefix="$prefix"
 test "x$gjiten_prefix" = xNONE && gjiten_prefix=$ac_default_prefix
-GJITEN_LOCALE_DIR="$gjiten_prefix/share/locale"
-AC_DEFINE_UNQUOTED(GJITEN_LOCALE_DIR, "$GJITEN_LOCALE_DIR", ["$GJITEN_LOCALE_DIR"])
+PACKAGE_LOCALE_DIR="$gjiten_prefix/share/locale"
+AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "$PACKAGE_LOCALE_DIR", ["$PACKAGE_LOCALE_DIR"])
 GJITEN_BINDIR="$gjiten_prefix/bin"
 AC_DEFINE_UNQUOTED(GJITEN_BINDIR, "$GJITEN_BINDIR", ["$GJITEN_BINDIR"])
 GJITEN_DATADIR="$gjiten_prefix/share/gjiten"

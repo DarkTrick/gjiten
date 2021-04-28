@@ -24,6 +24,6 @@ EXTRA_DIST = convtable.pl radical-convtable.txt
 
 gjiten_CFLAGS = $(GJITEN_CFLAGS) -D DEBUG_GJITEN -Wall -Wunused \
                 -Wno-unused-function -Wno-unused-variable @DEBUG_FLAGS@ \
-                -DGJITEN_LOCALE_DIR=\"${GJITEN_LOCALE_DIR}\"
+                -DPACKAGE_LOCALE_DIR=\"${PACKAGE_LOCALE_DIR}\"
 
 gjiten_LDADD = $(GJITEN_LIBS)

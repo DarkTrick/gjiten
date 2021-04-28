@@ -2,6 +2,7 @@
 
 #include "gjiten.h"
 #include "utils.h"
+#include "config.h"
 
 
 /**
@@ -10,9 +11,8 @@
 int
 main (int argc, char *argv[])
 {
-  setlocale (LC_ALL, "");
-  bindtextdomain (GETTEXT_PACKAGE, GJITEN_LOCALE_DIR);
-  bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+  bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
+  bind_textdomain_codeset (PACKAGE_TARNAME, "UTF-8");
   textdomain (GETTEXT_PACKAGE);
 
   GtkApplication * app = gjiten_new();
