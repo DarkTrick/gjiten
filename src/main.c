@@ -11,6 +11,8 @@
 int
 main (int argc, char *argv[])
 {
+  // FYI: to change language run as
+  //  `LANGUAGE=de_DE.utf8 ./gjiten`
   bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
   bind_textdomain_codeset (PACKAGE_TARNAME, "UTF-8");
   textdomain (GETTEXT_PACKAGE);

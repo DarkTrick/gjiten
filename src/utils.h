@@ -3,10 +3,6 @@
 
 #include <gtk/gtk.h>
 
-//TODO:correct As long as internationalization is not activated
-#ifndef GETTEXT_PACKAGE
-  #define GETTEXT_PACKAGE "gtk30"
-#endif
 
 #include <glib/gi18n.h>
 #include <locale.h>
