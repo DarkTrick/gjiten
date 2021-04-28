@@ -3,8 +3,13 @@
 
 #include <gtk/gtk.h>
 
-#define _(STRING) (STRING)
-#define N_(STRING) (STRING)
+//TODO:correct As long as internationalization is not activated
+#ifndef GETTEXT_PACKAGE
+  #define GETTEXT_PACKAGE "gtk30"
+#endif
+
+#include <glib/gi18n.h>
+#include <locale.h>
 
 #define GJITEN_WINDOW_ICON PIXMAPDIR"/jiten.png"
 

@@ -4,6 +4,7 @@ SYSCONFDIR = @sysconfdir@
 bin_PROGRAMS = gjiten
 
 gjiten_SOURCES = 	      \
+	main.c                \
 	utils.c utils.h       \
 	gjiten.c gjiten.h     \
 	kanjidic.c kanjidic.h \
@@ -21,5 +22,8 @@ radical_convtable: radical-convtable.txt
 
 EXTRA_DIST = convtable.pl radical-convtable.txt
 
-gjiten_CFLAGS = $(GJITEN_CFLAGS) -Wall -Wunused @DEBUG_FLAGS@
+gjiten_CFLAGS = $(GJITEN_CFLAGS) -D DEBUG_GJITEN -Wall -Wunused \
+                -Wno-unused-function -Wno-unused-variable @DEBUG_FLAGS@ \
+                -DGJITEN_LOCALE_DIR=\"${GJITEN_LOCALE_DIR}\"
+
 gjiten_LDADD = $(GJITEN_LIBS)

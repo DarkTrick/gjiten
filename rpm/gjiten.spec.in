@@ -28,20 +28,14 @@ make
 
 %install
 if [ -d $RPM_BUILD_ROOT ] ; then rm -rf $RPM_BUILD_ROOT; fi
-export GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1
 %makeinstall
-unset GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL
 
 mv $RPM_BUILD_ROOT%{_docdir}/gjiten/* .
 rmdir $RPM_BUILD_ROOT%{_docdir}/gjiten/
 rm -rf $RPM_BUILD_ROOT/var/scrollkeeper
 
 %post
-export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
-SCHEMAS="gjiten.schemas gjiten-dicfiles.schemas"
-for S in $SCHEMAS; do 
-  gconftool-2 --makefile-install-rule %{_sysconfdir}/gconf/schemas/$S >/dev/null
-done
+
 update-desktop-database %{_datadir}/applications
 scrollkeeper-update
 
@@ -65,4 +59,3 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gnome/help/gjiten
 %{_datadir}/omf/gjiten
 %{_datadir}/locale/*
-%{_sysconfdir}/gconf/schemas/*.schemas

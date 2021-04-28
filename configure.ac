@@ -1,13 +1,13 @@
 AC_PREREQ(2.52)
 
-GJITEN_VERSION=2.6
+GJITEN_VERSION=3.0
 
-AC_INIT(gjiten, 2.6)
-AC_CONFIG_SRCDIR(src/gjiten.c)
-AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
+AC_INIT(gjiten, 3.0)
+AC_CONFIG_SRCDIR(src/main.c)
+AM_INIT_AUTOMAKE
 
-dnl AM_MAINTAINER_MODE
-AM_CONFIG_HEADER(config.h)
+#TODO:completely remove if ok apparently # dnl AM_MAINTAINER_MODE
+AM_CONFIG_HEADER([config.h])
 
 AC_ISC_POSIX
 AC_PROG_CC
@@ -15,13 +15,13 @@ AC_PROG_CC
 AC_PROG_INSTALL
 AM_PROG_LIBTOOL
 AC_PROG_MAKE_SET
-AC_PROG_INTLTOOL([0.22])
-AC_PATH_PROG([GCONFTOOL], [gconftool-2])
 
-GNOME_COMMON_INIT
-dnl GNOME_PLATFORM_GNOME_2(yes, force)
-PKG_CHECK_MODULES(GJITEN, libgnome-2.0 >= 2.2.0 libgnomeui-2.0 >= 2.2.0 libglade-2.0 gconf-2.0)
-AM_GCONF_SOURCE_2
+PKG_CHECK_MODULES(GJITEN, gtk+-3.0 >= 3.22.0)
+
+IT_PROG_INTLTOOL([0.35.0])
+AC_CONFIG_MACRO_DIRS([m4])
+
+
 
 # Checks for header files.
 AC_HEADER_STDC
@@ -42,8 +42,13 @@ GNOME_COMPILE_WARNINGS(maximum)
 GETTEXT_PACKAGE=gjiten
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", ["$GETTEXT_PACKAGE"])
+#AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,[GETTEXT_PACKAGE],["$GETTEXT_PACKAGE"])
 ALL_LINGUAS="ja de de_CH"
-AM_GLIB_GNU_GETTEXT
+#AM_GLIB_GNU_GETTEXT
+AM_GLIB_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.17])
+GJITEN_LOCALE_DIR="${datadir}/locale"
+AC_SUBST(GJITEN_LOCALE_DIR)
 
 AC_ARG_ENABLE(debug,
 		[  --enable-debug  Print debugging information. This is a feature which should not be usually enabled.],
@@ -76,16 +81,16 @@ AC_SUBST(MAINTAINERCLEANFILES)
 CLEANFILES='*~'
 AC_SUBST(CLEANFILES)
 
-AC_OUTPUT([ Makefile 
+AC_OUTPUT([ Makefile
 	    pixmaps/Makefile
-	    rpm/gjiten.spec 
+	    rpm/gjiten.spec
 	    src/Makefile
-	    data/Makefile 
-	    help/Makefile 
-	    po/Makefile.in 
+	    data/Makefile
+	    help/Makefile
+	    po/Makefile.in
 	    po/Makefile
-	    gnome/Makefile 
-	    help/C/Makefile 
+	    gnome/Makefile
+	    help/C/Makefile
 	    help/ja/Makefile
 	    dicfiles/Makefile
 	  ])
