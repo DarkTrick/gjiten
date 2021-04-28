@@ -22,7 +22,7 @@ DIE=0
   DIE=1
 }
 
-(grep "^AC_PROG_INTLTOOL" $srcdir/configure.ac >/dev/null) && {
+(grep "^IT_PROG_INTLTOOL" $srcdir/configure.ac >/dev/null) && {
   (intltoolize --version) < /dev/null > /dev/null 2>&1 || {
     echo
     echo "**Error**: You must have \`intltool' installed."
@@ -112,7 +112,7 @@ do
 	echo "Making $dr/aclocal.m4 writable ..."
 	test -r $dr/aclocal.m4 && chmod u+w $dr/aclocal.m4
       fi
-      if grep "^AC_PROG_INTLTOOL" configure.ac >/dev/null; then
+      if grep "^IT_PROG_INTLTOOL" configure.ac >/dev/null; then
         echo "Running intltoolize..."
 	intltoolize --copy --force --automake
       fi
@@ -140,7 +140,7 @@ do
   fi
 done
 
-conf_flags="--enable-maintainer-mode"
+#conf_flags="--enable-maintainer-mode"
 
 rm -f README
 

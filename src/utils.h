@@ -3,8 +3,10 @@
 
 #include <gtk/gtk.h>
 
-// TODO:remove after _()-function works properly!
-const char * _(const char* a);
+#define _(STRING) (STRING)
+#define N_(STRING) (STRING)
+
+#define GJITEN_WINDOW_ICON PIXMAPDIR"/jiten.png"
 
 GtkToolButton* gtk_toolbar_insert_stock(GtkToolbar *toolbar,
                                         const char *icon_name,
@@ -21,5 +23,18 @@ GtkToolButton* gtk_toolbar_append_item(GtkToolbar *toolbar,
                                        GtkWidget  *icon,
                                        GCallback   callback_nullable,
                                        gpointer    user_data_nullable);
+
+void gtk_entry_clear_callback(gpointer entrybox);
+
+void gtk_combo_box_text_add_entries(GtkComboBoxText *self,
+                                    GList           *list_of_strings);
+
+void setWindowIcon                 (GtkWindow       *window,
+                                    char            *icon_path);
+
+void gtk_widget_register_action_entries(GtkWidget    *self,
+                                        const gchar  *group_name,
+                                        GActionEntry  actions[]);
+
 
 #endif

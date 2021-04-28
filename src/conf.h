@@ -25,10 +25,9 @@
 #define __CONF_H__
 
 
-#include <gconf/gconf-client.h>
 #include <pango/pango-font.h>
 
-#include "kanjidic.h"
+#include "kanjidicconsts.h"
 #include "constants.h"
 #include "dicfile.h"
 
