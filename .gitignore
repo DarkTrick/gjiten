@@ -5,6 +5,8 @@ stamp-h1
 Makefile
 Makefile.in
 autom4t*
+m4/*
+*.vscode*
 compile
 config.h
 config.h.*
