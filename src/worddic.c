@@ -5,7 +5,7 @@
    GJITEN : A GTK+/GNOME BASED JAPANESE DICTIONARY
 
    Copyright (C) 1999 - 2005 Botond Botyanszki <boti@rocketmail.com>
-                 2021 -      DarkTrick - 69f925915ed0193a3b841aeec09451df2326f104
+                 2021 DarkTrick - 69f925915ed0193a3b841aeec09451df2326f104
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published  by
@@ -56,8 +56,6 @@ struct _GjWorddicWindowPrivate
   GtkWidget *text_results_view;
   GtkTextBuffer *text_results_buffer;
   GtkTextBuffer *info_buffer;
-  GtkWidget *menu_selectdic;
-  GtkWidget *combo_entry_dictfile;
   GtkWidget *checkb_verb;
   GtkWidget *checkb_autoadjust;
   GtkWidget *checkb_searchlimit;
@@ -742,8 +740,19 @@ static void on_back_clicked() {
   append_to_history = TRUE;
 }
 
-static void on_dicselection_clicked(GjitenDicfile *selected) {
-  gjitenApp->conf->selected_dic = selected;
+static void
+on_dicselection_clicked(GtkWidget *widget,
+                        gpointer  *null)
+{
+  g_return_if_fail (GTK_IS_COMBO_BOX (widget));
+
+  // get current dictionary from combo box index
+  GtkComboBox *box = GTK_COMBO_BOX (widget);
+  gint active_index = gtk_combo_box_get_active (box);
+  GSList * dicfile_node = g_slist_nth (gjitenApp->conf->dicfile_list, active_index);
+
+  // set current dictionary
+  gjitenApp->conf->selected_dic = dicfile_node->data;
 }
 
 static void checkb_searchlimit_toggled() {
@@ -754,8 +763,8 @@ static void checkb_searchlimit_toggled() {
 }
 
 static void shade_worddic_widgets() {
-  if ((wordDic->menu_selectdic != NULL) && (wordDic->radiob_searchdic != NULL))
-    gtk_widget_set_sensitive(wordDic->menu_selectdic, gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wordDic->radiob_searchdic)));
+  if ((wordDic->dicselection_menu != NULL) && (wordDic->radiob_searchdic != NULL))
+    gtk_widget_set_sensitive(wordDic->dicselection_menu, gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wordDic->radiob_searchdic)));
 
   if (wordDic->checkb_autoadjust != NULL)
     gjitenApp->conf->autoadjust_enabled = (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wordDic->checkb_autoadjust)));
@@ -826,34 +835,37 @@ void worddic_update_dic_menu() {
   GJITEN_DEBUG("worddic_update_dic_menu()\n");
 
 
-  //if (GTK_IS_WIDGET(wordDic->menu_selectdic)) {
-  //  gtk_option_menu_remove_menu(GTK_OPTION_MENU(wordDic->dicselection_menu));
-  //  gtk_widget_destroy(wordDic->menu_selectdic);
-  //}
-
-  /*
-  //TODO:impl:
-  //  gtk_menu_new becomes GtkTreeModel
-  //  gtk_option_menu_set_menu becomes gtk_combo_box_set_model
-  wordDic->menu_selectdic = gtk_menu_new();
+  gtk_combo_box_text_remove_all (wordDic->dicselection_menu);
 
   dicfile_node = gjitenApp->conf->dicfile_list;
   while (dicfile_node != NULL) {
     if (dicfile_node->data != NULL) {
       dicfile = dicfile_node->data;
-      menu_dictfiles_item = gtk_menu_item_new_with_label(dicfile->name);
-      gtk_menu_shell_append(GTK_MENU_SHELL(wordDic->menu_selectdic), menu_dictfiles_item);
-      g_signal_connect_swapped(G_OBJECT(menu_dictfiles_item), "activate",
-                               G_CALLBACK(on_dicselection_clicked), (gpointer) dicfile);
-      gtk_widget_show(menu_dictfiles_item);
+      gtk_combo_box_text_append_text (wordDic->dicselection_menu, dicfile->name);
     }
+    else
+    {
+      gtk_combo_box_text_append_text (wordDic->dicselection_menu, "");
+    }
+
     dicfile_node = g_slist_next(dicfile_node);
   }
   gtk_widget_show(wordDic->dicselection_menu);
-  gtk_option_menu_set_menu(GTK_OPTION_MENU(wordDic->dicselection_menu), wordDic->menu_selectdic);
-  if (gjitenApp->conf->dicfile_list != NULL) gjitenApp->conf->selected_dic = gjitenApp->conf->dicfile_list->data;
-  */
+
+  // set default selection:
+  {
+    gint active_index = g_slist_index (gjitenApp->conf->dicfile_list ,
+                                      gjitenApp->conf->selected_dic);
+    if (-1 == active_index)
+    {
+      GJITEN_DEBUG ("No active dictionary found at start time. Use default 0.");
+      active_index = 0;
+    }
+    gtk_combo_box_set_active (wordDic->dicselection_menu, active_index);
+  }
 }
+
+
 
 void worddic_apply_fonts() {
 
@@ -875,12 +887,6 @@ void worddic_apply_fonts() {
       wordDic->tag_large_font = gtk_text_buffer_create_tag(wordDic->text_results_buffer, "largefont", "font", gjitenApp->conf->largefont, NULL);
     }
   }
-  if ((gjitenApp->conf->normalfont != NULL) && (strlen(gjitenApp->conf->normalfont) != 0)) {
-    gjitenApp->conf->normalfont_desc = pango_font_description_from_string(gjitenApp->conf->normalfont);
-    //TODO:impl: gtk_widget_override_font(wordDic->text_results_view, gjitenApp->conf->normalfont_desc);
-    //TODO:impl: gtk_widget_override_font(GTK_WIDGET (gtk_bin_get_child (GTK_BIN (wordDic->combo_entry))), gjitenApp->conf->normalfont_desc);
-  }
-
 }
 
 
@@ -912,8 +918,6 @@ gboolean result_view_motion(GtkWidget *text_view,
     gdk_window_set_cursor(gtk_text_view_get_window(GTK_TEXT_VIEW(text_view), GTK_TEXT_WINDOW_TEXT), wordDic->regular_cursor);
     wordDic->is_cursor_regular = TRUE;
   }
-  //TODO:check: I think this does nothing here
-  //gdk_window_get_pointer(text_view->window, NULL, NULL, NULL);
 
   return FALSE;
 }
@@ -981,6 +985,8 @@ gboolean close_on_escape(GtkWidget   *window,
   }
   return FALSE;
 }
+
+
 
 /**
  * Quick lookup mode is currently defined as:
@@ -1181,7 +1187,8 @@ _create_gui(GjWorddicWindow* self)
 
   // DICTFILE SELECTION MENU
 
-  wordDic->dicselection_menu = gtk_combo_box_new ();
+  wordDic->dicselection_menu = gtk_combo_box_text_new ();
+  g_signal_connect (wordDic->dicselection_menu, "changed", G_CALLBACK (on_dicselection_clicked), NULL);
   worddic_update_dic_menu ();
 
   gtk_grid_attach (GTK_GRID (grid), wordDic->dicselection_menu, 1, 0, 1, 1);
@@ -1237,13 +1244,14 @@ _create_gui(GjWorddicWindow* self)
   wordDic->combo_entry = gtk_combo_box_text_new_with_entry ();
   gtk_widget_show (wordDic->combo_entry);
   gtk_box_pack_start (GTK_BOX (hbox_entry), wordDic->combo_entry, TRUE, TRUE, 0);
-  g_signal_connect (G_OBJECT (gtk_bin_get_child (GTK_BIN (wordDic->combo_entry))),
-                   "activate", G_CALLBACK (on_search_clicked), NULL);
-  //TODO:impl g_signal_connect (G_OBJECT (self), "key_press_event",
-  //                  G_CALLBACK (set_focus_on_entry), gtk_bin_get_child (GTK_BIN (wordDic->combo_entry)));
+  gtk_widget_style_add_class (GTK_WIDGET (gtk_bin_get_child (
+                              GTK_BIN (wordDic->combo_entry))), "normalfont");
 
-  //TODO:impl gtk_combo_disable_activate (GTK_COMBO_BOX (wordDic->combo_entry));
-  //TODO:impl gtk_combo_set_case_sensitive (GTK_COMBO_BOX (wordDic->combo_entry), TRUE);
+  g_signal_connect (G_OBJECT (gtk_bin_get_child (GTK_BIN (wordDic->combo_entry))),
+                   "changed", G_CALLBACK (on_search_clicked), NULL);
+  g_signal_connect (G_OBJECT (self), "key_press_event",
+                    G_CALLBACK (set_focus_on_entry), gtk_bin_get_child (GTK_BIN (wordDic->combo_entry)));
+
   _init_word_history ();
   {
     GtkEntry * entry = GTK_ENTRY (gtk_bin_get_child (GTK_BIN (wordDic->combo_entry)));
@@ -1277,6 +1285,7 @@ _create_gui(GjWorddicWindow* self)
   gtk_container_add (GTK_CONTAINER (frame_results), vbox_results);
 
   wordDic->text_results_view = gtk_text_view_new ();
+  gtk_widget_style_add_class (GTK_WIDGET (wordDic->text_results_view), "normalfont");
   wordDic->text_results_buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (wordDic->text_results_view));
   gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (wordDic->text_results_view), GTK_WRAP_WORD);
 

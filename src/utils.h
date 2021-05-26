@@ -30,12 +30,17 @@ void gtk_entry_clear_callback(gpointer entrybox);
 void gtk_combo_box_text_add_entries(GtkComboBoxText *self,
                                     GList           *list_of_strings);
 
-void setWindowIcon                 (GtkWindow       *window,
-                                    char            *icon_path);
+void setWindowIcon (GtkWindow       *window,
+                    char            *icon_path);
 
 void gtk_widget_register_action_entries(GtkWidget    *self,
                                         const gchar  *group_name,
                                         GActionEntry  actions[]);
 
+void set_global_css(gchar *css_class,
+                   gchar *css);
+
+void gtk_widget_style_add_class(GtkWidget   *widget,
+                                const gchar *css_class);
 
 #endif

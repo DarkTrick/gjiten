@@ -115,12 +115,12 @@ store_get_string (const gchar * key)
 {
   MATCH("dictpath", "/usr/share/gjiten/dics/")
   MATCH("kanjipad", "/usr/bin/kanjipad")
-  MATCH("largefont", "Sand 14")
-  MATCH("normalfont", "Sans 22")
+  MATCH("largefont", "14px Sans")
+  MATCH("normalfont", "22px Sans")
   MATCH("version", "2.6")
 
-  #define HISTORY(N) MATCH ("history" N, "testhistory " N);
-  HISTORY ("1"); HISTORY ("2"); HISTORY ("3"); HISTORY ("4"); HISTORY ("5"); HISTORY ("6");
+  #define HISTORY(N) MATCH ("history" N, "testhistory" N);
+  HISTORY ("0"); HISTORY ("1"); HISTORY ("2"); HISTORY ("3"); HISTORY ("4"); HISTORY ("5"); HISTORY ("6");
   HISTORY ("7"); HISTORY ("8"); HISTORY ("9"); HISTORY ("10"); HISTORY ("11");
   HISTORY ("12"); HISTORY ("13"); HISTORY ("14"); HISTORY ("15");
   HISTORY ("16"); HISTORY ("17"); HISTORY ("18"); HISTORY ("19");
@@ -378,9 +378,8 @@ GjitenConfig *conf_load()
 
   //Load gjiten search history
   for (i = 0; i <= 50; i++) {
-    snprintf(historystr, 31, STORE_ROOT_PATH "history%d", i);
+    snprintf(historystr, 31, "history%d", i);
     conf->history[i] = store_get_string(historystr);
-    if (conf->history[i] == NULL) break;
   }
 
   return conf;

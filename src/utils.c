@@ -101,3 +101,39 @@ gtk_widget_register_action_entries(GtkWidget    *self,
   g_action_map_add_action_entries (G_ACTION_MAP (group), actions, G_N_ELEMENTS (actions), self);
   gtk_widget_insert_action_group (GTK_WIDGET (self), group_name, G_ACTION_GROUP (group));
 }
+
+
+/**
+ * Set css content, that will be valid for the whole application
+ **/
+void set_global_css(gchar     *css_class,
+                    gchar     *css)
+{
+  // Note: It can't be good to put more and more providers
+  //       onto the screen. But the user won't
+  //       run this code too often, so I guess it's ok
+
+  GtkCssProvider * cssProvider = gtk_css_provider_new();
+  {
+    GString * cssContent = g_string_new("");
+    g_string_printf (cssContent, ".%s{%s}", css_class, css);
+    gtk_css_provider_load_from_data(cssProvider, cssContent->str, cssContent->len, NULL);
+    g_string_free (cssContent, TRUE);
+  }
+
+  GdkScreen * screen = gdk_screen_get_default ();
+  gtk_style_context_add_provider_for_screen (screen, GTK_STYLE_PROVIDER (cssProvider),
+                                             GTK_STYLE_PROVIDER_PRIORITY_USER);
+}
+
+
+
+/**
+ *  Adds a css class `css_class` to `widget`.
+ **/
+void gtk_widget_style_add_class(GtkWidget   *widget,
+                                const gchar *css_class)
+{
+  GtkStyleContext * context = gtk_widget_get_style_context (widget);
+  gtk_style_context_add_class (context, css_class);
+}

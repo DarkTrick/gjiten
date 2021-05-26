@@ -135,71 +135,7 @@ gjiten_init_cmd_params (GApplication *app, GjitenConfig *conf)
   g_application_add_main_option_entries (G_APPLICATION (app), cmd_params);
 }
 
-/*
-// Command line arguments via popt
-static struct poptOption arg_options [] = {
-  { NULL, '\0', POPT_ARG_CALLBACK, (gpointer)parse_an_arg, 0,
-    NULL, NULL },
 
-  { "kanjidic", 'k', POPT_ARG_NONE, NULL, KANJIDIC_KEY,
-    N_("Start up Kanjidic instead of Word dictionary"), NULL },
-
-  { "word-lookup", 'w', POPT_ARG_STRING, NULL, WORD_LOOKUP_KEY,
-    N_("Look up WORD in first dictionary"), N_("WORD") },
-
-  { "kanji-lookup", 'l', POPT_ARG_STRING, NULL, KANJI_LOOKUP_KEY,
-    N_("Look up KANJI in kanji dictionary"), N_("KANJI") },
-
-  { "clip-kanji", 'c', POPT_ARG_NONE, NULL, CLIP_KANJI_KEY,
-    N_("Look up kanji from clipboard"), NULL },
-
-  { "clip-word", 'v', POPT_ARG_NONE, NULL, CLIP_WORD_KEY,
-    N_("Look up word from clipboard"), NULL },
-
-  { "quick-lookup", '\0', POPT_ARG_NONE, NULL, QUICK_LOOKUP_KEY,
-    N_("Start in quick-lookup-mode: Terminate on Escape or clicking somewhere else."), NULL },
-
-  { NULL, '\0', 0, NULL, 0, NULL, NULL }
-
-};
-*/
-
-
-/*================ Functions ===============================================*/
-/*
-static void parse_an_arg(poptContext state,
-                         enum poptCallbackReason reason,
-                         const struct poptOption *opt,
-                         const char *arg, void *data)
-{
-
-
-  switch (opt->val) {
-  case KANJIDIC_KEY:
-    gjitenApp->conf->startkanjidic = TRUE;
-    break;
-  case WORD_LOOKUP_KEY:
-    gjitenApp->conf->word_to_lookup = (gchar *)arg;
-    break;
-  case KANJI_LOOKUP_KEY:
-    gjitenApp->conf->kanji_to_lookup = (gchar *)arg;
-    break;
-  case CLIP_KANJI_KEY:
-    gjitenApp->conf->clip_kanji_lookup = TRUE;
-    gjitenApp->conf->clip_word_lookup = FALSE;
-    break;
-  case CLIP_WORD_KEY:
-    gjitenApp->conf->clip_word_lookup = TRUE;
-    gjitenApp->conf->clip_kanji_lookup = FALSE;
-    break;
-  case QUICK_LOOKUP_KEY:
-    gjitenApp->conf->quick_lookup_mode = TRUE;
-    break;
-  default:
-    break;
-  }
-}
-*/
 
 /**
  * Cleanly close gjiten from anywhere in the code
@@ -255,29 +191,51 @@ void gjiten_start_kanjipad() {
   }
 }
 
+gboolean
+gnome_help_display (const char *file_name,
+                    const char *link_id,
+                    GError **error)
+{
+  return FALSE;
+}
+
+
 void gjiten_display_manual(GtkWidget *widget, void *data)
 {
-  GtkWidget *window = data;
   GError *err = NULL;
 
-  // TODO: this code segfaults
-  GtkWidget *dialog;
-  dialog = gtk_message_dialog_new(GTK_WINDOW(window),
-                                  GTK_DIALOG_DESTROY_WITH_PARENT,
-                                  GTK_MESSAGE_ERROR,
-                                  GTK_BUTTONS_CLOSE,
-                                  _("Could not display help: %s"),
-                                  err->message);
+  gboolean retval = FALSE;
+  retval = gtk_show_uri_on_window ( GTK_WINDOW (widget),
+                                    "ghelp:gjiten",
+                                    GDK_CURRENT_TIME,
+                                    &err);
 
-  g_signal_connect(G_OBJECT(dialog), "response",
-                    G_CALLBACK(gtk_widget_destroy),
-                    NULL);
+  if (retval == FALSE)
+  {
+    GtkWidget *dialog;
 
-  gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
+    char * message = _("(unknown)");
+    if (err)
+      message = err->message;
 
-  gtk_widget_show(dialog);
+    dialog = gtk_message_dialog_new(GTK_WINDOW(widget),
+                                    GTK_DIALOG_DESTROY_WITH_PARENT,
+                                    GTK_MESSAGE_ERROR,
+                                    GTK_BUTTONS_CLOSE,
+                                    _("Could not display help: %s"),
+                                    message);
 
-  g_error_free(err);
+    g_signal_connect(G_OBJECT(dialog), "response",
+                      G_CALLBACK(gtk_widget_destroy),
+                      NULL);
+
+    gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
+
+    gtk_widget_show(dialog);
+
+    if (err)
+      g_error_free(err);
+  }
 }
 
 
@@ -361,8 +319,8 @@ _action_start_worddic (GSimpleAction *action,
 
 static void
 _action_display_manual (GSimpleAction *action,
-                       GVariant      *parameter,
-                       gpointer       gtk_application)
+                        GVariant      *parameter,
+                        gpointer       gtk_application)
 {
   gjiten_display_manual (NULL, NULL);
 }
@@ -459,6 +417,23 @@ gjiten_start_kanjidic(GtkApplication *app)
 }
 
 
+void
+gjiten_apply_fonts (GjitenApp * gjitenApp)
+{
+  // apply css styles
+  if (gjitenApp->conf->normalfont != NULL)
+  {
+    GString * css = g_string_new ("");
+    g_string_printf (css, "font: %s;", gjitenApp->conf->normalfont);
+    set_global_css ("normalfont", css->str);
+  }
+
+  // apply tag styles
+  worddic_apply_fonts();
+  kanjidic_apply_fonts();
+}
+
+
 
 void
 gjiten_activate (GtkApplication *app,
@@ -480,6 +455,8 @@ gjiten_activate (GtkApplication *app,
   else {
     gjiten_start_worddic (app);
   }*/
+
+  gjiten_apply_fonts (gjitenApp);
 
 
   // the following is for clipboard lookup.
@@ -563,8 +540,6 @@ gjiten_activate (GtkApplication *app,
 GtkApplication *
 gjiten_new()
 {
-  g_print ( "%s\n", _("asdf"));
-
   gjitenApp = g_new0(GjitenApp, 1);
   conf_init_handler();
   gjitenApp->conf = conf_load();
@@ -580,7 +555,7 @@ gjiten_new()
 
   /* TODO:impl
   #ifdef ENABLE_NLS
-    bindtextdomain(PACKAGE, GJITEN_LOCALE_DIR);
+    bindtextdomain(PACKAGE, PACKAGE_LOCALE_DIR);
     bind_textdomain_codeset(PACKAGE, "UTF-8");
     textdomain(PACKAGE);
   #endif
