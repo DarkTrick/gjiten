@@ -73,7 +73,7 @@ struct _GjWorddicWindowPrivate
   GtkToolButton *button_forward;
   GtkTextIter iter;
   GtkWidget *appbar_mainwin;
-  GList *combo_entry_glist;
+  GtkListStore * word_search_history_model;
   GtkWidget *dicselection_menu;
   GtkTextTag *tag_large_font;
   GdkCursor *selection_cursor;
@@ -102,6 +102,8 @@ int engsrch, jpsrch;
 int dicname_printed;
 int append_to_history = TRUE;
 gpointer current_glist_word = NULL;
+// probably replace with `gtk_combo_box_get_active (wordDic->combo_entry)`
+gint current_history_word_index = -1;
 
 
 static void worddic_copy() {
@@ -159,15 +161,6 @@ static void Verbinit() {
   if (vinfl_start == NULL) gjiten_abort_with_msg("mmap() failed for "VINFL_FILENAME"\n");
 
   //  printf("STRLEN: %d\n", strlen(radkfile));
-
-  if (error == TRUE) {
-    if (dialog_preferences == NULL) {
-      gjiten_print_error(_("Error opening %s.\n "\
-                           "Check your preferences or read the documentation!"),
-                         VINFL_FILENAME);
-    }
-    return;
-  }
 
   vinfl_end = vinfl_start + strlen(vinfl_start);
   vinfl_ptr = vinfl_start;
@@ -653,16 +646,16 @@ static void worddic_search(gchar *srchstrg) {
 void button_back_maybe_activate(){
   // If: Application just started up && old entries are available?
   //   OR: Can we go back one more time?
-
-  if ((g_list_length(wordDic->combo_entry_glist) > 0 && NULL == current_glist_word)
-    || g_list_next(g_list_find(wordDic->combo_entry_glist, current_glist_word)) != NULL)
+  gint length = gtk_tree_model_length (GTK_TREE_MODEL (wordDic->word_search_history_model));
+  if ((length > 0 && -1 == current_history_word_index)
+    || current_history_word_index+1 < length )
     gtk_widget_set_sensitive(GTK_WIDGET (wordDic->button_back), TRUE);
   else
     gtk_widget_set_sensitive(GTK_WIDGET (wordDic->button_back), FALSE);
 }
 
 void button_next_maybe_activate(){
-  if (g_list_previous(g_list_find(wordDic->combo_entry_glist, current_glist_word)) != NULL) {
+  if (current_history_word_index > 0) {
     gtk_widget_set_sensitive(GTK_WIDGET (wordDic->button_forward), TRUE);
   }
   else
@@ -683,16 +676,8 @@ void on_search_clicked() {
   }
   if (strlen(new_entry_text) == 0) return;
   if (append_to_history == TRUE) {
-    if (current_glist_word != NULL) {
-      if (!(strcmp((char*) g_list_find(wordDic->combo_entry_glist, current_glist_word)->data, new_entry_text) == 0)) {
-        current_glist_word = new_entry_text;
-        wordDic->combo_entry_glist = g_list_prepend(wordDic->combo_entry_glist, new_entry_text);
-      }
-    }
-    else {
       current_glist_word = new_entry_text;
-      wordDic->combo_entry_glist = g_list_prepend(wordDic->combo_entry_glist, new_entry_text);
-    }
+      gtk_list_store_prepend_string (wordDic->word_search_history_model, new_entry_text);
   }
 
   button_back_maybe_activate();
@@ -705,37 +690,19 @@ void on_search_clicked() {
 
   worddic_search(new_entry_text);
 
-  if (append_to_history == FALSE)
-    g_free(new_entry_text);
-  else{
-    //TODO:impl (set model here?)
-    //gtk_combo_set_popdown_strings(GTK_COMBO_BOX(wordDic->combo_entry), wordDic->combo_entry_glist);
-  }
+  g_free(new_entry_text);
 }
 
 static void on_forward_clicked() {
   append_to_history = FALSE;
-  current_glist_word = (gchar*) g_list_previous(g_list_find(wordDic->combo_entry_glist, current_glist_word))->data;
-  gtk_entry_set_text(GTK_ENTRY (gtk_bin_get_child (GTK_BIN (wordDic->combo_entry))), current_glist_word);
+  gtk_combo_box_previous (wordDic->combo_entry);
   on_search_clicked();
   append_to_history = TRUE;
 }
 
 static void on_back_clicked() {
   append_to_history = FALSE;
-  // inner if-checks help to make this function independend.
-  //   So changes in button_back_maybe_activate don't harm.
-  if(NULL == current_glist_word){
-    if(g_list_length(wordDic->combo_entry_glist) == 0)
-      return;
-    current_glist_word = (gchar*) g_list_first(wordDic->combo_entry_glist)->data;
-  } else {
-    GList * entry = g_list_next(g_list_find(wordDic->combo_entry_glist, current_glist_word));
-    if(NULL == entry)
-      return;
-    current_glist_word = (gchar*) entry->data;
-  }
-  gtk_entry_set_text(GTK_ENTRY (gtk_bin_get_child (GTK_BIN (wordDic->combo_entry))), current_glist_word);
+  gtk_combo_box_next (wordDic->combo_entry);
   on_search_clicked();
   append_to_history = TRUE;
 }
@@ -791,13 +758,13 @@ static gboolean set_focus_on_entry(GtkWidget *window, GdkEventKey *key, GtkWidge
   return FALSE;
 }
 
-static void worddic_init_history() {
+static void worddic_init_history(GtkListStore *history) {
   gint i;
 
   for (i = 0; i <= 50; i++) {
     if (gjitenApp->conf->history[i] == NULL) break;
     if (g_utf8_validate(gjitenApp->conf->history[i], -1, NULL) == TRUE)
-      wordDic->combo_entry_glist = g_list_append(wordDic->combo_entry_glist, g_strdup(gjitenApp->conf->history[i]));
+      gtk_list_store_append_string (history, g_strdup(gjitenApp->conf->history[i]));
     //   printf("Read: %s: %s\n", historystr, tmpptr);
   }
 }
@@ -806,9 +773,8 @@ void worddic_close() {
 
   GJITEN_DEBUG("WORDDIC_CLOSE\n");
   if (wordDic != NULL) {
-    conf_save_history(g_list_first(wordDic->combo_entry_glist), gjitenApp->conf);
+    conf_save_history(wordDic->word_search_history_model, gjitenApp->conf);
     g_object_ref_sink(self);
-    //FIXME: clear combo_entry_glist
     wordDic = NULL;
     self = NULL;
     gjitenApp->worddic = NULL;
@@ -957,14 +923,9 @@ kanji_clicked(GtkWidget       *text_view,
 }
 
 void _init_word_history(){
-  GtkComboBoxText * combo = GTK_COMBO_BOX_TEXT (wordDic->combo_entry);
-
-  gtk_combo_box_text_remove_all (combo);
-  if (wordDic->combo_entry_glist != NULL)
-  {
-    gtk_combo_box_text_add_entries (combo, wordDic->combo_entry_glist);
-    button_back_maybe_activate();
-  }
+  gtk_list_store_clear (wordDic->word_search_history_model);
+  button_back_maybe_activate();
+  button_next_maybe_activate();
 }
 
 gboolean close_on_focus_out(GtkWidget *window,
@@ -1055,16 +1016,14 @@ _create_gui(GjWorddicWindow* self)
   wordDic->checkb_autoadjust = NULL;
   wordDic->checkb_verb = NULL;
 
-  //TODO:impl worddic_init_history ();
-  //TODO:impl Verbinit (); //FIXME: On demand
+  wordDic->word_search_history_model = gtk_list_store_new (1, G_TYPE_STRING);
+  worddic_init_history (wordDic->word_search_history_model);
+  Verbinit ();
 
   gtk_window_set_title (GTK_WINDOW (self), _("Gjiten - WordDic"));
   gtk_widget_get_can_default (GTK_WIDGET (self));
   g_signal_connect (G_OBJECT (self), "destroy", G_CALLBACK (worddic_close), NULL);
   gtk_window_set_default_size (GTK_WINDOW (self), 500, 500);
-
-  //TODO:impl dock_main = GNOME_APP (self)->dock;
-  //TODO:impl gtk_widget_show (dock_main);
 
   vbox_main = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
   gtk_widget_show (vbox_main);
@@ -1072,8 +1031,6 @@ _create_gui(GjWorddicWindow* self)
 
   toolbar = GTK_TOOLBAR (gtk_toolbar_new ());
   gtk_container_add (GTK_CONTAINER (vbox_main), GTK_WIDGET (toolbar));
-  //TODO:impl gtk_widget_show (toolbar);
-  //TODO:impl gnome_app_set_toolbar (GNOME_APP (self), GTK_TOOLBAR (toolbar));
 
   button_exit = gtk_toolbar_insert_stock(GTK_TOOLBAR(toolbar), "application-exit",
                                         _("Close Gjiten"), "Close", NULL, NULL, -1);
@@ -1205,22 +1162,19 @@ _create_gui(GjWorddicWindow* self)
   gtk_grid_attach (GTK_GRID (grid), wordDic->checkb_autoadjust, 0, 2, 1, 1);
   g_signal_connect (G_OBJECT (wordDic->checkb_autoadjust), "toggled",
                    G_CALLBACK (shade_worddic_widgets), NULL);
-  //TODO:impl gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wordDic->checkb_autoadjust), gjitenApp->conf->autoadjust_enabled);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wordDic->checkb_autoadjust), gjitenApp->conf->autoadjust_enabled);
 
   hbox_searchlimit = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
   gtk_widget_show (hbox_searchlimit);
-  gtk_grid_attach (GTK_GRID (grid), hbox_searchlimit, 0, 3, 2, 1);//,
-                   //(GtkAttachOptions) (GTK_FILL),
-                   //(GtkAttachOptions) (0), 0, 0);
+  gtk_grid_attach (GTK_GRID (grid), hbox_searchlimit, 0, 3, 2, 1);
   wordDic->checkb_searchlimit = gtk_check_button_new_with_mnemonic (_("_Limit Results:"));
   gtk_widget_show (wordDic->checkb_searchlimit);
   gtk_box_pack_start (GTK_BOX (hbox_searchlimit), wordDic->checkb_searchlimit, FALSE, FALSE, 0);
   g_signal_connect (G_OBJECT (wordDic->checkb_searchlimit), "toggled",
                    G_CALLBACK (checkb_searchlimit_toggled), NULL);
-  //TODO:impl gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wordDic->checkb_searchlimit), gjitenApp->conf->searchlimit_enabled);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wordDic->checkb_searchlimit), gjitenApp->conf->searchlimit_enabled);
 
-  //spinb_searchlimit_adj = gtk_adjustment_new (gjitenApp->conf->maxwordmatches, 1, G_MAXFLOAT, 1, 2, 0);
-  spinb_searchlimit_adj = gtk_adjustment_new (100, 1, G_MAXFLOAT, 1, 2, 0);
+  spinb_searchlimit_adj = gtk_adjustment_new (gjitenApp->conf->maxwordmatches, 1, G_MAXFLOAT, 1, 2, 0);
   wordDic->spinb_searchlimit = gtk_spin_button_new (GTK_ADJUSTMENT (spinb_searchlimit_adj), 1, 0);
   gtk_widget_show (wordDic->spinb_searchlimit);
   gtk_box_pack_start (GTK_BOX (hbox_searchlimit), wordDic->spinb_searchlimit, FALSE, FALSE, 0);
@@ -1235,22 +1189,25 @@ _create_gui(GjWorddicWindow* self)
 
   label_enter = gtk_label_new (_("Enter expression :"));
   gtk_widget_show (label_enter);
-  gtk_box_pack_start (GTK_BOX (hbox_entry), label_enter, FALSE, TRUE, 5);
+  gtk_box_pack_start (GTK_BOX (hbox_entry), label_enter, FALSE, TRUE, 7);
   gtk_label_set_justify (GTK_LABEL (label_enter), GTK_JUSTIFY_RIGHT);
   gtk_label_set_xalign (GTK_LABEL (label_enter), 1);
   gtk_label_set_yalign (GTK_LABEL (label_enter), 0.5);
-  //TODO:impl gtk_misc_set_padding (GTK_MISC (label_enter), 7, 0);
 
-  wordDic->combo_entry = gtk_combo_box_text_new_with_entry ();
+  wordDic->combo_entry = gtk_combo_box_new_with_model_and_entry (GTK_TREE_MODEL (wordDic->word_search_history_model));
+  g_object_unref (wordDic->word_search_history_model);
+  gtk_combo_box_set_entry_text_column (wordDic->combo_entry, 0);
+  gtk_combo_box_set_id_column (wordDic->combo_entry, 0);
   gtk_widget_show (wordDic->combo_entry);
   gtk_box_pack_start (GTK_BOX (hbox_entry), wordDic->combo_entry, TRUE, TRUE, 0);
   gtk_widget_style_add_class (GTK_WIDGET (gtk_bin_get_child (
                               GTK_BIN (wordDic->combo_entry))), "normalfont");
 
-  g_signal_connect (G_OBJECT (gtk_bin_get_child (GTK_BIN (wordDic->combo_entry))),
-                   "changed", G_CALLBACK (on_search_clicked), NULL);
+  g_signal_connect(gtk_bin_get_child (GTK_BIN (wordDic->combo_entry)),
+									 "activate", G_CALLBACK(on_search_clicked), NULL);
   g_signal_connect (G_OBJECT (self), "key_press_event",
                     G_CALLBACK (set_focus_on_entry), gtk_bin_get_child (GTK_BIN (wordDic->combo_entry)));
+
 
   _init_word_history ();
   {
