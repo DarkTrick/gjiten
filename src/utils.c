@@ -137,3 +137,79 @@ void gtk_widget_style_add_class(GtkWidget   *widget,
   GtkStyleContext * context = gtk_widget_get_style_context (widget);
   gtk_style_context_add_class (context, css_class);
 }
+
+/**
+ * Prepends `string` onto `store`.
+ * `store` is a GtkListStore storing only strings and has only one column.
+ **/
+void
+gtk_list_store_prepend_string(GtkListStore * store,
+                              gchar * theString)
+{
+  GtkTreeIter iter;
+  gtk_list_store_prepend (store, &iter);
+  gtk_list_store_set (store, &iter, 0, theString, -1);
+}
+
+/**
+ * Appends `string` onto `store`.
+ * `self` is a GtkListStore storing only strings and has only one column.
+ **/
+void
+gtk_list_store_append_string(GtkListStore * self,
+                              gchar * theString)
+{
+  GtkTreeIter iter;
+  gtk_list_store_append (self, &iter);
+  gtk_list_store_set (self, &iter, 0, theString, -1);
+}
+
+/**
+ *  Returs the stored string value
+ *  Returned string has to be freed
+ * `self` is a GtkListStore storing only strings and has only one column.
+ **/
+gchar *
+gtk_list_store_get_string(GtkListStore *self,
+                          GtkTreeIter  *iter)
+{
+  gchar *tmp;
+  gtk_tree_model_get (self, iter, 0, &tmp, -1);
+  return tmp;
+}
+
+gint
+gtk_tree_model_length(GtkTreeModel* self)
+{
+  return gtk_tree_model_iter_n_children(self, NULL);
+}
+
+gint
+gtk_combo_box_length(GtkComboBox * self)
+{
+  return gtk_tree_model_length (gtk_combo_box_get_model (self));
+}
+
+
+gboolean
+gtk_combo_box_next(GtkComboBox * self)
+{
+  gint index = gtk_combo_box_get_active (self);
+  if (gtk_tree_model_length (gtk_combo_box_get_model (self))){
+    gtk_combo_box_set_active (self, index + 1);
+    return TRUE;
+  }
+  return FALSE;
+}
+
+gboolean
+gtk_combo_box_previous(GtkComboBox * self)
+{
+  gint index = gtk_combo_box_get_active (self);
+  if (index > -1)
+  {
+    gtk_combo_box_set_active (self, index - 1);
+    return TRUE;
+  }
+  return FALSE;
+}

@@ -443,16 +443,22 @@ void conf_save(GjitenConfig *conf) {
   store_set_list("dictionary_list", gconf_diclist);
   //*/
 }
-
-void conf_save_history(GList *history, GjitenConfig *conf) {
+void conf_save_history(GtkListStore *history, GjitenConfig *conf) {
   char historystr[40];
   int i;
   if (history != NULL) {
+    GtkTreeIter iter;
+    gboolean iter_valid;
+    gchar *tmp;
+
+    iter_valid = gtk_tree_model_get_iter_first (GTK_TREE_MODEL (history), &iter);
     for (i = 0; i <= 50; i++) {
+      if (iter_valid == FALSE) break;
       snprintf(historystr, 31, STORE_ROOT_PATH "history%d", i);
-      store_set_string(historystr, history->data);
-      history = g_list_next(history);
-      if (history == NULL) break;
+      tmp = gtk_list_store_get_string (history, &iter);
+      store_set_string(historystr, tmp);
+      g_free (tmp);
+      iter_valid = gtk_tree_model_iter_next (GTK_TREE_MODEL (history), &iter);
     }
   }
 }

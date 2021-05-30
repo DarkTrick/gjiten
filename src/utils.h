@@ -43,4 +43,17 @@ void set_global_css(gchar *css_class,
 void gtk_widget_style_add_class(GtkWidget   *widget,
                                 const gchar *css_class);
 
+void gtk_list_store_prepend_string(GtkListStore * store,
+                                   gchar        * theString);
+void gtk_list_store_append_string(GtkListStore  * store,
+                                  gchar         * theString);
+gchar *gtk_list_store_get_string(GtkListStore   * self,
+                                 GtkTreeIter    * iter);
+
+gint gtk_tree_model_length(GtkTreeModel* self);
+
+gboolean gtk_combo_box_next(GtkComboBox * self);
+gboolean gtk_combo_box_previous(GtkComboBox * self);
+
+
 #endif
