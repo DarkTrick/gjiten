@@ -38,7 +38,8 @@
 
 #include "dicfile.h"
 #include "error.h"
-#include "utils.h" // TODO:change: only for _()-function; remove after that function works
+#include <glib/gi18n.h>
+#include <locale.h>
 
 gboolean dicfile_check_all(GSList *dicfile_list) {
   GSList *node;

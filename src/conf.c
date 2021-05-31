@@ -31,8 +31,8 @@
 #include "config.h"
 #include "error.h"
 #include "dicutil.h"
-#include "utils.h" // for _() // TODO: remove, after _() works properly
-
+#include <glib/gi18n.h>
+#include <locale.h>
 
 // moved from gjiten.c
 gchar *kanjidicstrg[] = { "kanji",  "radical", "strokes", "reading", "korean",
