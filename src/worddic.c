@@ -677,7 +677,7 @@ void on_search_clicked() {
   if (strlen(new_entry_text) == 0) return;
   if (append_to_history == TRUE) {
       current_glist_word = new_entry_text;
-      gtk_list_store_prepend_string (wordDic->word_search_history_model, new_entry_text);
+      gtk_list_store_string_prepend (wordDic->word_search_history_model, new_entry_text);
   }
 
   button_back_maybe_activate();
@@ -764,7 +764,7 @@ static void worddic_init_history(GtkListStore *history) {
   for (i = 0; i <= 50; i++) {
     if (gjitenApp->conf->history[i] == NULL) break;
     if (g_utf8_validate(gjitenApp->conf->history[i], -1, NULL) == TRUE)
-      gtk_list_store_append_string (history, g_strdup(gjitenApp->conf->history[i]));
+      gtk_list_store_string_append (history, g_strdup(gjitenApp->conf->history[i]));
     //   printf("Read: %s: %s\n", historystr, tmpptr);
   }
 }
@@ -1016,7 +1016,7 @@ _create_gui(GjWorddicWindow* self)
   wordDic->checkb_autoadjust = NULL;
   wordDic->checkb_verb = NULL;
 
-  wordDic->word_search_history_model = gtk_list_store_new (1, G_TYPE_STRING);
+  wordDic->word_search_history_model = gtk_list_store_string_new();
   worddic_init_history (wordDic->word_search_history_model);
   Verbinit ();
 

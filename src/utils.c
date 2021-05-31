@@ -138,12 +138,18 @@ void gtk_widget_style_add_class(GtkWidget   *widget,
   gtk_style_context_add_class (context, css_class);
 }
 
+GtkListStore *
+gtk_list_store_string_new()
+{
+  gtk_list_store_new (1, G_TYPE_STRING);
+}
+
 /**
  * Prepends `string` onto `store`.
  * `store` is a GtkListStore storing only strings and has only one column.
  **/
 void
-gtk_list_store_prepend_string(GtkListStore * store,
+gtk_list_store_string_prepend(GtkListStore * store,
                               gchar * theString)
 {
   GtkTreeIter iter;
@@ -156,7 +162,7 @@ gtk_list_store_prepend_string(GtkListStore * store,
  * `self` is a GtkListStore storing only strings and has only one column.
  **/
 void
-gtk_list_store_append_string(GtkListStore * self,
+gtk_list_store_string_append(GtkListStore * self,
                               gchar * theString)
 {
   GtkTreeIter iter;
@@ -170,7 +176,7 @@ gtk_list_store_append_string(GtkListStore * self,
  * `self` is a GtkListStore storing only strings and has only one column.
  **/
 gchar *
-gtk_list_store_get_string(GtkListStore *self,
+gtk_list_store_string_get(GtkListStore *self,
                           GtkTreeIter  *iter)
 {
   gchar *tmp;

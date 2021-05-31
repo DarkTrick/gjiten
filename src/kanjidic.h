@@ -56,8 +56,8 @@ struct _KanjiDic {
   GtkTextBuffer *kanji_results_buffer;
   GtkTextIter kanji_results_iter;
   GtkWidget *appbar_kanji;
-  GList *combo_entry_key_glist;
-  GList *combo_entry_radical_glist;
+  GtkListStore * combo_entry_key_list;
+  GtkListStore *combo_entry_radical_list;
   GtkWidget *spinb_strokenum;
   GtkWidget *spinb_plusmin;
   GtkWidget *label_plusmin;

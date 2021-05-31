@@ -43,11 +43,12 @@ void set_global_css(gchar *css_class,
 void gtk_widget_style_add_class(GtkWidget   *widget,
                                 const gchar *css_class);
 
-void gtk_list_store_prepend_string(GtkListStore * store,
+GtkListStore * gtk_list_store_string_new();
+void gtk_list_store_string_prepend(GtkListStore * store,
                                    gchar        * theString);
-void gtk_list_store_append_string(GtkListStore  * store,
+void gtk_list_store_string_append(GtkListStore  * store,
                                   gchar         * theString);
-gchar *gtk_list_store_get_string(GtkListStore   * self,
+gchar *gtk_list_store_string_get(GtkListStore   * self,
                                  GtkTreeIter    * iter);
 
 gint gtk_tree_model_length(GtkTreeModel* self);

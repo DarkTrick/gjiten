@@ -455,7 +455,7 @@ void conf_save_history(GtkListStore *history, GjitenConfig *conf) {
     for (i = 0; i <= 50; i++) {
       if (iter_valid == FALSE) break;
       snprintf(historystr, 31, STORE_ROOT_PATH "history%d", i);
-      tmp = gtk_list_store_get_string (history, &iter);
+      tmp = gtk_list_store_string_get (history, &iter);
       store_set_string(historystr, tmp);
       g_free (tmp);
       iter_valid = gtk_tree_model_iter_next (GTK_TREE_MODEL (history), &iter);
