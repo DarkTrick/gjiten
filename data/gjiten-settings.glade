@@ -457,7 +457,7 @@
                     </child>
                   </object>
                 </child>
-                <child>
+                <child type="tab">
                   <object class="GtkLabel" id="label20">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
@@ -556,7 +556,7 @@
                     <property name="position">2</property>
                   </packing>
                 </child>
-                <child>
+                <child type="tab">
                   <object class="GtkLabel" id="label21">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
@@ -570,7 +570,7 @@
                 </child>
               </object>
             </child>
-            <child>
+            <child type="tab">
               <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -661,7 +661,7 @@
                     <property name="tab_fill">False</property>
                   </packing>
                 </child>
-                <child>
+                <child  type="tab">
                   <object class="GtkLabel" id="label4">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
@@ -709,7 +709,7 @@
                     <property name="position">2</property>
                   </packing>
                 </child>
-                <child>
+                <child type="tab">
                   <object class="GtkLabel" id="label5">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
@@ -726,7 +726,7 @@
                 <property name="position">2</property>
               </packing>
             </child>
-            <child>
+            <child type="tab">
               <object class="GtkLabel" id="label2">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -811,7 +811,7 @@
                                 <property name="receives_default">True</property>
                                 <property name="font">Sans 12</property>
                                 <property name="language">en-us</property>
-                                <property name="preview_text">Hello あいうえお 本 中 山 愛</property>
+                                <property name="preview_text">Nihongo: 日本語</property>
                               </object>
                             </child>
                           </object>
@@ -831,7 +831,7 @@
                                 <property name="receives_default">True</property>
                                 <property name="font">Sans 12</property>
                                 <property name="language">en-us</property>
-                                <property name="preview_text">Hello あいうえお 本 中 山 愛</property>
+                                <property name="preview_text">Nihongo: 日本語</property>
                               </object>
                             </child>
                           </object>
@@ -891,7 +891,7 @@
                     </child>
                   </object>
                 </child>
-                <child>
+                <child type="tab">
                   <object class="GtkLabel" id="label16">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
@@ -993,7 +993,7 @@
                     <property name="position">2</property>
                   </packing>
                 </child>
-                <child>
+                <child type="tab">
                   <object class="GtkLabel" id="label17">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
@@ -1060,7 +1060,7 @@
                     <property name="position">4</property>
                   </packing>
                 </child>
-                <child>
+                <child type="tab">
                   <object class="GtkLabel" id="label18">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
@@ -1077,7 +1077,7 @@
                 <property name="position">4</property>
               </packing>
             </child>
-            <child>
+            <child type="tab">
               <object class="GtkLabel" id="label15">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
