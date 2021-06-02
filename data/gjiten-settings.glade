@@ -3,7 +3,6 @@
 <interface>
   <requires lib="gtk+" version="3.20"/>
   <object class="GtkDialog" id="dialog_add_dic">
-    <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Add dictionary files</property>
     <property name="type_hint">dialog</property>
@@ -104,7 +103,7 @@
               <object class="GtkFileChooserButton" id="file_dic_path">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="title" translatable="yes"/>
+                <property name="title" translatable="yes">Select dictionary file</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -126,7 +125,6 @@
     </action-widgets>
   </object>
   <object class="GtkDialog" id="dialog_change_dic">
-    <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Dictionary file properties</property>
     <property name="type_hint">dialog</property>
@@ -227,7 +225,7 @@
               <object class="GtkFileChooserButton" id="file_dic_path_change">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="title" translatable="yes"/>
+                <property name="title" translatable="yes">Select dictionary file</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -249,7 +247,6 @@
     </action-widgets>
   </object>
   <object class="GtkDialog" id="gjiten_settings">
-    <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Gjiten Settings</property>
     <property name="type_hint">dialog</property>
@@ -467,6 +464,7 @@
                   </object>
                   <packing>
                     <property name="position">1</property>
+                    <property name="tab_fill">False</property>
                   </packing>
                 </child>
                 <child>
@@ -566,6 +564,7 @@
                   </object>
                   <packing>
                     <property name="position">3</property>
+                    <property name="tab_fill">False</property>
                   </packing>
                 </child>
               </object>
@@ -580,6 +579,7 @@
               </object>
               <packing>
                 <property name="position">1</property>
+                <property name="tab_fill">False</property>
               </packing>
             </child>
             <child>
@@ -661,7 +661,7 @@
                     <property name="tab_fill">False</property>
                   </packing>
                 </child>
-                <child  type="tab">
+                <child type="tab">
                   <object class="GtkLabel" id="label4">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
@@ -671,6 +671,7 @@
                   </object>
                   <packing>
                     <property name="position">1</property>
+                    <property name="tab_fill">False</property>
                   </packing>
                 </child>
                 <child>
@@ -719,6 +720,7 @@
                   </object>
                   <packing>
                     <property name="position">3</property>
+                    <property name="tab_fill">False</property>
                   </packing>
                 </child>
               </object>
@@ -736,6 +738,7 @@
               </object>
               <packing>
                 <property name="position">3</property>
+                <property name="tab_fill">False</property>
               </packing>
             </child>
             <child>
@@ -901,6 +904,7 @@
                   </object>
                   <packing>
                     <property name="position">1</property>
+                    <property name="tab_fill">False</property>
                   </packing>
                 </child>
                 <child>
@@ -1003,6 +1007,7 @@
                   </object>
                   <packing>
                     <property name="position">3</property>
+                    <property name="tab_fill">False</property>
                   </packing>
                 </child>
                 <child>
@@ -1070,6 +1075,7 @@
                   </object>
                   <packing>
                     <property name="position">5</property>
+                    <property name="tab_fill">False</property>
                   </packing>
                 </child>
               </object>
@@ -1087,6 +1093,7 @@
               </object>
               <packing>
                 <property name="position">5</property>
+                <property name="tab_fill">False</property>
               </packing>
             </child>
           </object>
