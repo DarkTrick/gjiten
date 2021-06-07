@@ -115,8 +115,8 @@ store_get_string (const gchar * key)
 {
   MATCH("dictpath", "/usr/share/gjiten/dics/")
   MATCH("kanjipad", "/usr/bin/kanjipad")
-  MATCH("largefont", "14px Sans")
-  MATCH("normalfont", "22px Sans")
+  MATCH("largefont", "Sans 14")
+  MATCH("normalfont", "Sans 22")
   MATCH("version", "2.6")
 
   #define HISTORY(N) MATCH ("history" N, "testhistory" N);

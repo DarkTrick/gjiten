@@ -1,5 +1,7 @@
 #include "utils.h"
+#include <string.h>
 #include <gtk/gtk.h>
+
 
 /**
  *  Reimplementation of original function from gtk 2
@@ -218,4 +220,33 @@ gtk_combo_box_previous(GtkComboBox * self)
     return TRUE;
   }
   return FALSE;
+}
+
+/**
+ *   Converts a pango font string (E.g. "Sans 14")
+ *   to a CSS font string (E.g. "14px Sans").
+ *
+ *   Return value has to be freed with g_free.
+ **/
+gchar *
+g_pango_font_convert_to_css(const gchar * pango_font)
+{
+  gchar * font_size   = NULL;
+  gchar * font_family = NULL;
+  gchar * css_font    = NULL;
+
+  //we need a modifyable string
+  gchar * pango_font_m = g_strdup (pango_font);
+  char * saveptr = NULL;
+  font_family = strtok_r(pango_font_m, " ", &saveptr);
+  font_size   = strtok_r(NULL,         " ", &saveptr);
+
+  GString * css = g_string_new ("");
+  g_string_printf (css, "%spx %s", font_size, font_family);
+
+  css_font = css->str;
+  g_free (pango_font_m);
+  g_string_free (css, FALSE);
+
+  return css_font;
 }

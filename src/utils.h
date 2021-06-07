@@ -56,5 +56,6 @@ gint gtk_tree_model_length(GtkTreeModel* self);
 gboolean gtk_combo_box_next(GtkComboBox * self);
 gboolean gtk_combo_box_previous(GtkComboBox * self);
 
+gchar * g_pango_font_convert_to_css(const gchar * pango_font);
 
 #endif

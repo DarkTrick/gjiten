@@ -44,7 +44,7 @@
 #include "pref.h"
 #include "gjiten.h"
 #include "dicutil.h"
-#include "utils.h" // TODO:remove after _()-function works again
+#include "utils.h"
 
 GjitenApp *gjitenApp = NULL;
 
@@ -423,9 +423,12 @@ gjiten_apply_fonts (GjitenApp * gjitenApp)
   // apply css styles
   if (gjitenApp->conf->normalfont != NULL)
   {
+    gchar * css_font = g_pango_font_convert_to_css (gjitenApp->conf->normalfont);
     GString * css = g_string_new ("");
-    g_string_printf (css, "font: %s;", gjitenApp->conf->normalfont);
+    g_string_printf (css, "font: %s;", css_font);
     set_global_css ("normalfont", css->str);
+    g_string_free (css, TRUE);
+    g_free (css_font);
   }
 
   // apply tag styles
@@ -440,21 +443,6 @@ gjiten_activate (GtkApplication *app,
                  gpointer        user_data)
 {
   _gjiten_create_menu (GTK_APPLICATION (app));
-
-  // TODO:impl translate arguments
-  //gnome_program_init("gjiten", VERSION, LIBGNOMEUI_MODULE, argc, argv,
-  //                   GNOME_PARAM_POPT_TABLE, arg_options,
-  //                   GNOME_PARAM_HUMAN_READABLE_NAME, _("gjiten"),
-  //                   GNOME_PARAM_APP_DATADIR, GNOMEDATADIR,
-  //                   NULL);
-
-  // my impl:
-  /*if (gjitenApp->conf->startkanjidic) {
-      gjiten_start_kanjidic (app);
-    }
-  else {
-    gjiten_start_worddic (app);
-  }*/
 
   gjiten_apply_fonts (gjitenApp);
 
