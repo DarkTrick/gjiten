@@ -717,9 +717,11 @@ on_dicselection_clicked(GtkWidget *widget,
   GtkComboBox *box = GTK_COMBO_BOX (widget);
   gint active_index = gtk_combo_box_get_active (box);
   GSList * dicfile_node = g_slist_nth (gjitenApp->conf->dicfile_list, active_index);
-
   // set current dictionary
-  gjitenApp->conf->selected_dic = dicfile_node->data;
+  if (active_index > -1)
+    gjitenApp->conf->selected_dic = dicfile_node->data;
+  else
+    gjitenApp->conf->selected_dic = NULL;
 }
 
 static void checkb_searchlimit_toggled() {
@@ -824,7 +826,7 @@ void worddic_update_dic_menu() {
                                       gjitenApp->conf->selected_dic);
     if (-1 == active_index)
     {
-      GJITEN_DEBUG ("No active dictionary found at start time. Use default 0.");
+      GJITEN_DEBUG ("No active dictionary found . Use default 0.");
       active_index = 0;
     }
     gtk_combo_box_set_active (wordDic->dicselection_menu, active_index);
