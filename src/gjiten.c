@@ -48,11 +48,6 @@
 
 GjitenApp *gjitenApp = NULL;
 
-// TODO:impl
-//static void parse_an_arg(poptContext state,
-//                         enum poptCallbackReason reason,
-//                         const struct poptOption *opt,
-//                         const char *arg, void *data);
 
 /***************** VARIABLES ***********************/
 
@@ -240,7 +235,7 @@ void gjiten_display_manual(GtkWidget *widget, void *data)
 
 
 void gjiten_create_about() {
-  const gchar *authors[] = { "Botond Botyanszki <boti@rocketmail.com>, DarkTrick <https://github.com/DarkTrick>", NULL };
+  const gchar *authors[] = { "Botond Botyanszki <boti@rocketmail.com>, DarkTrick", NULL };
   const gchar *documenters[] = { NULL };
   const gchar *translator = _("TRANSLATORS! PUT YOUR NAME HERE");
   GdkPixbuf *pixbuf = NULL;
@@ -258,27 +253,13 @@ void gjiten_create_about() {
     GtkAboutDialog * about = GTK_ABOUT_DIALOG(gtk_about_dialog_new());
     gtk_about_dialog_set_program_name       (about, "gjiten");
     gtk_about_dialog_set_version            (about, VERSION);
-    gtk_about_dialog_set_copyright          (about, "Copyright \xc2\xa9 1999-2005 Botond Botyanszki");
+    gtk_about_dialog_set_copyright          (about, "Copyright \xc2\xa9 1999-2005 Botond Botyanszki\nCopyright \xc2\xa9 2019-2021 DarkTrick");
     gtk_about_dialog_set_comments           (about, _("gjiten is a Japanese dictionary for Gnome"));
     gtk_about_dialog_set_authors            (about, (const char **)authors);
     gtk_about_dialog_set_documenters        (about, (const char **)documenters);
     gtk_about_dialog_set_translator_credits (about, (const char *)translator);
     gtk_about_dialog_set_logo               (about, pixbuf);
 
-
-    /* TODO: activate after gtk-3-change
-    gtk_show_about_dialog (NULL,
-                          "program-name",       "gjiten",
-                          "version",            VERSION,
-                          "copyright",          "Copyright \xc2\xa9 1999-2005 Botond Botyanszki",
-                          "title",              _("gjiten is a Japanese dictionary for Gnome"),
-                          "authors",            (const char **)authors),
-                          "documenters",        (const char **)documenters),
-                          "translator-credits", (const char *)translator),
-                          "logo",               pixbuf,
-                          NULL);
-                          */
-    // TODO: Dialog does not close on "close" button in bottom right
     gtk_window_set_destroy_with_parent (GTK_WINDOW(about), TRUE);
     if (pixbuf != NULL)  g_object_unref (pixbuf);
 
@@ -446,7 +427,6 @@ gjiten_activate (GtkApplication *app,
 
   gjiten_apply_fonts (gjitenApp);
 
-
   // the following is for clipboard lookup.
   if ((gjitenApp->conf->clip_kanji_lookup == TRUE) || (gjitenApp->conf->clip_word_lookup == TRUE)) {
     if (gjitenApp->conf->clip_word_lookup) {
@@ -515,14 +495,6 @@ gjiten_activate (GtkApplication *app,
   if(gjitenApp->conf->quick_lookup_mode && gjitenApp->worddic)
     enable_quick_lookup_mode();
 
-
-  //int status = g_application_run(G_APPLICATION (app), argc, argv);
-  //g_object_unref(app);
-
-  //return status;
-  //gtk_main();
-  //return 0;
-  //*/
 }
 
 GtkApplication *
@@ -541,13 +513,13 @@ gjiten_new()
   }
 
 
-  /* TODO:impl
+
   #ifdef ENABLE_NLS
     bindtextdomain(PACKAGE, PACKAGE_LOCALE_DIR);
     bind_textdomain_codeset(PACKAGE, "UTF-8");
     textdomain(PACKAGE);
   #endif
-  */
+
 
   GtkApplication * app = gtk_application_new(NULL,G_APPLICATION_FLAGS_NONE);
   g_signal_connect(app, "activate", G_CALLBACK (gjiten_activate), NULL);

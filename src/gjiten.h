@@ -41,9 +41,7 @@ GtkApplication * gjiten_new();
 void gjiten_start_kanjipad();
 void gjiten_start_worddic();
 void gjiten_start_kanjidic();
-//void gjiten_create_about();
 void gjiten_display_manual();
 void gjiten_exit();
-//void gjiten_clear_entry_box(gpointer entrybox);
 
 #endif
