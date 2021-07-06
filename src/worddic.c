@@ -826,7 +826,7 @@ void worddic_update_dic_menu() {
                                       gjitenApp->conf->selected_dic);
     if (-1 == active_index)
     {
-      GJITEN_DEBUG ("No active dictionary found . Use default 0.");
+      GJITEN_DEBUG ("@Dictionary combo box: No active dictionary found. Use first entry.");
       active_index = 0;
     }
     gtk_combo_box_set_active (wordDic->dicselection_menu, active_index);
