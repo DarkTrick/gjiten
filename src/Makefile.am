@@ -16,6 +16,8 @@ gjiten_SOURCES = 	      \
 	dicutil.c dicutil.h	  \
 	radical-convtable.h	  \
 	kanjidicconsts.h      \
+	gconf_reader.c gconf_reader.h \
+	data_store.c data_store.h \
 	constants.h
 
 radical_convtable: radical-convtable.txt

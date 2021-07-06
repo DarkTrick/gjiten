@@ -142,9 +142,7 @@ void gjiten_exit()
     GJITEN_DEBUG("gjiten_exit()\n");
     conf_save_options(gjitenApp->conf);
     dicutil_unload_dic();
-    dicfile_list_free(gjitenApp->conf->dicfile_list);
-    conf_close_handler();
-
+    conf_close_handler(gjitenApp->conf);
 
     GApplication * app = g_application_get_default ();
     g_application_quit (app);
@@ -402,7 +400,8 @@ void
 gjiten_apply_fonts (GjitenApp * gjitenApp)
 {
   // apply css styles
-  if (gjitenApp->conf->normalfont != NULL)
+  if (gjitenApp->conf->normalfont != NULL &&
+      !g_str_equal (gjitenApp->conf->normalfont, ""))
   {
     gchar * css_font = g_pango_font_convert_to_css (gjitenApp->conf->normalfont);
     GString * css = g_string_new ("");

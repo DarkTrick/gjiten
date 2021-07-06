@@ -86,6 +86,6 @@ void conf_save(GjitenConfig *conf);
 void conf_save_history(GtkListStore *history, GjitenConfig *conf);
 void conf_save_options(GjitenConfig *conf);
 gboolean conf_init_handler();
-void conf_close_handler();
+void conf_close_handler(GjitenConfig *self);
 
 #endif
