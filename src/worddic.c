@@ -925,7 +925,6 @@ kanji_clicked(GtkWidget       *text_view,
 }
 
 void _init_word_history(){
-  gtk_list_store_clear (wordDic->word_search_history_model);
   button_back_maybe_activate();
   button_next_maybe_activate();
 }
