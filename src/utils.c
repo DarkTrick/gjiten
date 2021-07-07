@@ -250,3 +250,63 @@ g_pango_font_convert_to_css(const gchar * pango_font)
 
   return css_font;
 }
+
+
+/**
+ * Check if a schema exist.
+ * This is important, because g_settings_new will core dump,
+ * if the id does not exist
+ **/
+gboolean
+g_settings_has_schema (const char * id)
+{
+  GSettingsSchema * res = g_settings_schema_source_lookup (
+                                 g_settings_schema_source_get_default(),
+                                 id, FALSE);
+  gboolean ret = FALSE;
+  if (res != NULL)
+  {
+    ret = TRUE;
+    g_settings_schema_unref (res);
+  }
+
+  return ret;
+}
+
+
+
+gboolean
+g_settings_has_key (const gchar * schema_id,
+                    const char * key)
+{
+  GSettingsSchema * schema = g_settings_schema_source_lookup (
+                              g_settings_schema_source_get_default(),
+                              schema_id, FALSE);
+  if (schema)
+  {
+    gboolean has_key = g_settings_schema_has_key (schema, key);
+    return has_key;
+  }
+
+  return FALSE;
+}
+
+/**
+ * Changes the string in place (only even-byte-sized chars!)
+ * `str` must be null-terminated.
+ *
+ * Return
+ *  `str`
+ **/
+char *
+chr_replace (char *str,
+              const char search_for,
+              const char replace_with)
+{
+  for (int i=0; str[i] != '\0'; ++i)
+  {
+    if (search_for == str[i])
+      str[i] = replace_with;
+  }
+  return str;
+}

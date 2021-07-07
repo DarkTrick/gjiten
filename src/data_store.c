@@ -15,12 +15,27 @@
  *
  *  Settings machine layer:      gconf / gsettings / gkeyfile
  *
+ *
+ *  Why do we use keyfiles?
+ * ========================
+ *  - gconf is deprecated
+ *  - gsettings work, but
+ *      - their documentation is too bad.
+ *      - their setup is too tedious.
+ *      - you don't know when they become deprecated
+ *         (as happened with gconf).
+ *      - dconf is very difficult to use (manually change,
+ *         navigate, copy information), because tools are
+ *         insufficient.
+ *      - we don't need their functionalities.
+ *
  **/
 
 #include "data_store.h"
 #include "gconf_reader.h"
 #include <sys/stat.h> // for mkdir modes
 #include "error.h"
+#include "utils.h"
 
 #define return_if(expression, value) if (expression){ return value; }
 
@@ -235,6 +250,58 @@ _merge_gconf_to_key_file (GHashTable * hashtable,
 }
 
 
+/**
+ * Merge all int/bool/string values from
+ *  gsettings into keyfile.
+ * This will not merge lists!
+ **/
+void
+_merge_gsettings_to_key_file (const gchar *schema_id,
+                              GKeyFile    *keyfile,
+                              const gchar *section)
+{
+  // get list of all keys
+  gchar ** keys = NULL;
+  {
+    GSettingsSchema * schema = g_settings_schema_source_lookup (
+                                      g_settings_schema_source_get_default(),
+                                      schema_id, FALSE);
+    keys = g_settings_schema_list_keys (schema);
+    g_settings_schema_unref (schema);
+  }
+
+
+  {
+    GSettings * gsettings = g_settings_new (schema_id);
+    for (int i = 0; keys[i] != NULL; ++i)
+    {
+      gchar * key = keys[i];
+      GVariant * variant = g_settings_get_value (gsettings, keys[i]);
+      const GVariantType * type = g_variant_get_type (variant);
+
+      // prepare naming for keyfile
+      chr_replace (key, '-', '_');
+
+      if (g_variant_type_equal (G_VARIANT_TYPE_BOOLEAN, type))
+        g_key_file_set_boolean (keyfile, section, key, g_variant_get_boolean (variant));
+      else if (g_variant_type_equal (G_VARIANT_TYPE_STRING, type))
+        g_key_file_set_string (keyfile, section, key, g_variant_get_string (variant, NULL));
+      else if (g_variant_type_equal (G_VARIANT_TYPE_INT32, type))
+        g_key_file_set_integer (keyfile, section, key, g_variant_get_int32 (variant));
+    }
+    g_object_unref (gsettings);
+  }
+
+  g_strfreev (keys);
+}
+
+
+
+gboolean
+_store_available_gsettings(DataStore *self)
+{
+  return g_settings_has_schema (STORE_ROOT_DCONF);
+}
 
 
 
@@ -273,14 +340,84 @@ data_store_load_from_disk(DataStore *self)
 
     // 2.x load older values and store in keyfile,section,key,
     {
-      //TODO:impl data migration from gsetting to keyfile
-      //if (_store_available_gsettings())
-      //{
-      //
-      //} else
+      if (_store_available_gsettings(self))
+      {
+        GJITEN_DEBUG ("DEBUG: Migrate gsettings to gjiten.conf\n");
+        {
+          // merge int/bool/string values
+          _merge_gsettings_to_key_file (STORE_ROOT_DCONF, storage, SECTION_GENERAL);
+          _merge_gsettings_to_key_file (STORE_KANJIDIC_DCONF, storage, SECTION_KANJIDIC);
+
+
+          GSettings * gsettings = g_settings_new (STORE_ROOT_DCONF);
+          {
+            GVariant * variant = g_settings_get_value (gsettings, "dictionary-list");
+            gsize num_dicts = g_variant_n_children (variant);
+
+            gchar ** dictionary_array = g_malloc (sizeof(gchar*) *(num_dicts+1));
+
+            // read each dictionary information
+            //    and store in array
+            for (int i=0; i<num_dicts; ++i)
+            {
+              GVariant * dictEntry = g_variant_get_child_value (variant, i);
+              GVariant * varPath = g_variant_get_child_value (dictEntry, 0);
+              GVariant * varName = g_variant_get_child_value (dictEntry, 1);
+
+              const gchar * strPath = g_variant_get_string (varPath, NULL);
+              const gchar * strName = g_variant_get_string (varName, NULL);
+
+              dictionary_array[i] = g_strconcat (strPath, "\n", strName, NULL);
+            }
+
+            // NULL-terminate list
+            dictionary_array[num_dicts] = NULL;
+
+            // store data in keyfile
+            g_key_file_set_string_list (storage,
+                                        SECTION_GENERAL,
+                                        "dictionary_list",
+                                        (const char * const *)dictionary_array,
+                                        num_dicts);
+
+            // free list of dictionaries
+            g_strfreev (dictionary_array);
+          }
+
+          // merge history
+          {
+            GVariant * variant = g_settings_get_value (gsettings, "history");
+            gsize count = g_variant_n_children (variant);
+
+            // create string array from values
+            gchar ** string_array = NULL;
+            {
+              string_array = g_malloc (sizeof(gchar*) *(count+1));
+              for (int i=0; i<count; ++i)
+              {
+                GVariant * entry = g_variant_get_child_value (variant, i);
+                string_array[i] = g_strdup (g_variant_get_string (entry, NULL));
+              }
+              string_array[count] = NULL;
+            }
+            // store string array in keyfile
+            g_key_file_set_string_list (storage,
+                                        SECTION_GENERAL,
+                                        "word_search_history",
+                                        (const char * const *)string_array,
+                                        count);
+            // free array
+            g_strfreev (string_array);
+          }
+
+          g_object_unref (gsettings);
+        }
+
+      }
+      else
       if (_store_available_gconf (self))
       {
-        GJITEN_DEBUG ("Migrate gconf to gjiten.conf");
+        GJITEN_DEBUG ("DEBUG: Migrate gconf to gjiten.conf\n");
 
         // iterate over hashtable and insert every item into keyfile
         GHashTable * general = gconf_reader_parse_file (self->depr_config_gconf_general, NULL);
@@ -293,10 +430,11 @@ data_store_load_from_disk(DataStore *self)
         GHashTable * kanjidic = gconf_reader_parse_file (self->depr_config_gconf_kanjidic, NULL);
         _merge_gconf_to_key_file (kanjidic, storage, SECTION_KANJIDIC);
         g_hash_table_destroy (kanjidic);
-
-        // TODO: remove gconf files
       }
     }
+
+    // update version info
+    g_key_file_set_string (storage, SECTION_GENERAL, "version", "3.0");
 
     // Save keyfile
     g_mkdir_with_parents (self->config_dir, S_IRWXU);

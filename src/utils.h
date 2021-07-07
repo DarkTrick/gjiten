@@ -58,4 +58,23 @@ gboolean gtk_combo_box_previous(GtkComboBox * self);
 
 gchar * g_pango_font_convert_to_css(const gchar * pango_font);
 
+gboolean
+g_settings_has_schema (const char * id);
+
+gboolean
+g_settings_has_key (const gchar * schema_id,
+                    const char * key);
+
+GValue *
+g_value_new_int (int value);
+GValue *
+g_value_new_string (const gchar * value);
+GValue *
+g_value_new_boolean (gboolean value);
+
+char *
+chr_replace (char *str,
+             const char search_for,
+             const char replace_with);
+
 #endif
