@@ -38,10 +38,6 @@ struct _DataStore{
   gboolean read_from_g_settings;
   gboolean read_from_g_conf;
 
-  gchar * depr_config_gconf_general;
-  gchar * depr_config_gconf_kanjidic;
-  gchar * depr_config_gconf_history;
-
   gchar * config_dir;
   gchar * config_file;
 
@@ -64,8 +60,14 @@ data_store_get_boolean(DataStore   *self,
                     const gchar * section,
                        const gchar *key);
 
-gboolean
+void
 data_store_load_from_disk(DataStore * self);
+
+gboolean
+keyfile_save(GKeyFile    *storage,
+             const gchar *target_dir,
+             const gchar *target_file);
+
 
 gboolean
 data_store_save_to_disk(DataStore * self);
