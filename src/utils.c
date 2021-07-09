@@ -173,9 +173,13 @@ gtk_list_store_string_append(GtkListStore * self,
 }
 
 /**
- *  Returs the stored string value
- *  Returned string has to be freed
- * `self` is a GtkListStore storing only strings and has only one column.
+ *  Returns stored string value
+ *
+ * Params:
+ *  `self` is a GtkListStore storing only strings and has only one column.
+ *
+ * Returns
+ *    string has to be freed
  **/
 gchar *
 gtk_list_store_string_get(GtkListStore *self,
@@ -184,6 +188,12 @@ gtk_list_store_string_get(GtkListStore *self,
   gchar *tmp;
   gtk_tree_model_get (self, iter, 0, &tmp, -1);
   return tmp;
+}
+
+gint
+gtk_list_store_length(GtkListStore *self)
+{
+  return gtk_tree_model_length (GTK_TREE_MODEL (self));
 }
 
 gint
@@ -310,3 +320,5 @@ chr_replace (char *str,
   }
   return str;
 }
+
+

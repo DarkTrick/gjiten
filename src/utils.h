@@ -77,4 +77,7 @@ chr_replace (char *str,
              const char search_for,
              const char replace_with);
 
+gint
+gtk_list_store_length(GtkListStore *self);
+
 #endif

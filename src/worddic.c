@@ -695,14 +695,14 @@ void on_search_clicked() {
 
 static void on_forward_clicked() {
   append_to_history = FALSE;
-  gtk_combo_box_previous (wordDic->combo_entry);
+  gtk_combo_box_previous (GTK_COMBO_BOX (wordDic->combo_entry));
   on_search_clicked();
   append_to_history = TRUE;
 }
 
 static void on_back_clicked() {
   append_to_history = FALSE;
-  gtk_combo_box_next (wordDic->combo_entry);
+  gtk_combo_box_next (GTK_COMBO_BOX (wordDic->combo_entry));
   on_search_clicked();
   append_to_history = TRUE;
 }
@@ -803,17 +803,17 @@ void worddic_update_dic_menu() {
   GJITEN_DEBUG("worddic_update_dic_menu()\n");
 
 
-  gtk_combo_box_text_remove_all (wordDic->dicselection_menu);
+  gtk_combo_box_text_remove_all (GTK_COMBO_BOX (wordDic->dicselection_menu));
 
   dicfile_node = gjitenApp->conf->dicfile_list;
   while (dicfile_node != NULL) {
     if (dicfile_node->data != NULL) {
       dicfile = dicfile_node->data;
-      gtk_combo_box_text_append_text (wordDic->dicselection_menu, dicfile->name);
+      gtk_combo_box_text_append_text (GTK_COMBO_BOX (wordDic->dicselection_menu), dicfile->name);
     }
     else
     {
-      gtk_combo_box_text_append_text (wordDic->dicselection_menu, "");
+      gtk_combo_box_text_append_text (GTK_COMBO_BOX (wordDic->dicselection_menu), "");
     }
 
     dicfile_node = g_slist_next(dicfile_node);
@@ -826,10 +826,10 @@ void worddic_update_dic_menu() {
                                       gjitenApp->conf->selected_dic);
     if (-1 == active_index)
     {
-      GJITEN_DEBUG ("@Dictionary combo box: No active dictionary found. Use first entry.");
+      GJITEN_DEBUG ("DEBUG: Dictionary combo box: No active dictionary found. Use first entry.\n");
       active_index = 0;
     }
-    gtk_combo_box_set_active (wordDic->dicselection_menu, active_index);
+    gtk_combo_box_set_active (GTK_COMBO_BOX (wordDic->dicselection_menu), active_index);
   }
 }
 
@@ -1197,8 +1197,8 @@ _create_gui(GjWorddicWindow* self)
 
   wordDic->combo_entry = gtk_combo_box_new_with_model_and_entry (GTK_TREE_MODEL (wordDic->word_search_history_model));
   g_object_unref (wordDic->word_search_history_model);
-  gtk_combo_box_set_entry_text_column (wordDic->combo_entry, 0);
-  gtk_combo_box_set_id_column (wordDic->combo_entry, 0);
+  gtk_combo_box_set_entry_text_column (GTK_COMBO_BOX (wordDic->combo_entry), 0);
+  gtk_combo_box_set_id_column (GTK_COMBO_BOX (wordDic->combo_entry), 0);
   gtk_widget_show (wordDic->combo_entry);
   gtk_box_pack_start (GTK_BOX (hbox_entry), wordDic->combo_entry, TRUE, TRUE, 0);
   gtk_widget_style_add_class (GTK_WIDGET (gtk_bin_get_child (
@@ -1274,7 +1274,7 @@ _create_gui(GjWorddicWindow* self)
 
 
   wordDic->appbar_mainwin = gtk_label_new ("");
-  gtk_label_set_xalign (wordDic->appbar_mainwin, 0);
+  gtk_label_set_xalign (GTK_LABEL (wordDic->appbar_mainwin), 0);
   gtk_widget_show (wordDic->appbar_mainwin);
   gtk_box_pack_end (GTK_BOX (vbox_results), wordDic->appbar_mainwin, FALSE, FALSE, 0);
 

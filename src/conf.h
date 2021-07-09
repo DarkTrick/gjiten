@@ -30,14 +30,20 @@
 #include "kanjidicconsts.h"
 #include "constants.h"
 #include "dicfile.h"
+#include "data_store.h"
 
 typedef struct _GjitenConfig GjitenConfig;
+
+// forward decls
+
 
 struct _GjitenConfig {
   gchar *version;
 
   GjitenDicfile *kanjidic;
   GSList *dicfile_list;
+
+  DataStore * data_store;
 
   char *history[60];
   gboolean toolbar;
