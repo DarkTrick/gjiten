@@ -17,15 +17,16 @@
 #define STORE_KANJIDIC_DCONF STORE_ROOT_DCONF ".kanjidic"
 #define STORE_HISTORY_DCONF STORE_ROOT_DCONF
 
-#define STORE_ROOT_GCONF ".gconf/apps/gjiten/"
+#define STORE_ROOT_GCONF ".gconf/apps/gjiten"
 #define STORE_GCONF_FILENAME "%gconf.xml"
-#define STORE_GCONF_GENERAL STORE_ROOT_GCONF "general/" STORE_GCONF_FILENAME
-#define STORE_KANJIDIC_GCONF STORE_ROOT_GCONF "kanjidic/" STORE_GCONF_FILENAME
-#define STORE_HISTORY_GCONF STORE_ROOT_GCONF "history/" STORE_GCONF_FILENAME
+#define STORE_GCONF_GENERAL STORE_ROOT_GCONF "/general/" STORE_GCONF_FILENAME
+#define STORE_KANJIDIC_GCONF STORE_ROOT_GCONF "/kanjidic/" STORE_GCONF_FILENAME
+#define STORE_HISTORY_GCONF STORE_ROOT_GCONF "/history/" STORE_GCONF_FILENAME
 
 
 
 struct _MigrationData {
+  gchar * gconfig_path_base;
   gchar * gconfig_path_general;
   gchar * gconfig_path_kanjidic;
   gchar * gconfig_path_history;
@@ -45,6 +46,7 @@ void
 migration_data_init(MigrationData *self)
 {
   const gchar * home_dir = g_get_home_dir();
+  self->gconfig_path_base = g_build_path ("/", home_dir, STORE_ROOT_GCONF, NULL);
   self->gconfig_path_general  = get_gconf_path_general();
   self->gconfig_path_kanjidic = g_build_path ("/", home_dir, STORE_KANJIDIC_GCONF, NULL);
   self->gconfig_path_history  = g_build_path ("/", home_dir, STORE_HISTORY_GCONF, NULL);
@@ -55,6 +57,7 @@ migration_data_init(MigrationData *self)
 void
 migration_data_finalize(MigrationData *self)
 {
+  g_free (self->gconfig_path_base);
   g_free (self->gconfig_path_general);
   g_free (self->gconfig_path_kanjidic);
   g_free (self->gconfig_path_history);
@@ -357,7 +360,10 @@ _migrate_gconf(MigrationData *self,
   gboolean succ = _keyfile_save_new (storage, new_storage_dir, new_storage_file);
   g_key_file_free (storage);
 
-  // TODO: remove gconf files from system
+  {
+    GFile * file = g_file_new_for_path (self->gconfig_path_base);
+    gboolean suc = g_file_trash (file, NULL, NULL);
+  }
 
   return succ;
 }
