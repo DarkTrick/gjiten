@@ -36,6 +36,7 @@
 #include <sys/stat.h> // for mkdir modes
 #include "error.h"
 #include "utils.h"
+#include "../config.h"
 #include "migration2-6_3-0.h"
 
 #define return_if(expression, value) if (expression){ return value; }
@@ -53,6 +54,23 @@ _init_config_paths(DataStore *self)
 }
 
 
+DataStore *
+data_store_new()
+{
+  DataStore *self = g_new0 (DataStore, 1);
+  data_store_init (self);
+
+  return self;
+}
+
+void
+data_store_free(DataStore *self)
+{
+  data_store_finalize (self);
+  g_free (self);
+}
+
+
 
 void
 data_store_init(DataStore *self)
@@ -66,6 +84,7 @@ data_store_init(DataStore *self)
   self->storage = g_key_file_new();
 }
 
+
 void
 data_store_finalize(DataStore *self)
 {
@@ -74,6 +93,36 @@ data_store_finalize(DataStore *self)
   g_free (self->config_dir);
   g_free (self->config_file);
 }
+
+
+
+void
+data_store_set_boolean(DataStore   *self,
+                       const gchar * section,
+                       const gchar *key,
+                       gboolean    value)
+{
+  g_key_file_set_boolean (self->storage, section, key, value);
+}
+
+void
+data_store_set_string(DataStore   *self,
+                      const gchar * section,
+                      const gchar *key,
+                      const gchar *value)
+{
+  g_key_file_set_string (self->storage, section, key, value);
+}
+
+void
+data_store_set_int(DataStore   *self,
+                   const gchar * section,
+                   const gchar *key,
+                   int          value)
+{
+  g_key_file_set_integer (self->storage, section, key, value);
+}
+
 
 
 gboolean
@@ -224,7 +273,22 @@ data_store_load_from_disk(DataStore *self)
 gboolean
 data_store_save_to_disk(DataStore * self)
 {
-  return FALSE;
+  return keyfile_save (self->storage, self->config_dir, self->config_file);
+}
+
+/**
+ * Parameters:
+ *  `value`: NULL-terminated list of chars. [no owner transfer]
+ **/
+void
+data_store_set_string_array (DataStore   *  self,
+                             const gchar *  section,
+                             const gchar *  key,
+                             const gchar *  value[],
+                             gint           length)
+{
+  g_key_file_set_string_list (self->storage,section,
+                              key, value, length);
 }
 
 /**
@@ -243,10 +307,9 @@ data_store_get_string_array (DataStore   * self,
     return ret;
 
   // return default values
-  gchar * dict_list_default[] = {"/usr/share/gjiten/dics/edict\nEnglish-main",NULL};
+  gchar * dict_list_default[] = {GJITEN_DATADIR "/dics/edict\nEnglish-main",NULL};
   MATCH ("dictionary_list", g_strdupv (dict_list_default));
 
-  // TODO: do we need to add default edict path?
 
   return NULL;
 }
@@ -272,13 +335,13 @@ data_store_get_string (DataStore   *self,
 
   // return defaults
 
-  MATCH("dictpath", g_strdup ("/usr/share/gjiten/dics/"))
-  MATCH("kanjipad", g_strdup ("/usr/bin/kanjipad"))
+  MATCH("dictpath", g_strdup (GJITEN_DATADIR "/dics/"))
+  MATCH("kanjipad", g_strdup (GJITEN_BINDIR "/kanjipad"))
   MATCH("largefont", g_strdup ("Sans 14"))
   MATCH("normalfont", g_strdup ("Sans 22"))
   MATCH("version", g_strdup ("3.0"))
 
-  MATCH ("kanjidicfile", g_strdup ("/usr/share/gjiten/dics/kanjidic"));
+  MATCH ("kanjidicfile", g_strdup (GJITEN_DATADIR "/dics/kanjidic"));
 
   #define HISTORY(N) MATCH ("history" N, g_strdup("testhistory" N));
   HISTORY ("0"); HISTORY ("1"); HISTORY ("2"); HISTORY ("3"); HISTORY ("4"); HISTORY ("5"); HISTORY ("6");

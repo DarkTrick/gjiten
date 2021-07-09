@@ -84,6 +84,39 @@ data_store_get_int (DataStore   * self,
                     const gchar * section,
                     const gchar * key);
 
+DataStore *
+data_store_new();
+
+
+void
+data_store_free(DataStore *self);
+
+
+
+void
+data_store_set_boolean(DataStore   *self,
+                       const gchar * section,
+                       const gchar *key,
+                       gboolean    value);
+
+void
+data_store_set_string(DataStore   *self,
+                      const gchar * section,
+                      const gchar *key,
+                      const gchar *value);
+
+void
+data_store_set_int(DataStore   *self,
+                   const gchar * section,
+                   const gchar *key,
+                   int          value);
+
+void
+data_store_set_string_array (DataStore   *  self,
+                             const gchar *  section,
+                             const gchar *  key,
+                             const gchar *  value[],
+                             gint           length);
 
 
 #endif
