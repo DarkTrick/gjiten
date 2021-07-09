@@ -76,16 +76,6 @@ data_store_finalize(DataStore *self)
 }
 
 
-GSList *
-data_store_get_list   (DataStore   *self,
-                       const gchar * section,
-                       const gchar *key)
-{
-  // TODO: do we need to add default edict path?
-  return NULL;
-}
-
-
 gboolean
 data_store_get_boolean(DataStore   *self,
                        const gchar * section,
@@ -96,7 +86,6 @@ data_store_get_boolean(DataStore   *self,
   if (NULL == error)
     return ret;
 
-  GJITEN_DEBUG ("I could not find key \"%s::%s\". Use default.\n",section, key);
   // return defaults
 
   // gjiten
@@ -248,8 +237,18 @@ data_store_get_string_array (DataStore   * self,
                             const gchar * key,
                             gsize       * o_length)
 {
-  gchar ** ret = g_key_file_get_string_list (self->storage, section, key, o_length, NULL);
-  return ret;
+  GError * error = NULL;
+  gchar ** ret = g_key_file_get_string_list (self->storage, section, key, o_length, &error);
+  if (NULL == error)
+    return ret;
+
+  // return default values
+  gchar * dict_list_default[] = {"/usr/share/gjiten/dics/edict\nEnglish-main",NULL};
+  MATCH ("dictionary_list", g_strdupv (dict_list_default));
+
+  // TODO: do we need to add default edict path?
+
+  return NULL;
 }
 
 
@@ -271,7 +270,6 @@ data_store_get_string (DataStore   *self,
     return ret;
 
 
-  GJITEN_DEBUG ("I could not find key \"%s::%s\". Use default.\n",section, key);
   // return defaults
 
   MATCH("dictpath", g_strdup ("/usr/share/gjiten/dics/"))
@@ -316,7 +314,6 @@ data_store_get_int (DataStore   * self,
   if (NULL == error)
     return ret;
 
-  GJITEN_DEBUG ("I could not find key \"%s::%s\". Use default.\n",section, key);
 
   // return defaults
   MATCH ("maxwordmatches", 100);

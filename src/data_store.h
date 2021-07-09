@@ -50,10 +50,7 @@ data_store_init(DataStore *self);
 
 void
 data_store_finalize(DataStore *self);
-GSList *
-data_store_get_list   (DataStore   *self,
-                    const gchar * section,
-                       const gchar *key);
+
 
                        gboolean
 data_store_get_boolean(DataStore   *self,
