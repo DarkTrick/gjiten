@@ -158,7 +158,7 @@ static void Verbinit() {
   }
   // printf("SIZE: %d\n", radkfile_size);
   vinfl_start = (gchar *) mmap(NULL, vinfl_size, PROT_READ, MAP_SHARED, fd, 0);
-  if (vinfl_start == NULL) gjiten_abort_with_msg("mmap() failed for "VINFL_FILENAME"\n");
+  if (vinfl_start == MAP_FAILED) gjiten_abort_with_msg("mmap() failed for "VINFL_FILENAME"\n");
 
   //  printf("STRLEN: %d\n", strlen(radkfile));
 
