@@ -22,12 +22,14 @@ DIE=0
   DIE=1
 }
 
+
 (grep "^IT_PROG_INTLTOOL" $srcdir/configure.ac >/dev/null) && {
   (intltoolize --version) < /dev/null > /dev/null 2>&1 || {
     echo
     echo "**Error**: You must have \`intltool' installed."
-    echo "You can get it from:"
-    echo "  ftp://ftp.gnome.org/pub/GNOME/"
+    echo "On Ubuntu you can install it with:"
+    echo '  sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe"'
+    echo '  sudo apt install intltool intltool-debian'
     DIE=1
   }
 }
@@ -46,7 +48,9 @@ DIE=0
   (libtool --version) < /dev/null > /dev/null 2>&1 || {
     echo
     echo "**Error**: You must have \`libtool' installed."
-    echo "You can get it from: ftp://ftp.gnu.org/pub/gnu/"
+    echo "On Ubuntu you can install it with:"
+    echo '  sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe"'
+    echo '  sudo apt install libtool'
     DIE=1
   }
 }
@@ -55,11 +59,14 @@ DIE=0
   (grep "sed.*POTFILES" $srcdir/configure.ac) > /dev/null || \
   (glib-gettextize --version) < /dev/null > /dev/null 2>&1 || {
     echo
-    echo "**Error**: You must have \`glib' installed."
-    echo "You can get it from: ftp://ftp.gtk.org/pub/gtk"
+    echo "**Error**: You must have \`glib' 2.0-dev installed."
+    echo "On Ubuntu you can install it with:"
+    echo '  sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe"'
+    echo '  sudo apt install libglib2.0-dev'
     DIE=1
   }
 }
+
 
 (automake --version) < /dev/null > /dev/null 2>&1 || {
   echo
