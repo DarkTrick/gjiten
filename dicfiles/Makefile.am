@@ -1,2 +1,1 @@
-EXTRA_DIST = getdics.pl
-
+#EXTRA_DIST = getdics.pl

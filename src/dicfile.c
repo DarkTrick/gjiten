@@ -25,7 +25,7 @@
 #  include <config.h>
 #endif
 
-#include <libgnome/libgnome.h>
+#include <gtk/gtk.h>
 #include <unistd.h>
 #ifdef HAVE_INTTYPES_H
 #include <inttypes.h>
@@ -38,6 +38,8 @@
 
 #include "dicfile.h"
 #include "error.h"
+#include <glib/gi18n.h>
+#include <locale.h>
 
 gboolean dicfile_check_all(GSList *dicfile_list) {
   GSList *node;

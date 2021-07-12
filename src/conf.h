@@ -25,20 +25,25 @@
 #define __CONF_H__
 
 
-#include <gconf/gconf-client.h>
 #include <pango/pango-font.h>
 
-#include "kanjidic.h"
+#include "kanjidicconsts.h"
 #include "constants.h"
 #include "dicfile.h"
+#include "data_store.h"
 
 typedef struct _GjitenConfig GjitenConfig;
+
+// forward decls
+
 
 struct _GjitenConfig {
   gchar *version;
 
   GjitenDicfile *kanjidic;
   GSList *dicfile_list;
+
+  DataStore * data_store;
 
   char *history[60];
   gboolean toolbar;
@@ -84,9 +89,9 @@ struct _GjitenConfig {
 
 GjitenConfig *conf_load();
 void conf_save(GjitenConfig *conf);
-void conf_save_history(GList *history, GjitenConfig *conf);
+void conf_save_history(GtkListStore *history, GjitenConfig *conf);
 void conf_save_options(GjitenConfig *conf);
 gboolean conf_init_handler();
-void conf_close_handler();
+void conf_close_handler(GjitenConfig *self);
 
 #endif

@@ -24,20 +24,24 @@
 #ifndef __GJITEN_H__
 #define __GJITEN_H__
 
+#include "conf.h"
+#include "worddic.h"
+#include "kanjidic.h"
+
 typedef struct _GjitenApp GjitenApp;
 
 struct _GjitenApp {
-  WordDic *worddic;
+  GjWorddicWindow *worddic;
   KanjiDic *kanjidic;
   GjitenConfig *conf;
-  GtkWidget *pref_dialog;
 };
 
+GtkApplication * gjiten_new();
 
 void gjiten_start_kanjipad();
-void gjiten_create_about();
+void gjiten_start_worddic();
+void gjiten_start_kanjidic();
 void gjiten_display_manual();
 void gjiten_exit();
-void gjiten_clear_entry_box(gpointer entrybox);
 
 #endif

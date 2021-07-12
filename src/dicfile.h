@@ -24,7 +24,7 @@
 #ifndef __DICFILE_H__
 #define __DICFILE_H__
 
-#include <glib.h>
+#include <gtk/gtk.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>

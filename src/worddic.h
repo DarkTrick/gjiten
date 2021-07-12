@@ -1,10 +1,11 @@
 /* -*- Mode: C; tab-width: 2;   indent-tabs-mode: space; c-basic-offset: 2 -*- */
 /* vi: set ts=2 sw=2: */
-/* worddic.h
+/* gjiten.c
 
    GJITEN : A GTK+/GNOME BASED JAPANESE DICTIONARY
 
    Copyright (C) 1999 - 2005 Botond Botyanszki <boti@rocketmail.com>
+                 2021 DarkTrick - 69f925915ed0193a3b841aeec09451df2326f104
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published  by
@@ -20,44 +21,25 @@
    along with this program; if not, write to the Free Software
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  */
-#ifndef __WORDDIC_H__
-#define __WORDDIC_H__
-typedef struct _WordDic WordDic;
 
-struct _WordDic {
-/* GTK variables */
-  GtkWidget *hbox_options;
-  GtkWidget *window;
-  GtkWidget *combo_entry;
-  GtkWidget *text_results_view;
-  GtkTextBuffer *text_results_buffer;
-  GtkTextBuffer *info_buffer;
-  GtkWidget *menu_selectdic;
-  GtkWidget *combo_entry_dictfile;
-  GtkWidget *checkb_verb;
-  GtkWidget *checkb_autoadjust;
-  GtkWidget *checkb_searchlimit;
-  GtkWidget *spinb_searchlimit;
-  GtkWidget *radiob_jpexact;
-  GtkWidget *radiob_startw;
-  GtkWidget *radiob_endw;
-  GtkWidget *radiob_any;
-  GtkWidget *radiob_engexact;
-  GtkWidget *radiob_words;
-  GtkWidget *radiob_partial;
-  GtkWidget *radiob_searchdic;
-  GtkWidget *radiob_searchall;
-  GtkWidget *button_back;
-  GtkWidget *button_forward;
-  GtkTextIter iter;
-  GtkWidget *appbar_mainwin;
-  GList *combo_entry_glist;
-  GtkWidget *dicselection_menu;
-  GtkTextTag *tag_large_font;
-  GdkCursor *selection_cursor;
-  GdkCursor *regular_cursor;
-  gboolean is_cursor_regular;
+#ifndef __GJ_WORDDIC_WINDOW_H__
+#define __GJ_WORDDIC_WINDOW_H__
+
+#include <gtk/gtk.h>
+
+G_BEGIN_DECLS
+
+#define TYPE_GJ_WORDDIC_WINDOW gj_worddic_window_get_type ()
+
+
+
+
+G_DECLARE_DERIVABLE_TYPE (GjWorddicWindow, gj_worddic_window, GJ, WORDDIC_WINDOW, GtkApplicationWindow)
+struct _GjWorddicWindowClass
+{
+  GtkApplicationWindowClass parent_class;
 };
+
 
 
 /* verb deinflection */
@@ -69,11 +51,17 @@ struct vinfl_struct {
 
 
 
-WordDic *worddic_create();
-void worddic_paste(WordDic *worddic);
+GjWorddicWindow* worddic_create();
+void             worddic_close();
+GtkWidget*       gj_worddic_window_new(GtkApplication * app);
+void worddic_paste();
 void on_search_clicked();
 void worddic_update_dic_menu();
 void worddic_apply_fonts();
-void enable_quick_lookup_mode(WordDic *wordDic);
+void enable_quick_lookup_mode();
 
-#endif
+void worddic_lookup_word(gchar * word_to_lookup);
+
+G_END_DECLS
+
+#endif /* include-protector */

@@ -10,16 +10,12 @@
 #define RADKFILE_NAME GJITEN_DATADIR"/radkfile.utf8"
 #define GJITEN_DICDIR GJITEN_DATADIR"/dics"
 
-#define GCONF_ROOT "/apps/gjiten"
-#define GCONF_PATH_GENERAL GCONF_ROOT"/general"
-#define GCONF_PATH_KANJIDIC  GCONF_ROOT"/kanjidic"
 
-
-#define EXACT_MATCH 1     //jp en
-#define START_WITH_MATCH 2   //jp
+#define EXACT_MATCH 1      //jp en
+#define START_WITH_MATCH 2 //jp
 #define END_WITH_MATCH 3   //jp
-#define ANY_MATCH 4     //jp en
-#define WORD_MATCH 5     //en
+#define ANY_MATCH 4        //jp en
+#define WORD_MATCH 5       //en
 
 
 #define SRCH_OK    0
