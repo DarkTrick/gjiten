@@ -5,7 +5,7 @@ INTLTOOL_FILES = intltool-extract.in \
 
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = src data help po gnome pixmaps dicfiles
+SUBDIRS = src data po gnome pixmaps dicfiles
 
 EXTRA_DIST = README TODO ChangeLog COPYING rpm/gjiten.spec scripts/make_debs scripts/make_release\
 	     intltool-extract.in intltool-merge.in intltool-update.in

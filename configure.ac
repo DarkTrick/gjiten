@@ -108,12 +108,22 @@ AC_OUTPUT([ Makefile
 	    rpm/gjiten.spec
 	    src/Makefile
 	    data/Makefile
-	    help/Makefile
 	    po/Makefile.in
 	    po/Makefile
 	    gnome/Makefile
-	    help/C/Makefile
-	    help/ja/Makefile
 	    dicfiles/Makefile
 	  ])
 
+# removed from AC_OUTPUT (above):
+#	    help/Makefile
+#			help/c/Makefile
+#			help/ja/Makefile
+# removed from Makefile.ac SUBDIRS=[...]
+#			help
+AC_MSG_WARN()
+AC_MSG_WARN(Help files are not generated yet, because of deprecated dependency.)
+AC_MSG_WARN()
+
+AC_MSG_NOTICE()
+AS_IF([test "x${enable_debug}" == "xyes"], AC_MSG_NOTICE(IMPORTANT: Run gjiten from `src` directory. Otherwise static paths won't work), AC_MSG_NOTICE(IMPORTANT: You have to `make install` before running GJiten. Otherwise static paths will not be valid.))
+AC_MSG_NOTICE()
