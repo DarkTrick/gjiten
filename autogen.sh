@@ -4,7 +4,6 @@
 srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
 
-touch $srcdir/README
 
 DIE=0
 
@@ -149,7 +148,6 @@ done
 
 #conf_flags="--enable-maintainer-mode"
 
-rm -f README
 
 if test x$NOCONFIGURE = x; then
   echo Running $srcdir/configure $conf_flags "$@" ...
