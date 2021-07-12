@@ -6,7 +6,6 @@ AC_INIT(gjiten, 3.0)
 AC_CONFIG_SRCDIR(src/main.c)
 AM_INIT_AUTOMAKE
 
-#TODO:completely remove if ok apparently # dnl AM_MAINTAINER_MODE
 AM_CONFIG_HEADER([config.h])
 
 AC_ISC_POSIX
@@ -50,6 +49,7 @@ AM_GNU_GETTEXT_VERSION([0.17])
 PACKAGE_LOCALE_DIR="${datadir}/locale"
 AC_SUBST(PACKAGE_LOCALE_DIR)
 
+
 AC_ARG_ENABLE(debug,
 		[  --enable-debug  Print debugging information. This is a feature which should not be usually enabled.],
                 [debugging=yes; DEBUG_FLAGS="-ggdb -DDEBUG_GJITEN"],
@@ -63,23 +63,45 @@ AC_SUBST(GJITEN_CFLAGS)
 AC_SUBST(GJITEN_LIBS)
 AC_SUBST(PACKAGE_VERSION)
 
+
 dnl Set PACKAGE_LOCALE_DIR in config.h.
 gjiten_prefix="$prefix"
 test "x$gjiten_prefix" = xNONE && gjiten_prefix=$ac_default_prefix
-PACKAGE_LOCALE_DIR="$gjiten_prefix/share/locale"
+AS_IF([test "x${enable_debug}" == "xyes"], gjiten_prefix="..", )
+
+SHARE_DIR="$gjiten_prefix/share"
+AS_IF([test "x${enable_debug}" == "xyes"], gjiten_prefix="$gjiten_prefix/.", )
+AC_DEFINE_UNQUOTED(SHARE_DIR, "$SHARE_DIR", ["$SHARE_DIR"])
+
+PACKAGE_LOCALE_DIR="$SHARE_DIR/locale"
 AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "$PACKAGE_LOCALE_DIR", ["$PACKAGE_LOCALE_DIR"])
+
 GJITEN_BINDIR="$gjiten_prefix/bin"
+AS_IF([test "x${enable_debug}" == "xyes"], GJITEN_BINDIR="./", )
 AC_DEFINE_UNQUOTED(GJITEN_BINDIR, "$GJITEN_BINDIR", ["$GJITEN_BINDIR"])
-GJITEN_DATADIR="$gjiten_prefix/share/gjiten"
+
+GJITEN_DATADIR="$SHARE_DIR/gjiten"
+AS_IF([test "x${enable_debug}" == "xyes"], GJITEN_DATADIR="../data", )
 AC_DEFINE_UNQUOTED(GJITEN_DATADIR, "$GJITEN_DATADIR", ["$GJITEN_DATADIR"])
-GNOMEDATADIR="$gjiten_prefix/share"
+
+GNOMEDATADIR="$SHARE_DIR"
+AS_IF([test "x${enable_debug}" == "xyes"], GNOMEDATADIR="../data", )
 AC_DEFINE_UNQUOTED(GNOMEDATADIR, "$GNOMEDATADIR", ["$GNOMEDATADIR"])
-PIXMAPDIR="$gjiten_prefix/share/pixmaps"
+
+PIXMAPDIR="$SHARE_DIR/pixmaps"
+AS_IF([test "x${enable_debug}" == "xyes"], PIXMAPDIR="../pixmaps", )
 AC_DEFINE_UNQUOTED(PIXMAPDIR, "$PIXMAPDIR", ["$PIXMAPDIR"])
+
+PIXMAPDIR_LOGO="$PIXMAPDIR/gjiten"
+AS_IF([test "x${enable_debug}" == "xyes"], PIXMAPDIR_LOGO="../pixmaps", )
+AC_DEFINE_UNQUOTED(PIXMAPDIR_LOGO, "$PIXMAPDIR_LOGO", ["$PIXMAPDIR_LOGO"])
+
+
 MAINTAINERCLEANFILES=Makefile.in
 AC_SUBST(MAINTAINERCLEANFILES)
 CLEANFILES='*~'
 AC_SUBST(CLEANFILES)
+
 
 AC_OUTPUT([ Makefile
 	    pixmaps/Makefile
