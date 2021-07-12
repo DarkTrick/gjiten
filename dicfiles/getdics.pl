@@ -5,6 +5,11 @@
 #
 # It will fetch and unpack dicfiles then configure the gconf settings.
 #
+# ATTENTION!
+# This script is not maintained. It contains invalid URIs and
+# code for gconf, which is not used anymore.
+#
+#
 
 use strict;
 
@@ -79,7 +84,7 @@ foreach my $bin ($WGET, $GUNZIP, $ICONV, $GCONFTOOL) {
 }
 
 my @dics = (
-	    { 
+	    {
 		"url"         => "http://ftp.cc.monash.edu.au/pub/nihongo/edict.gz",
 		"package"     => "edict.gz",
 		"format"      => "gzip",
@@ -89,7 +94,7 @@ my @dics = (
 		"name"        => "English-main",
 		"section"     => "basic",
 	    },
-	    { 
+	    {
 		"url"         => "http://ftp.cc.monash.edu.au/pub/nihongo/kanjidic.gz",
 		"package"     => "kanjidic.gz",
 		"format"      => "gzip",
@@ -101,7 +106,7 @@ my @dics = (
 	    },
 
 # EXTRA
-	    { 
+	    {
 		"url"         => "http://ftp.cc.monash.edu.au/pub/nihongo/enamdict.gz",
 		"package"     => "enamdict.gz",
 		"format"      => "gzip",
@@ -111,7 +116,7 @@ my @dics = (
 		"name"        => "Japanese Names",
 		"section"     => "extra",
 	    },
-	    { 
+	    {
 		"url"         => "http://ftp.cc.monash.edu.au/pub/nihongo/j_places.gz",
 		"package"     => "j_places.gz",
 		"format"      => "gzip",
@@ -121,7 +126,7 @@ my @dics = (
 		"name"        => "Japanese Places",
 		"section"     => "extra",
 	    },
-	    { 
+	    {
 		"url"         => "http://ftp.cc.monash.edu.au/pub/nihongo/lifscdic.Z",
 		"package"     => "lifscdic.Z",
 		"format"      => "gzip",
@@ -131,7 +136,7 @@ my @dics = (
 		"name"        => "Science",
 		"section"     => "extra",
 	    },
-	    { 
+	    {
 		"url"         => "http://ftp.cc.monash.edu.au/pub/nihongo/engscidic.gz",
 		"package"     => "engscidic.gz",
 		"format"      => "gzip",
@@ -141,7 +146,7 @@ my @dics = (
 		"name"        => "Science2",
 		"section"     => "extra",
 	    },
-	    { 
+	    {
 		"url"         => "http://ftp.cc.monash.edu.au/pub/nihongo/compdic.gz",
 		"package"     => "compdic.gz",
 		"format"      => "gzip",
@@ -151,7 +156,7 @@ my @dics = (
 		"name"        => "Computers",
 		"section"     => "extra",
 	    },
-	    { 
+	    {
 		"url"         => "http://ftp.cc.monash.edu.au/pub/nihongo/geodic.gz",
 		"package"     => "geodic.gz",
 		"format"      => "gzip",
@@ -161,7 +166,7 @@ my @dics = (
 		"name"        => "Geology",
 		"section"     => "extra",
 	    },
-	    { 
+	    {
 		"url"         => "http://ftp.cc.monash.edu.au/pub/nihongo/compverb.gz",
 		"package"     => "compverb.gz",
 		"format"      => "gzip",
@@ -171,7 +176,7 @@ my @dics = (
 		"name"        => "Compound Verbs",
 		"section"     => "extra",
 	    },
-	    { 
+	    {
 		"url"         => "http://ftp.cc.monash.edu.au/pub/nihongo/riverwater.zip",
 		"package"     => "riverwater.zip",
 		"format"      => "zip",
@@ -181,7 +186,7 @@ my @dics = (
 		"name"        => "RiverWater",
 		"section"     => "extra",
 	    },
-	    { 
+	    {
 		"url"         => "http://ftp.cc.monash.edu.au/pub/nihongo/4jword3_edict.zip",
 		"package"     => "4jword3_edict.zip",
 		"format"      => "zip",
@@ -191,7 +196,7 @@ my @dics = (
 		"name"        => "4-kanji expressions",
 		"section"     => "extra",
 	    },
-	    { 
+	    {
 		"url"         => "http://ftp.cc.monash.edu.au/pub/nihongo/classical.zip",
 		"package"     => "classical.zip",
 		"format"      => "zip",
@@ -201,7 +206,7 @@ my @dics = (
 		"name"        => "Classical Japanese",
 		"section"     => "extra",
 	    },
-	    { 
+	    {
 		"url"         => "http://ftp.cc.monash.edu.au/pub/nihongo/lingdic.zip",
 		"package"     => "lingdic.zip",
 		"format"      => "zip",
@@ -211,7 +216,7 @@ my @dics = (
 		"name"        => "Linguistics",
 		"section"     => "extra",
 	    },
-	    { 
+	    {
 		"url"         => "http://ftp.cc.monash.edu.au/pub/nihongo/forsdic.zip",
 		"package"     => "forsdic.zip",
 		"format"      => "zip",
@@ -221,7 +226,7 @@ my @dics = (
 		"name"        => "Forestry",
 		"section"     => "extra",
 	    },
-	    { 
+	    {
 		"url"         => "http://ftp.cc.monash.edu.au/pub/nihongo/aviation.zip",
 		"package"     => "aviation.zip",
 		"format"      => "zip",
@@ -231,7 +236,7 @@ my @dics = (
 		"name"        => "Aviation",
 		"section"     => "extra",
 	    },
-	    { 
+	    {
 		"url"         => "http://ftp.cc.monash.edu.au/pub/nihongo/concrete.zip",
 		"package"     => "concrete.zip",
 		"format"      => "zip",
@@ -241,7 +246,7 @@ my @dics = (
 		"name"        => "Concrete",
 		"section"     => "extra",
 	    },
-	    { 
+	    {
 		"url"         => "http://ftp.cc.monash.edu.au/pub/nihongo/findic.zip",
 		"package"     => "findic.zip",
 		"format"      => "zip",
@@ -251,7 +256,7 @@ my @dics = (
 		"name"        => "Financial",
 		"section"     => "extra",
 	    },
-	    { 
+	    {
 		"url"         => "http://ftp.cc.monash.edu.au/pub/nihongo/mktdic.zip",
 		"package"     => "mktdic.zip",
 		"format"      => "zip",
@@ -261,7 +266,7 @@ my @dics = (
 		"name"        => "Marketing",
 		"section"     => "extra",
 	    },
-	    { 
+	    {
 		"url"         => "http://ftp.cc.monash.edu.au/pub/nihongo/stardict.zip",
 		"package"     => "stardict.zip",
 		"format"      => "zip",
@@ -271,7 +276,7 @@ my @dics = (
 		"name"        => "Stars-Constellations",
 		"section"     => "extra",
 	    },
-	    { 
+	    {
 		"url"         => "http://ftp.cc.monash.edu.au/pub/nihongo/buddhdic.zip",
 		"package"     => "buddhdic.zip",
 		"format"      => "zip",
@@ -282,7 +287,7 @@ my @dics = (
 		"section"     => "extra",
 	    },
 # GERMAN
-	    { 
+	    {
 		"url"         => "http://bibiko.de/WdJTUTF.zip",
 		"package"     => "WdJTUTF.zip",
 		"format"      => "zip",
@@ -293,7 +298,7 @@ my @dics = (
 		"section"     => "extra",
 	    },
 # CHINESE
-	    { 
+	    {
 		"url"         => "http://www.mandarintools.com/download/cedictu8.zip",
 		"package"     => "cedictu8.zip",
 		"format"      => "zip",
@@ -327,7 +332,7 @@ foreach my $dic (@dics) {
 
     next if (($BASICSETUP == 1) && ($dic->{section} eq "extra"));
 
-# DOWNLOAD    
+# DOWNLOAD
 #wget -c http://ftp.cc.monash.edu.au/pub/nihongo/edict.gz -O dl/edict.gz
     if (! -f "$DLDIR/$dic->{package}") {
 	print "Downloading \"$dic->{name}\" from $dic->{url}\n";
@@ -385,7 +390,7 @@ foreach my $dic (@dics) {
 	}
     }
     $dic->{status} = "converted";
-    
+
 
 # MOVE
 
@@ -452,7 +457,7 @@ else {
       <locale name=\"C\">
          <short>List of dictionary files</short>
          <long>
-          List of dictionary files. Format is: 
+          List of dictionary files. Format is:
           [/path/to/dicfile1\ndictionary_name1,/path/to/dicfile2\ndictionary_name2]
           Don\'t put a space after the comma!
          </long>
