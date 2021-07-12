@@ -238,7 +238,7 @@ void gjiten_create_about() {
   const gchar *translator = _("TRANSLATORS! PUT YOUR NAME HERE");
   GdkPixbuf *pixbuf = NULL;
 
-  pixbuf = gdk_pixbuf_new_from_file(PIXMAPDIR"/gjiten/gjiten-logo.png", NULL);
+  pixbuf = gdk_pixbuf_new_from_file(PIXMAPDIR_LOGO "/gjiten-logo.png", NULL);
 
   if (strncmp(translator, "translated_by", 13) == 0) translator = NULL;
 
@@ -252,7 +252,7 @@ void gjiten_create_about() {
     gtk_about_dialog_set_program_name       (about, "gjiten");
     gtk_about_dialog_set_version            (about, VERSION);
     gtk_about_dialog_set_copyright          (about, "Copyright \xc2\xa9 1999-2005 Botond Botyanszki\nCopyright \xc2\xa9 2019-2021 DarkTrick");
-    gtk_about_dialog_set_comments           (about, _("gjiten is a Japanese dictionary for Gnome"));
+    gtk_about_dialog_set_comments           (about, _("Gjiten is a Japanese dictionary."));
     gtk_about_dialog_set_authors            (about, (const char **)authors);
     gtk_about_dialog_set_documenters        (about, (const char **)documenters);
     gtk_about_dialog_set_translator_credits (about, (const char *)translator);
