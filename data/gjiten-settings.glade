@@ -2,6 +2,21 @@
 <!-- Generated with glade 3.38.2 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
+  <object class="GtkImage" id="dialog_apply">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">dialog-ok</property>
+  </object>
+  <object class="GtkImage" id="dialog_cancel">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">dialog-cancel</property>
+  </object>
+  <object class="GtkImage" id="dialog_close">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">dialog-close</property>
+  </object>
   <object class="GtkDialog" id="dialog_change_dic">
     <property name="can-focus">False</property>
     <property name="title" translatable="yes">Dictionary file properties</property>
@@ -17,11 +32,11 @@
             <property name="can-focus">False</property>
             <child>
               <object class="GtkButton" id="button13">
+                <property name="label">Apply</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="can-default">True</property>
                 <property name="receives-default">False</property>
-                <property name="label">Apply</property>
                 <property name="image">dialog_apply</property>
               </object>
               <packing>
@@ -32,11 +47,11 @@
             </child>
             <child>
               <object class="GtkButton" id="button14">
+                <property name="label">Close</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="can-default">True</property>
                 <property name="receives-default">False</property>
-                <property name="label">Close</property>
                 <property name="image">dialog_close</property>
               </object>
               <packing>
@@ -137,6 +152,16 @@
       <action-widget response="-7">button14</action-widget>
     </action-widgets>
   </object>
+  <object class="GtkImage" id="dialog_help">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">dialog-question</property>
+  </object>
+  <object class="GtkImage" id="dialog_ok">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">dialog-ok</property>
+  </object>
   <object class="GtkImage" id="list_add">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
@@ -172,11 +197,11 @@
             </child>
             <child>
               <object class="GtkButton" id="okbutton2">
+                <property name="label">Close</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="can-default">True</property>
                 <property name="receives-default">False</property>
-                <property name="label">Close</property>
                 <property name="image">dialog_close</property>
               </object>
               <packing>
@@ -287,31 +312,6 @@
     <property name="can-focus">False</property>
     <property name="icon-name">list-remove</property>
   </object>
-  <object class="GtkImage" id="dialog_ok">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="icon-name">dialog-ok</property>
-  </object>
-  <object class="GtkImage" id="dialog_apply">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="icon-name">dialog-ok</property>
-  </object>
-  <object class="GtkImage" id="dialog_help">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="icon-name">dialog-question</property>
-  </object>
-  <object class="GtkImage" id="dialog_close">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="icon-name">dialog-close</property>
-  </object>
-  <object class="GtkImage" id="dialog_cancel">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="icon-name">dialog-cancel</property>
-  </object>
   <object class="GtkImage" id="list_up">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
@@ -338,12 +338,11 @@
             <property name="can-focus">False</property>
             <child>
               <object class="GtkButton" id="helpbutton1">
-
+                <property name="label">Help</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="can-default">True</property>
                 <property name="receives-default">False</property>
-                <property name="label">Help</property>
                 <property name="image">dialog_help</property>
               </object>
               <packing>
@@ -354,11 +353,11 @@
             </child>
             <child>
               <object class="GtkButton" id="cancelbutton1">
+                <property name="label">Cancel</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="can-default">True</property>
                 <property name="receives-default">False</property>
-                <property name="label">Cancel</property>
                 <property name="image">dialog_cancel</property>
               </object>
               <packing>
@@ -369,11 +368,11 @@
             </child>
             <child>
               <object class="GtkButton" id="applybutton1">
+                <property name="label">Apply</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="can-default">True</property>
                 <property name="receives-default">False</property>
-                <property name="label">Apply</property>
                 <property name="image">dialog_apply</property>
               </object>
               <packing>
@@ -384,11 +383,11 @@
             </child>
             <child>
               <object class="GtkButton" id="okbutton1">
+                <property name="label">OK</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="can-default">True</property>
                 <property name="receives-default">False</property>
-                <property name="label">OK</property>
                 <property name="image">dialog_ok</property>
               </object>
               <packing>
@@ -460,11 +459,11 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="button_removedic">
+                            <property name="label">Remove</property>
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
                             <property name="can-default">True</property>
                             <property name="receives-default">False</property>
-                            <property name="label">Remove</property>
                             <property name="image">list_remove</property>
                           </object>
                           <packing>
@@ -552,58 +551,56 @@
                         <property name="can-focus">False</property>
                         <property name="label-xalign">0</property>
                         <child>
-                          
-                              <object class="GtkBox" id="vbox2">
+                          <object class="GtkBox" id="vbox2">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="orientation">vertical</property>
+                            <child>
+                              <object class="GtkCheckButton" id="checkbutton_search_kata_on_hira">
+                                <property name="label" translatable="yes">Search for Katakana on Hiragana input</property>
                                 <property name="visible">True</property>
-                                <property name="can-focus">False</property>
-                                <property name="orientation">vertical</property>
-                                <child>
-                                  <object class="GtkCheckButton" id="checkbutton_search_kata_on_hira">
-                                    <property name="label" translatable="yes">Search for Katakana on Hiragana input</property>
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">True</property>
-                                    <property name="receives-default">False</property>
-                                    <property name="use-underline">True</property>
-                                    <property name="draw-indicator">True</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkCheckButton" id="checkbutton_search_hira_on_kata">
-                                    <property name="label" translatable="yes">Search for Hiragana on Katakana input</property>
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">True</property>
-                                    <property name="receives-default">False</property>
-                                    <property name="use-underline">True</property>
-                                    <property name="draw-indicator">True</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkCheckButton" id="checkbutton_verb_deinflection">
-                                    <property name="label" translatable="yes">Verb deinflection</property>
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">True</property>
-                                    <property name="receives-default">False</property>
-                                    <property name="use-underline">True</property>
-                                    <property name="draw-indicator">True</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
-                                    <property name="position">2</property>
-                                  </packing>
-                                </child>
+                                <property name="can-focus">True</property>
+                                <property name="receives-default">False</property>
+                                <property name="use-underline">True</property>
+                                <property name="draw-indicator">True</property>
                               </object>
-                          
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkCheckButton" id="checkbutton_search_hira_on_kata">
+                                <property name="label" translatable="yes">Search for Hiragana on Katakana input</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="receives-default">False</property>
+                                <property name="use-underline">True</property>
+                                <property name="draw-indicator">True</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkCheckButton" id="checkbutton_verb_deinflection">
+                                <property name="label" translatable="yes">Verb deinflection</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="receives-default">False</property>
+                                <property name="use-underline">True</property>
+                                <property name="draw-indicator">True</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">2</property>
+                              </packing>
+                            </child>
+                          </object>
                         </child>
                       </object>
                       <packing>
@@ -817,6 +814,7 @@
                 <property name="can-focus">True</property>
                 <child>
                   <object class="GtkBox" id="table_fonts">
+                    <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="orientation">vertical</property>
                     <child>
@@ -875,32 +873,28 @@
                           </packing>
                         </child>
                         <child>
-                          
-                              <object class="GtkFontButton" id="font_picker_normal_font">
-                                <property name="visible">True</property>
-                                <property name="can-focus">True</property>
-                                <property name="receives-default">True</property>
-                                <property name="font">Sans 12</property>
-                                <property name="language">en-us</property>
-                                <property name="preview-text">Nihongo: 日本語</property>
-                              </object>
-                           
+                          <object class="GtkFontButton" id="font_picker_normal_font">
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">True</property>
+                            <property name="font">Sans 12</property>
+                            <property name="language">en-us</property>
+                            <property name="preview-text">Nihongo: 日本語</property>
+                          </object>
                           <packing>
                             <property name="left-attach">2</property>
                             <property name="top-attach">0</property>
                           </packing>
                         </child>
                         <child>
-                          
-                              <object class="GtkFontButton" id="font_picker_large_font">
-                                <property name="visible">True</property>
-                                <property name="can-focus">True</property>
-                                <property name="receives-default">True</property>
-                                <property name="font">Sans 12</property>
-                                <property name="language">en-us</property>
-                                <property name="preview-text">Nihongo: 日本語</property>
-                              </object>
-                            
+                          <object class="GtkFontButton" id="font_picker_large_font">
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">True</property>
+                            <property name="font">Sans 12</property>
+                            <property name="language">en-us</property>
+                            <property name="preview-text">Nihongo: 日本語</property>
+                          </object>
                           <packing>
                             <property name="left-attach">2</property>
                             <property name="top-attach">1</property>
