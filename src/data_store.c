@@ -151,7 +151,7 @@ data_store_get_boolean(DataStore   *self,
   MATCH ("searchlimit_enabled", FALSE);
 
   MATCH ("toolbar", TRUE);
-  MATCH ("menubar", TRUE);
+  MATCH ("menubar", FALSE);
 
   // kanjidict
   MATCH ("bushu", FALSE);
