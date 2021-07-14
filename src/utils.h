@@ -80,4 +80,8 @@ chr_replace (char *str,
 gint
 gtk_list_store_length(GtkListStore *self);
 
+gtk_application_set_accel_for_action (GtkApplication *self,
+                                      const gchar * detailed_action_name,
+                                      const gchar * accelerator);
+
 #endif

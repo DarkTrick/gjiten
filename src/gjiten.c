@@ -270,9 +270,9 @@ void gjiten_create_about() {
 
 
 static void
-_create_submenu (const gchar *name,
-                       GMenu *content,
-                       GMenu *parent)
+_create_submenu(const gchar *name,
+                      GMenu *content,
+                      GMenu *parent)
 {
   GMenuItem * button = g_menu_item_new (name, "unused");
   g_menu_item_set_submenu (button, G_MENU_MODEL (content));
@@ -315,14 +315,28 @@ _gjiten_create_menu(GtkApplication *app)
     GMenu * content = g_menu_new();
     g_menu_append (content, _("_Quit"), "app.quit");
     _create_submenu (_("_File"), content, menubar);
+
+    gtk_application_set_accel_for_action (app, "app.quit", "<Ctrl>Q");
   }
 
   {
     GMenu * content = g_menu_new();
-    g_menu_append (content, _("_Copy"),        "edit.copy"        );
-    g_menu_append (content, _("_Paste"),       "edit.paste"       );
-    g_menu_append (content, _("_Preferences"), "app.preferences" );
+
+    GMenu * section1 = g_menu_new();
+    GMenu * section2 = g_menu_new();
+
+    g_menu_append (section1, _("_Copy"),        "window.copy"     );
+    g_menu_append (section1, _("_Paste"),       "window.paste"    );
+    g_menu_append (section2, _("_Preferences"), "app.preferences" );
+
+    g_menu_append_section (content, NULL, G_MENU_MODEL (section1));
+    g_menu_append_section (content, NULL, G_MENU_MODEL (section2));
+
     _create_submenu (_("_Edit"), content, menubar);
+
+    // set shortcuts
+    gtk_application_set_accel_for_action (app, "window.copy", "<Ctrl>C");
+    gtk_application_set_accel_for_action (app, "window.paste", "<Ctrl>P");
   }
 
   {
@@ -339,6 +353,7 @@ _gjiten_create_menu(GtkApplication *app)
     g_menu_append (content, _("_About"),  "app.showAbout" );
     _create_submenu (_("_Help"), content, menubar);
   }
+
 
   gtk_application_set_menubar (GTK_APPLICATION (g_application_get_default()), G_MENU_MODEL (menubar));
 

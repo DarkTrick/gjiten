@@ -321,4 +321,11 @@ chr_replace (char *str,
   return str;
 }
 
+gtk_application_set_accel_for_action (GtkApplication *self,
+                                      const gchar * detailed_action_name,
+                                      const gchar * accelerator)
+{
+  const gchar * const shortcuts[] = {accelerator, NULL};
+  gtk_application_set_accels_for_action (self, detailed_action_name, shortcuts);
+}
 
