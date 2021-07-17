@@ -380,7 +380,7 @@ findk_by_radical(gchar *radstrg)
       rad_info = g_hash_table_lookup (kanjiDic->rad_info_hash, (gpointer) g_utf8_get_char (radstr_ptr));
       if (rad_info == NULL) {
         tmprad = g_strndup (radstr_ptr, sizeof (gunichar));
-        gjiten_print_error (_("I don't seem to recognize this radical: '%s' !!!\n"), tmprad);
+        gjiten_print_error (_("I don't seem to recognize this radical: '%s'.\n"), tmprad);
         g_free (tmprad);
         return;
       }
