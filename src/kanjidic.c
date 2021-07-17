@@ -950,7 +950,7 @@ kanjidic_close()
     gtk_widget_destroy (tmp->window);
     g_free (tmp);
     gjitenApp->kanjidic = NULL;
-    gjiten_exit ();
+    gjiten_quit_if_all_windows_closed ();
   }
 }
 

@@ -137,11 +137,11 @@ gjiten_init_cmd_params(GApplication *app, GjitenConfig *conf)
  * Cleanly close gjiten from anywhere in the code
 **/
 void
-gjiten_exit()
+gjiten_quit_if_all_windows_closed()
 {
   if ((gjitenApp->worddic == NULL) && (gjitenApp->kanjidic == NULL))
   {
-    GJITEN_DEBUG ("gjiten_exit ()\n");
+    GJITEN_DEBUG ("gjiten_quit_if_all_windows_closed ()\n");
     conf_save_options (gjitenApp->conf);
     dicutil_unload_dic ();
     conf_close_handler (gjitenApp->conf);
@@ -159,7 +159,8 @@ gjiten_exit()
 void
 gjiten_quit()
 {
-  // Close all windows (gjiten_exit () will be called inside there)
+  // Close all windows
+  // (gjiten_quit_if_all_windows_closed () will be called inside there)
   kanjidic_close ();
   worddic_close ();
 }

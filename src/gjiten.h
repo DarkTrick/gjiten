@@ -42,6 +42,6 @@ void gjiten_start_kanjipad();
 void gjiten_start_worddic();
 void gjiten_start_kanjidic();
 void gjiten_display_manual();
-void gjiten_exit();
+void gjiten_quit_if_all_windows_closed();
 
 #endif

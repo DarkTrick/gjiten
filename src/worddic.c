@@ -925,7 +925,7 @@ worddic_close()
     self = NULL;
     gjitenApp->worddic = NULL;
   }
-  gjiten_exit ();
+  gjiten_quit_if_all_windows_closed ();
 
 }
 
