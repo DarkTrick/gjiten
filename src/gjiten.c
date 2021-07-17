@@ -218,26 +218,11 @@ gjiten_display_manual(GtkWidget *widget,
 
   if (retval == FALSE)
   {
-    GtkWidget *dialog;
-
     char * message = _("(unknown)");
     if (err)
       message = err->message;
 
-    dialog = gtk_message_dialog_new (GTK_WINDOW (widget),
-                                    GTK_DIALOG_DESTROY_WITH_PARENT,
-                                    GTK_MESSAGE_ERROR,
-                                    GTK_BUTTONS_CLOSE,
-                                    _("Could not display help: %s"),
-                                    message);
-
-    g_signal_connect (G_OBJECT (dialog), "response",
-                      G_CALLBACK (gtk_widget_destroy),
-                      NULL);
-
-    gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
-
-    gtk_widget_show (dialog);
+    gjiten_show_error (GTK_WINDOW (widget), _("Could not display help: %s"), message);
 
     if (err)
       g_error_free (err);

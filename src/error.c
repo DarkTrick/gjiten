@@ -31,27 +31,38 @@
 static gchar *gjiten_errors;
 
 
-
-int
-gjiten_print_error(const char *fmt, ... )
+/**
+ *  Show non-modal error message
+ **/
+static int
+_show_error(GtkWindow  *parent_nullable,
+            const char *format, va_list args)
 {
   GtkWidget *dialog;
   gint ret = -1;
-  va_list args;
   gchar *pstr;
 
-  va_start (args, fmt);
-  pstr = g_strdup_vprintf (fmt, args);
-  va_end (args);
+  pstr = g_strdup_vprintf (format, args);
 
-  if (pstr != NULL) {
-    dialog = gtk_message_dialog_new (NULL, 0, GTK_MESSAGE_ERROR,  GTK_BUTTONS_OK, "%s", pstr );
+  if (pstr != NULL)
+  {
+    GtkDialogFlags destroy_style = GTK_DIALOG_DESTROY_WITH_PARENT;
+    if (NULL == parent_nullable)
+      destroy_style = 0;
+
+    dialog = gtk_message_dialog_new (parent_nullable,
+                                     destroy_style,
+                                     GTK_MESSAGE_ERROR,
+                                     GTK_BUTTONS_OK,
+                                     "%s", pstr );
+
 
     g_signal_connect_swapped (G_OBJECT (dialog), "response",
                              G_CALLBACK (gtk_widget_destroy),
                              G_OBJECT (dialog));
 
     gtk_widget_show_all (dialog);
+
     g_free (pstr);
   }
   return ret;
@@ -59,6 +70,49 @@ gjiten_print_error(const char *fmt, ... )
 
 
 
+/**
+ *  Show non-modal error message,
+ *  window-bound (parent window given)
+ **/
+int
+gjiten_show_error(GtkWindow  *parent,
+                  const char *format, ... )
+{
+
+  va_list args;
+  int ret = -1;
+
+  va_start (args, format);
+  ret = _show_error (parent, format, args);
+  va_end (args);
+
+  return ret;
+}
+
+
+
+/**
+ *  Show non-modal error message,
+ *  application-bound (no parent window given)
+ **/
+int
+gjiten_print_error(const char *format, ... )
+{
+  va_list args;
+  int ret = -1;
+
+  va_start (args, format);
+  ret = _show_error (NULL, format, args);
+  va_end (args);
+
+  return ret;
+}
+
+
+
+/**
+ *  Show modal error message
+ **/
 void
 gjiten_print_error_and_wait(const char *fmt, ... )
 {
