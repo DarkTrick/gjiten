@@ -276,7 +276,7 @@ gpointer
 boxed_copy_default(gpointer _self)
 {
   g_error ("❌ CRITICAL ERROR: Boxed type does not support copying, but copy was called.\n");
-  exit(1);
+  exit (1);
 }
 
 
@@ -386,7 +386,7 @@ parsing_data_on_error(GMarkupParseContext *context,
 {
   ParsingData * self = ((ParsingData*)_self);
 
-  self->strErrors = g_slist_append (self->strErrors, g_strdup(error->message));
+  self->strErrors = g_slist_append (self->strErrors, g_strdup (error->message));
 
   // DO NOT FREE `error` (or the like). Otherwise we get
   //  a segfault at `g_markup_parse_context_unref`
@@ -635,7 +635,7 @@ gconf_reader_parse_string(const gchar * gconf_content,
                           gsize         length,
                           GSList     ** o_str_errorlist_nullable)
 {
-  ParsingData * parsing_data = parsing_data_new();
+  ParsingData * parsing_data = parsing_data_new ();
   {
     GMarkupParser parser = {parsing_data_start_element, parsing_data_end_element,
                             parsing_data_text, NULL, parsing_data_on_error};

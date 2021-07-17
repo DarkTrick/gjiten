@@ -106,29 +106,40 @@ gpointer current_glist_word = NULL;
 gint current_history_word_index = -1;
 
 
-static void worddic_copy() {
+
+static void
+worddic_copy()
+{
   gchar *selection = NULL;
 
-  selection = gtk_clipboard_wait_for_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY));
+  selection = gtk_clipboard_wait_for_text (gtk_clipboard_get (GDK_SELECTION_PRIMARY));
   if (selection == NULL) return;
-  gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_CLIPBOARD), selection, -1);
+  gtk_clipboard_set_text (gtk_clipboard_get (GDK_SELECTION_CLIPBOARD), selection, -1);
 }
 
-void worddic_paste() {
+
+
+void
+worddic_paste()
+{
   gchar *selection = NULL;
 
   // First try the current selection
-  selection = gtk_clipboard_wait_for_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY));
-  if (selection != NULL) gtk_entry_set_text(GTK_ENTRY (gtk_bin_get_child (GTK_BIN (wordDic->combo_entry))), selection);
+  selection = gtk_clipboard_wait_for_text (gtk_clipboard_get (GDK_SELECTION_PRIMARY));
+  if (selection != NULL) gtk_entry_set_text (GTK_ENTRY (gtk_bin_get_child (GTK_BIN (wordDic->combo_entry))), selection);
   else {
     // if we didn't get anything, try the default clipboard
-    selection = gtk_clipboard_wait_for_text(gtk_clipboard_get(GDK_SELECTION_CLIPBOARD));
-      if (selection != NULL) gtk_entry_set_text(GTK_ENTRY (gtk_bin_get_child (GTK_BIN (wordDic->combo_entry))), selection);
+    selection = gtk_clipboard_wait_for_text (gtk_clipboard_get (GDK_SELECTION_CLIPBOARD));
+      if (selection != NULL) gtk_entry_set_text (GTK_ENTRY (gtk_bin_get_child (GTK_BIN (wordDic->combo_entry))), selection);
   }
 }
 
+
+
 // Load & initialize verb inflection details
-static void Verbinit() {
+static void
+Verbinit()
+{
   static int verbinit_done = FALSE;
   gchar *tmp_ptr;
   int vinfl_size = 0;
@@ -141,77 +152,85 @@ static void Verbinit() {
   struct vinfl_struct *tmp_vinfl_struct;
   GSList *tmp_list_ptr = NULL;
 
-  if (verbinit_done == TRUE) {
-    //printf("Verbinit already done!\n");
+  if (verbinit_done == TRUE)
+  {
+    //printf ("Verbinit already done!\n");
     return;
   }
 
-  if (stat(VINFL_FILENAME, &vinfl_stat) != 0) {
-    printf("**ERROR** %s: stat() \n", VINFL_FILENAME);
+  if (stat (VINFL_FILENAME, &vinfl_stat) != 0)
+  {
+    printf ("**ERROR** %s: stat () \n", VINFL_FILENAME);
     error = TRUE;
   }
   vinfl_size = vinfl_stat.st_size;
-  fd = open(VINFL_FILENAME, O_RDONLY);
-  if (fd == -1) {
-    printf("**ERROR** %s: open()\n", VINFL_FILENAME);
+  fd = open (VINFL_FILENAME, O_RDONLY);
+  if (fd == -1)
+  {
+    printf ("**ERROR** %s: open ()\n", VINFL_FILENAME);
     error = TRUE;
   }
-  // printf("SIZE: %d\n", radkfile_size);
-  vinfl_start = (gchar *) mmap(NULL, vinfl_size, PROT_READ, MAP_SHARED, fd, 0);
-  if (vinfl_start == MAP_FAILED) gjiten_abort_with_msg("mmap() failed for "VINFL_FILENAME"\n");
+  // printf ("SIZE: %d\n", radkfile_size);
+  vinfl_start = (gchar *) mmap (NULL, vinfl_size, PROT_READ, MAP_SHARED, fd, 0);
+  if (vinfl_start == MAP_FAILED) gjiten_abort_with_msg ("mmap () failed for "VINFL_FILENAME"\n");
 
-  //  printf("STRLEN: %d\n", strlen(radkfile));
+  //  printf ("STRLEN: %d\n", strlen (radkfile));
 
-  vinfl_end = vinfl_start + strlen(vinfl_start);
+  vinfl_end = vinfl_start + strlen (vinfl_start);
   vinfl_ptr = vinfl_start;
 
   vinfl_part = 1;
-  while ((vinfl_ptr < vinfl_end) && (vinfl_ptr != NULL)) {
-    if (*vinfl_ptr == '#') {  //find $ as first char on the line
-      vinfl_ptr = get_eof_line(vinfl_ptr, vinfl_end); //Goto next line
+  while ((vinfl_ptr < vinfl_end) && (vinfl_ptr != NULL))
+  {
+    if (*vinfl_ptr == '#') //find $ as first char on the line
+    {
+      vinfl_ptr = get_eof_line (vinfl_ptr, vinfl_end); //Goto next line
       continue;
     }
     if (*vinfl_ptr == '$') vinfl_part = 2;
 
-    switch (vinfl_part) {
+    switch (vinfl_part)
+    {
     case 1:
-      if (g_ascii_isdigit(*vinfl_ptr) == TRUE) { //Conjugation numbers
-        conj_type = atoi(vinfl_ptr);
+      if (g_ascii_isdigit (*vinfl_ptr) == TRUE)//Conjugation numbers
+      {
+        conj_type = atoi (vinfl_ptr);
         if ((conj_type < 0) || (conj_type > 39)) break;
-        while (g_ascii_isdigit(*vinfl_ptr) == TRUE) vinfl_ptr = g_utf8_next_char(vinfl_ptr); //skip the number
-        while (g_ascii_isspace(*vinfl_ptr) == TRUE) vinfl_ptr = g_utf8_next_char(vinfl_ptr); //skip the space
+        while (g_ascii_isdigit (*vinfl_ptr) == TRUE) vinfl_ptr = g_utf8_next_char (vinfl_ptr); //skip the number
+        while (g_ascii_isspace (*vinfl_ptr) == TRUE) vinfl_ptr = g_utf8_next_char (vinfl_ptr); //skip the space
         tmp_ptr = vinfl_ptr; // beginning of conju  gation definition;
-        vinfl_ptr = get_eof_line(vinfl_ptr, vinfl_end); //  find end of line
-        vconj_types[conj_type] = g_strndup(tmp_ptr, vinfl_ptr - tmp_ptr -1);
-        //printf("%d : %s\n", conj_type, vconj_types[conj_  type]);
+        vinfl_ptr = get_eof_line (vinfl_ptr, vinfl_end); //  find end of line
+        vconj_types[conj_type] = g_strndup (tmp_ptr, vinfl_ptr - tmp_ptr -1);
+        //printf ("%d : %s\n", conj_type, vconj_types[conj_  type]);
       }
       break;
     case 2:
-      if (g_unichar_iswide(g_utf8_get_char(vinfl_ptr)) == FALSE) {
-        vinfl_ptr =  get_eof_line(vinfl_ptr, vinfl_end);
+      if (g_unichar_iswide (g_utf8_get_char (vinfl_ptr)) == FALSE)
+      {
+        vinfl_ptr =  get_eof_line (vinfl_ptr, vinfl_end);
         break;
       }
-      tmp_vinfl_struct = (struct vinfl_struct *) malloc (sizeof(struct vinfl_struct));
+      tmp_vinfl_struct = (struct vinfl_struct *) malloc (sizeof (struct vinfl_struct));
       tmp_ptr = vinfl_ptr;
-      while (g_unichar_iswide(g_utf8_get_char(vinfl_ptr)) == TRUE) {
-        vinfl_ptr = g_utf8_next_char(vinfl_ptr); //skip the conjugation
+      while (g_unichar_iswide (g_utf8_get_char (vinfl_ptr)) == TRUE) {
+        vinfl_ptr = g_utf8_next_char (vinfl_ptr); //skip the conjugation
       }
-      tmp_vinfl_struct->conj = g_strndup(tmp_ptr, vinfl_ptr - tmp_ptr); //store the conjugation
-      while (g_ascii_isspace(*vinfl_ptr) == TRUE) {
-        vinfl_ptr = g_utf8_next_char(vinfl_ptr); //skip the space
+      tmp_vinfl_struct->conj = g_strndup (tmp_ptr, vinfl_ptr - tmp_ptr); //store the conjugation
+      while (g_ascii_isspace (*vinfl_ptr) == TRUE) {
+        vinfl_ptr = g_utf8_next_char (vinfl_ptr); //skip the space
       }
       tmp_ptr = vinfl_ptr;
-      while (g_unichar_iswide(g_utf8_get_char(vinfl_ptr)) == TRUE) {
-        vinfl_ptr = g_utf8_next_char(vinfl_ptr); //skip the inflection
+      while (g_unichar_iswide (g_utf8_get_char (vinfl_ptr)) == TRUE) {
+        vinfl_ptr = g_utf8_next_char (vinfl_ptr); //skip the inflection
       }
-      tmp_vinfl_struct->infl = g_strndup(tmp_ptr, vinfl_ptr - tmp_ptr); //store the inflection
-      while (g_ascii_isspace(*vinfl_ptr) == TRUE) {
-        vinfl_ptr = g_utf8_next_char(vinfl_ptr); //skip the space
+      tmp_vinfl_struct->infl = g_strndup (tmp_ptr, vinfl_ptr - tmp_ptr); //store the inflection
+      while (g_ascii_isspace (*vinfl_ptr) == TRUE) {
+        vinfl_ptr = g_utf8_next_char (vinfl_ptr); //skip the space
       }
-      tmp_vinfl_struct->type = vconj_types[atoi(vinfl_ptr)];
-      vinfl_ptr =  get_eof_line(vinfl_ptr, vinfl_end);
-      //printf("%s|%s|%s\n", tmp_vinfl_struct->conj, tmp_vinfl_struct->infl, tmp_vinfl_struct->type);
-      tmp_list_ptr = g_slist_append(tmp_list_ptr, tmp_vinfl_struct);
+      tmp_vinfl_struct->type = vconj_types[atoi (vinfl_ptr)];
+      vinfl_ptr =  get_eof_line (vinfl_ptr, vinfl_end);
+      //printf ("%s|%s|%s\n", tmp_vinfl_struct->conj, tmp_vinfl_struct->infl, tmp_vinfl_struct->type);
+      tmp_list_ptr = g_slist_append (tmp_list_ptr, tmp_vinfl_struct);
       if (vinfl_list == NULL) vinfl_list = tmp_list_ptr;
       break;
     }
@@ -219,29 +238,39 @@ static void Verbinit() {
   verbinit_done = TRUE;
 }
 
-static inline void print_matches_in(GjitenDicfile *dicfile) {
+
+
+static inline void
+print_matches_in(GjitenDicfile *dicfile)
+{
   //Print dicfile name if all dictionaries are selected
-  if ((dicname_printed == FALSE) && (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wordDic->radiob_searchall)))) {
+  if ((dicname_printed == FALSE) && (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (wordDic->radiob_searchall))))
+  {
     gchar *tmpstr, *hl_start_ptr;
     gint hl_start = 0;
     gint hl_end = 0;
 
-    tmpstr = g_strdup_printf(_("Matches in %s:\n"), dicfile->name);
-    hl_start_ptr = strstr(tmpstr, dicfile->name);
+    tmpstr = g_strdup_printf (_("Matches in %s:\n"), dicfile->name);
+    hl_start_ptr = strstr (tmpstr, dicfile->name);
     hl_start = hl_start_ptr == NULL ? 0 : hl_start_ptr - tmpstr;
-    hl_end = hl_start + strlen(dicfile->name);
+    hl_end = hl_start + strlen (dicfile->name);
 
     if (hl_start > 0)
-      gtk_text_buffer_insert(GTK_TEXT_BUFFER(wordDic->text_results_buffer), &wordDic->iter, tmpstr, hl_start);
-    gtk_text_buffer_insert_with_tags_by_name(GTK_TEXT_BUFFER(wordDic->text_results_buffer), &wordDic->iter,
+      gtk_text_buffer_insert (GTK_TEXT_BUFFER (wordDic->text_results_buffer), &wordDic->iter, tmpstr, hl_start);
+    gtk_text_buffer_insert_with_tags_by_name (GTK_TEXT_BUFFER (wordDic->text_results_buffer), &wordDic->iter,
                                              dicfile->name, -1, "brown_foreground", NULL);
-    gtk_text_buffer_insert(GTK_TEXT_BUFFER(wordDic->text_results_buffer), &wordDic->iter, tmpstr + hl_end, -1);
-    g_free(tmpstr);
+    gtk_text_buffer_insert (GTK_TEXT_BUFFER (wordDic->text_results_buffer), &wordDic->iter, tmpstr + hl_end, -1);
+    g_free (tmpstr);
     dicname_printed = TRUE;
   }
 }
 
-static void print_verb_inflections(GjitenDicfile *dicfile, gchar *srchstrg) {
+
+
+static void
+print_verb_inflections(GjitenDicfile *dicfile,
+                       gchar         *srchstrg)
+{
   int srchresp, roff, rlen;
   guint32 oldrespos, respos;
   int gjit_search = SRCH_START;
@@ -252,20 +281,22 @@ static void print_verb_inflections(GjitenDicfile *dicfile, gchar *srchstrg) {
   int printit = TRUE;
 
   tmp_list_ptr = vinfl_list;
-  if (vinfl_list == NULL) {
-    //printf("VINFL LIST == NULL\n");
+  if (vinfl_list == NULL)
+  {
+    //printf ("VINFL LIST == NULL\n");
     return;
   }
 
-  deinflected = (gchar *) g_malloc(strlen(srchstrg) + 20);
+  deinflected = (gchar *) g_malloc (strlen (srchstrg) + 20);
 
   do {
     tmp_vinfl_struct = (struct vinfl_struct *) tmp_list_ptr->data;
-    if (strg_end_compare(srchstrg, tmp_vinfl_struct->conj) == TRUE) {
+    if (strg_end_compare (srchstrg, tmp_vinfl_struct->conj) == TRUE)
+    {
 
       // create deinflected string
-      strncpy(deinflected, srchstrg, strlen(srchstrg) - strlen(tmp_vinfl_struct->conj));
-      strcpy(deinflected + strlen(srchstrg) - strlen(tmp_vinfl_struct->conj),
+      strncpy (deinflected, srchstrg, strlen (srchstrg) - strlen (tmp_vinfl_struct->conj));
+      strcpy (deinflected + strlen (srchstrg) - strlen (tmp_vinfl_struct->conj),
              tmp_vinfl_struct->infl);
 
       oldrespos = srchpos = 0;
@@ -274,12 +305,13 @@ static void print_verb_inflections(GjitenDicfile *dicfile, gchar *srchstrg) {
       do { // search loop
         oldrespos = respos;
 
-        srchresp = search4string(gjit_search, dicfile, deinflected, &respos, &roff, &rlen, repstr);
-        //    printf("respos:%d, oldrespos:%d, roffset:%d, rlen:%d\nrepstr:%s\n", respos, oldrespos, roff, rlen, repstr);
+        srchresp = search4string (gjit_search, dicfile, deinflected, &respos, &roff, &rlen, repstr);
+        //    printf ("respos:%d, oldrespos:%d, roffset:%d, rlen:%d\nrepstr:%s\n", respos, oldrespos, roff, rlen, repstr);
         if (srchresp != SRCH_OK)  {
           break;   //No more matches
         }
-        if (gjit_search == SRCH_START) {
+        if (gjit_search == SRCH_START)
+        {
           srchpos = respos;
           gjit_search = SRCH_CONT;
         }
@@ -288,38 +320,43 @@ static void print_verb_inflections(GjitenDicfile *dicfile, gchar *srchstrg) {
 
         printit = TRUE;
 
-        if (is_kanji_only(repstr) == TRUE) {
+        if (is_kanji_only (repstr) == TRUE)
           printit = FALSE;
-        }
-        else if (strlen(tmp_vinfl_struct->conj) == strlen(srchstrg))
+        else if (strlen (tmp_vinfl_struct->conj) == strlen (srchstrg))
           printit = FALSE; // don't display if conjugation is the same length as the srchstrg
-        else if (get_jp_match_type(repstr, deinflected, roff) != EXACT_MATCH)
+        else if (get_jp_match_type (repstr, deinflected, roff) != EXACT_MATCH)
           printit = FALSE; // Display only EXACT_MATCHes
 
-        if (printit == TRUE) {
-          print_matches_in(dicfile);
-          gtk_text_buffer_insert_with_tags_by_name(GTK_TEXT_BUFFER(wordDic->text_results_buffer), &wordDic->iter,
+        if (printit == TRUE)
+        {
+          print_matches_in (dicfile);
+          gtk_text_buffer_insert_with_tags_by_name (GTK_TEXT_BUFFER (wordDic->text_results_buffer), &wordDic->iter,
                                                    _("Possible inflected verb or adjective: "),
                                                    -1, "brown_foreground", NULL);
-          gtk_text_buffer_insert(GTK_TEXT_BUFFER(wordDic->text_results_buffer), &wordDic->iter, tmp_vinfl_struct->type, -1);
-          gtk_text_buffer_insert(GTK_TEXT_BUFFER(wordDic->text_results_buffer), &wordDic->iter, " " , -1);
-          gtk_text_buffer_insert(GTK_TEXT_BUFFER(wordDic->text_results_buffer), &wordDic->iter, tmp_vinfl_struct->conj, -1);
-          gtk_text_buffer_insert(GTK_TEXT_BUFFER(wordDic->text_results_buffer), &wordDic->iter, "\xe2\x86\x92", -1); //arrow
-          gtk_text_buffer_insert(GTK_TEXT_BUFFER(wordDic->text_results_buffer), &wordDic->iter, tmp_vinfl_struct->infl, -1);
-          gtk_text_buffer_insert(GTK_TEXT_BUFFER(wordDic->text_results_buffer), &wordDic->iter, "\n   ", -1);
-          print_result(repstr, roff, deinflected);
+          gtk_text_buffer_insert (GTK_TEXT_BUFFER (wordDic->text_results_buffer), &wordDic->iter, tmp_vinfl_struct->type, -1);
+          gtk_text_buffer_insert (GTK_TEXT_BUFFER (wordDic->text_results_buffer), &wordDic->iter, " " , -1);
+          gtk_text_buffer_insert (GTK_TEXT_BUFFER (wordDic->text_results_buffer), &wordDic->iter, tmp_vinfl_struct->conj, -1);
+          gtk_text_buffer_insert (GTK_TEXT_BUFFER (wordDic->text_results_buffer), &wordDic->iter, "\xe2\x86\x92", -1); //arrow
+          gtk_text_buffer_insert (GTK_TEXT_BUFFER (wordDic->text_results_buffer), &wordDic->iter, tmp_vinfl_struct->infl, -1);
+          gtk_text_buffer_insert (GTK_TEXT_BUFFER (wordDic->text_results_buffer), &wordDic->iter, "\n   ", -1);
+          print_result (repstr, roff, deinflected);
           word_matches++;
         }
       } while (srchresp == SRCH_OK);
     }
-  } while ((tmp_list_ptr = g_slist_next(tmp_list_ptr)) != NULL);
+  } while ((tmp_list_ptr = g_slist_next (tmp_list_ptr)) != NULL);
 
-  g_free(deinflected);
+  g_free (deinflected);
 
 }
 
 
-static void print_result(gchar *txt2print, int result_offset, gchar *searchstrg) {
+
+static void
+print_result(gchar *txt2print,
+             int    result_offset,
+             gchar *searchstrg)
+{
   gchar *strg_to_roff;
   glong strlen_to_roff;
   gchar *currentchar;
@@ -328,89 +365,99 @@ static void print_result(gchar *txt2print, int result_offset, gchar *searchstrg)
   GtkTextMark *linestart;
   GtkTextIter startmatch, endmatch;
   // for readability
-  GtkTextBuffer * text_buffer_results = GTK_TEXT_BUFFER(wordDic->text_results_buffer);
+  GtkTextBuffer * text_buffer_results = GTK_TEXT_BUFFER (wordDic->text_results_buffer);
 
-  linestart = gtk_text_buffer_create_mark(text_buffer_results,"linestart",
+  linestart = gtk_text_buffer_create_mark (text_buffer_results,"linestart",
                                           &wordDic->iter, TRUE);
 
-  strg_to_roff = (gchar *) g_strndup(txt2print, result_offset);
-  strlen_to_roff = g_utf8_strlen(strg_to_roff, -1);
+  strg_to_roff = (gchar *) g_strndup (txt2print, result_offset);
+  strlen_to_roff = g_utf8_strlen (strg_to_roff, -1);
 
   currentchar = txt2print;
 
   // find end of [KANJI]
-  while (!((*currentchar == '[') || (*currentchar == '/'))) {
-    if ((size_t) (currentchar - txt2print) >= strlen(txt2print)) break;
-    currentchar = g_utf8_next_char(currentchar);
+  while (!((*currentchar == '[') || (*currentchar == '/')))
+  {
+    if ((size_t) (currentchar - txt2print) >= strlen (txt2print)) break;
+    currentchar = g_utf8_next_char (currentchar);
   }
-  currentchar = g_utf8_prev_char(currentchar); // go back to the space
+  currentchar = g_utf8_prev_char (currentchar); // go back to the space
 
 
   //print out japanese word ([KANJI])
-  if (gjitenApp->conf->bigwords == FALSE) {
-    gtk_text_buffer_insert(text_buffer_results, &wordDic->iter,
+  if (gjitenApp->conf->bigwords == FALSE)
+  {
+    gtk_text_buffer_insert (text_buffer_results, &wordDic->iter,
                           txt2print, currentchar - txt2print);
   }
   else {
-    gtk_text_buffer_insert_with_tags_by_name(text_buffer_results, &wordDic->iter,
+    gtk_text_buffer_insert_with_tags_by_name (text_buffer_results, &wordDic->iter,
                                              txt2print, currentchar - txt2print, "largefont", NULL);
   }
 
-  currentchar = g_utf8_next_char(currentchar);
+  currentchar = g_utf8_next_char (currentchar);
   // Do we have a kana reading?
-  if (*(currentchar) == '[')  {
-    gtk_text_buffer_insert(text_buffer_results, &wordDic->iter, " (", 2);
-    currentchar = kana_start = g_utf8_next_char(currentchar);
+  if (*(currentchar) == '[')
+  {
+    gtk_text_buffer_insert (text_buffer_results, &wordDic->iter, " (", 2);
+    currentchar = kana_start = g_utf8_next_char (currentchar);
     // find end of kana reading ( ']' )
-    while(*(currentchar) != ']') {
-      currentchar = g_utf8_next_char(currentchar);
+    while (*(currentchar) != ']'){
+      currentchar = g_utf8_next_char (currentchar);
     }
     // print out kana reading
-    gtk_text_buffer_insert(text_buffer_results, &wordDic->iter,
+    gtk_text_buffer_insert (text_buffer_results, &wordDic->iter,
                           kana_start, currentchar - kana_start);
-    gtk_text_buffer_insert(text_buffer_results, &wordDic->iter, ") ", 2);
+    gtk_text_buffer_insert (text_buffer_results, &wordDic->iter, ") ", 2);
     currentchar += 3;
   }
-  else {
+  else
+  {
     // No kana reading, just insert [space]
-    gtk_text_buffer_insert(text_buffer_results, &wordDic->iter, " ", 1);
+    gtk_text_buffer_insert (text_buffer_results, &wordDic->iter, " ", 1);
     currentchar++;
   }
 
   // print out the rest of the line
-  while (currentchar < txt2print + strlen(txt2print)) {
+  while (currentchar < txt2print + strlen (txt2print))
+  {
     if (*currentchar == '\n') break;
     exp_start = currentchar;
     while (!((*currentchar == '/') || (*currentchar == '\n'))) {
-      currentchar = g_utf8_next_char(currentchar);
+      currentchar = g_utf8_next_char (currentchar);
     }
     if (*currentchar == '\n') break;
     //print out expression
-    gtk_text_buffer_insert(text_buffer_results, &wordDic->iter, exp_start,
+    gtk_text_buffer_insert (text_buffer_results, &wordDic->iter, exp_start,
                           currentchar - exp_start);
-    gtk_text_buffer_insert(text_buffer_results, &wordDic->iter, "; ", 2);
-    currentchar = g_utf8_next_char(currentchar);
+    gtk_text_buffer_insert (text_buffer_results, &wordDic->iter, "; ", 2);
+    currentchar = g_utf8_next_char (currentchar);
   }
 
   // insert linebreak
-  gtk_text_buffer_insert(text_buffer_results,&wordDic->iter, "\n", 1);
+  gtk_text_buffer_insert (text_buffer_results,&wordDic->iter, "\n", 1);
 
   // print a little distance between results
-  gtk_text_buffer_insert_with_tags_by_name(text_buffer_results, &wordDic->iter,
+  gtk_text_buffer_insert_with_tags_by_name (text_buffer_results, &wordDic->iter,
                                            "\n",1, "small_distance", NULL);
 
   //find searchstrg matches in the line. we print and highlight it.
-  gtk_text_buffer_get_iter_at_mark(text_buffer_results, &endmatch, linestart);
+  gtk_text_buffer_get_iter_at_mark (text_buffer_results, &endmatch, linestart);
 
-  while (gtk_text_iter_forward_search(&endmatch, searchstrg, 0,
-                                      &startmatch, &endmatch, &wordDic->iter) == TRUE) {
-    gtk_text_buffer_apply_tag_by_name(text_buffer_results, "blue_foreground",
+  while (gtk_text_iter_forward_search (&endmatch, searchstrg, 0,
+                                      &startmatch, &endmatch, &wordDic->iter) == TRUE)
+  {
+    gtk_text_buffer_apply_tag_by_name (text_buffer_results, "blue_foreground",
                                       &startmatch, &endmatch);
   }
 }
 
 
-static void search_in_dictfile_and_print(GjitenDicfile *dicfile, gchar *srchstrg) {
+
+static void
+search_in_dictfile_and_print(GjitenDicfile *dicfile,
+                             gchar         *srchstrg)
+{
   gint srchresp, roff, rlen;
   gchar repstr[1024];
   guint32 respos, oldrespos;
@@ -425,40 +472,45 @@ static void search_in_dictfile_and_print(GjitenDicfile *dicfile, gchar *srchstrg
   jpsrch = FALSE;
   currchar = srchstrg;
   do {
-    if (g_unichar_iswide(g_utf8_get_char(currchar)) == TRUE) { //FIXME: this doesn't detect all Japanese
+    if (g_unichar_iswide (g_utf8_get_char (currchar)) == TRUE) //FIXME: this doesn't detect all Japanese
+    {
       engsrch = FALSE;
       jpsrch = TRUE;
       break;
     }
-  } while ((currchar = g_utf8_find_next_char(currchar, srchstrg + strlen(srchstrg))) != NULL);
+  } while ((currchar = g_utf8_find_next_char (currchar, srchstrg + strlen (srchstrg))) != NULL);
 
   // Verb deinfelction
-  if (gjitenApp->conf->verb_deinflection == TRUE) print_verb_inflections(dicfile, srchstrg);
+  if (gjitenApp->conf->verb_deinflection == TRUE) print_verb_inflections (dicfile, srchstrg);
 
-  if (jpsrch == TRUE) {
-    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wordDic->radiob_jpexact))) match_criteria = EXACT_MATCH;
-    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wordDic->radiob_startw))) match_criteria = START_WITH_MATCH;
-    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wordDic->radiob_endw))) match_criteria = END_WITH_MATCH;
-    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wordDic->radiob_any))) match_criteria = ANY_MATCH;
+  if (jpsrch == TRUE)
+  {
+    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (wordDic->radiob_jpexact))) match_criteria = EXACT_MATCH;
+    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (wordDic->radiob_startw))) match_criteria = START_WITH_MATCH;
+    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (wordDic->radiob_endw))) match_criteria = END_WITH_MATCH;
+    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (wordDic->radiob_any))) match_criteria = ANY_MATCH;
   }
-  else {
-    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wordDic->radiob_engexact))) match_criteria = EXACT_MATCH;
-    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wordDic->radiob_words))) match_criteria = WORD_MATCH;
-    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wordDic->radiob_partial))) match_criteria = ANY_MATCH;
+  else
+  {
+    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (wordDic->radiob_engexact))) match_criteria = EXACT_MATCH;
+    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (wordDic->radiob_words))) match_criteria = WORD_MATCH;
+    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (wordDic->radiob_partial))) match_criteria = ANY_MATCH;
   }
 
   oldrespos = srchpos = 0;
 
-  do { // search loop
+  do
+  { // search loop
     oldrespos = respos;
 
-    srchresp = search4string(gjit_search, dicfile, srchstrg, &respos, &roff, &rlen, repstr);
+    srchresp = search4string (gjit_search, dicfile, srchstrg, &respos, &roff, &rlen, repstr);
 
-    if (srchresp != SRCH_OK)  {
+    if (srchresp != SRCH_OK) {
       return;   //No more matches
     }
 
-    if (gjit_search == SRCH_START) {
+    if (gjit_search == SRCH_START)
+    {
       srchpos = respos;
       gjit_search = SRCH_CONT;
     }
@@ -468,9 +520,11 @@ static void search_in_dictfile_and_print(GjitenDicfile *dicfile, gchar *srchstrg
 
     // Check match type and search options
     printit = FALSE;
-    if (jpsrch) {
-      match_type = get_jp_match_type(repstr, srchstrg, roff);
-      switch (match_criteria) {
+    if (jpsrch)
+    {
+      match_type = get_jp_match_type (repstr, srchstrg, roff);
+      switch (match_criteria)
+      {
       case EXACT_MATCH :
         if (match_type == EXACT_MATCH) printit = TRUE;
         break;
@@ -485,27 +539,30 @@ static void search_in_dictfile_and_print(GjitenDicfile *dicfile, gchar *srchstrg
         break;
       }
     }
-    else { //Non-japanese search
-      switch (match_criteria) {
+    else
+    { //Non-japanese search
+      switch (match_criteria)
+      {
       case EXACT_MATCH:
         //Must lie between two '/' delimiters
-        if ((repstr[roff - 1] == '/') && (repstr[roff + strlen(srchstrg)] == '/')) printit = TRUE;
+        if ((repstr[roff - 1] == '/') && (repstr[roff + strlen (srchstrg)] == '/')) printit = TRUE;
         //take "/(n) expression/" into accont
-        else if ((repstr[roff - 2] == ')') && (repstr[roff + strlen(srchstrg)] == '/')) printit = TRUE;
+        else if ((repstr[roff - 2] == ')') && (repstr[roff + strlen (srchstrg)] == '/')) printit = TRUE;
         //also match verbs starting with a 'to'. eg: "/(n) to do_something/"
-        else if ((repstr[roff - 2] == 'o') && (repstr[roff - 3] == 't') && (repstr[roff + strlen(srchstrg)] == '/')
+        else if ((repstr[roff - 2] == 'o') && (repstr[roff - 3] == 't') && (repstr[roff + strlen (srchstrg)] == '/')
                  && ((repstr[roff - 5] == ')') || (repstr[roff - 4] == '/'))) printit = TRUE;
         break;
       case WORD_MATCH:
-        if ((g_unichar_isalpha(g_utf8_get_char(repstr + roff + strlen(srchstrg))) == FALSE)  &&
-            (g_unichar_isalpha(g_utf8_get_char(repstr + roff - 1)) == FALSE)) {
+        if ((g_unichar_isalpha (g_utf8_get_char (repstr + roff + strlen (srchstrg))) == FALSE)  &&
+            (g_unichar_isalpha (g_utf8_get_char (repstr + roff - 1)) == FALSE))
+        {
 
-          //  printf("---------\n");
-          //  printf("%s", repstr);
-          //  if (g_unichar_isalpha(g_utf8_get_char(repstr + roff - 1)) == FALSE)  printf("beg:%s", repstr + roff - 1);
-          //  if (g_unichar_isalpha(g_utf8_get_char(repstr + roff + strlen(srchstrg))) == FALSE)
-          //  printf("end:%s", repstr + roff + strlen(srchstrg));
-          //  printf("---------\n");
+          //  printf ("---------\n");
+          //  printf ("%s", repstr);
+          //  if (g_unichar_isalpha (g_utf8_get_char (repstr + roff - 1)) == FALSE)  printf ("beg:%s", repstr + roff - 1);
+          //  if (g_unichar_isalpha (g_utf8_get_char (repstr + roff + strlen (srchstrg))) == FALSE)
+          //  printf ("end:%s", repstr + roff + strlen (srchstrg));
+          //  printf ("---------\n");
 
           printit = TRUE;
         }
@@ -516,78 +573,104 @@ static void search_in_dictfile_and_print(GjitenDicfile *dicfile, gchar *srchstrg
       }
     }
 
-    if (printit) {
+    if (printit)
+    {
 
-      //printf("offset: %d: ", roff);
-      //printf("jptype: %d\n", match_type);
-      //printf("criteria: %d\n", match_criteria);
+      //printf ("offset: %d: ", roff);
+      //printf ("jptype: %d\n", match_type);
+      //printf ("criteria: %d\n", match_criteria);
 
 
-      print_matches_in(dicfile);
-      print_result(repstr, roff, srchstrg);
-      //get_kanji_and_reading(repstr); FIXME
+      print_matches_in (dicfile);
+      print_result (repstr, roff, srchstrg);
+      //get_kanji_and_reading (repstr); FIXME
       word_matches++;
     }
-    if ((gjitenApp->conf->searchlimit_enabled == TRUE) && (word_matches >= gjitenApp->conf->maxwordmatches)) {
-      gtk_text_buffer_insert_with_tags_by_name(GTK_TEXT_BUFFER(wordDic->text_results_buffer), &wordDic->iter, _("Results truncated"), -1, "red_foreground", NULL);
+    if ((gjitenApp->conf->searchlimit_enabled == TRUE) && (word_matches >= gjitenApp->conf->maxwordmatches))
+    {
+      gtk_text_buffer_insert_with_tags_by_name (GTK_TEXT_BUFFER (wordDic->text_results_buffer), &wordDic->iter, _("Results truncated"), -1, "red_foreground", NULL);
       return;
     }
   } while (srchresp == SRCH_OK);
 }
 
-int lower_search_option() {
-  if (!(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wordDic->checkb_autoadjust))))
+
+
+int
+lower_search_option()
+{
+  if (!(gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (wordDic->checkb_autoadjust))))
     return FALSE;
-  if (jpsrch) { //Japanese srting
-    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wordDic->radiob_any)))
+  if (jpsrch) //Japanese string
+  {
+    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (wordDic->radiob_any)))
       return FALSE;
-    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wordDic->radiob_jpexact))) {
-      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wordDic->radiob_startw), TRUE);
+    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (wordDic->radiob_jpexact)))
+    {
+      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wordDic->radiob_startw), TRUE);
       return TRUE;
     }
-    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wordDic->radiob_startw))) {
-      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wordDic->radiob_endw), TRUE);
+    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (wordDic->radiob_startw)))
+    {
+      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wordDic->radiob_endw), TRUE);
       return TRUE;
     }
-    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wordDic->radiob_endw))) {
-      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wordDic->radiob_any), TRUE);
+    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (wordDic->radiob_endw)))
+    {
+      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wordDic->radiob_any), TRUE);
       return TRUE;
     }
   }
-  else if (engsrch) { //English
-    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wordDic->radiob_partial)))
+  else if (engsrch)//English
+  {
+    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (wordDic->radiob_partial)))
       return FALSE;
-    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wordDic->radiob_engexact))) {
-      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wordDic->radiob_words), TRUE);
+    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (wordDic->radiob_engexact)))
+    {
+      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wordDic->radiob_words), TRUE);
       return TRUE;
     }
-    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wordDic->radiob_words))) {
-      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wordDic->radiob_partial), TRUE);
+    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (wordDic->radiob_words)))
+    {
+      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wordDic->radiob_partial), TRUE);
       return TRUE;
     }
   }
   return FALSE;
 }
 
-static void worddic_hira_kata_search(GjitenDicfile *dicfile, gchar *srchstrg) {
+
+
+static void
+worddic_hira_kata_search(GjitenDicfile *dicfile,
+                         gchar         *srchstrg)
+{
   gchar *hirakata;
-  if (gjitenApp->conf->search_kata_on_hira) {
-    if (isKatakanaString(srchstrg) == TRUE) {
-      hirakata = kata2hira(srchstrg);
-      search_in_dictfile_and_print(dicfile, hirakata);
-      g_free(hirakata);
+  if (gjitenApp->conf->search_kata_on_hira)
+  {
+    if (isKatakanaString (srchstrg) == TRUE)
+    {
+      hirakata = kata2hira (srchstrg);
+      search_in_dictfile_and_print (dicfile, hirakata);
+      g_free (hirakata);
     }
   }
-  if (gjitenApp->conf->search_hira_on_kata) {
-    if (isHiraganaString(srchstrg) == TRUE) {
-      hirakata = hira2kata(srchstrg);
-      search_in_dictfile_and_print(dicfile, hirakata);
-      g_free(hirakata);
+  if (gjitenApp->conf->search_hira_on_kata)
+  {
+    if (isHiraganaString (srchstrg) == TRUE)
+    {
+      hirakata = hira2kata (srchstrg);
+      search_in_dictfile_and_print (dicfile, hirakata);
+      g_free (hirakata);
     }
   }
 }
 
-static void worddic_search(gchar *srchstrg) {
+
+
+static void
+worddic_search(gchar *srchstrg)
+{
   gchar appbarmsg[50];
   int truncated;
   GjitenDicfile *dicfile;
@@ -595,117 +678,149 @@ static void worddic_search(gchar *srchstrg) {
 
   word_matches = 0;
 
-  if (gjitenApp->conf->dicfile_list == NULL) {
-    snprintf(appbarmsg, 50, _("No dicfiles specified! Set your preferences first."));
-    gtk_label_set_text(GTK_LABEL(wordDic->appbar_mainwin),appbarmsg);
+  if (gjitenApp->conf->dicfile_list == NULL)
+  {
+    snprintf (appbarmsg, 50, _("No dicfiles specified! Set your preferences first."));
+    gtk_label_set_text (GTK_LABEL (wordDic->appbar_mainwin),appbarmsg);
     return;
   }
 
   // remove leading and trailing spaces
-  while (g_ascii_isspace(srchstrg[0])) srchstrg++;
-  while (g_ascii_isspace(srchstrg[strlen(srchstrg)-1]) != 0) srchstrg[strlen(srchstrg)-1] = 0;
+  while (g_ascii_isspace (srchstrg[0])) srchstrg++;
+  while (g_ascii_isspace (srchstrg[strlen (srchstrg)-1]) != 0) srchstrg[strlen (srchstrg)-1] = 0;
 
-  if (strlen(srchstrg) == 0) return;
-  gtk_entry_set_text(GTK_ENTRY (gtk_bin_get_child (GTK_BIN (wordDic->combo_entry))), srchstrg);
+  if (strlen (srchstrg) == 0) return;
+  gtk_entry_set_text (GTK_ENTRY (gtk_bin_get_child (GTK_BIN (wordDic->combo_entry))), srchstrg);
 
   truncated = 0;
-  while (TRUE) {
+  while (TRUE)
+  {
     // search in all dictionaries
-    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wordDic->radiob_searchall))) {
+    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (wordDic->radiob_searchall)))
+    {
       dicfile_node = gjitenApp->conf->dicfile_list;
-      while (dicfile_node != NULL) {
-        if (dicfile_node->data != NULL ) {
+      while (dicfile_node != NULL)
+      {
+        if (dicfile_node->data != NULL)
+        {
           dicfile = dicfile_node->data;
           dicname_printed = FALSE;
-          search_in_dictfile_and_print(dicfile, srchstrg);
-          worddic_hira_kata_search(dicfile, srchstrg);
+          search_in_dictfile_and_print (dicfile, srchstrg);
+          worddic_hira_kata_search (dicfile, srchstrg);
           if ((gjitenApp->conf->searchlimit_enabled == TRUE) && (word_matches >= gjitenApp->conf->maxwordmatches)) break;
         }
-        dicfile_node = g_slist_next(dicfile_node);
+        dicfile_node = g_slist_next (dicfile_node);
       }
     }
     // search only in selected dictionary
-    else {
-      search_in_dictfile_and_print(gjitenApp->conf->selected_dic, srchstrg);
-      worddic_hira_kata_search(gjitenApp->conf->selected_dic, srchstrg);
+    else
+    {
+      search_in_dictfile_and_print (gjitenApp->conf->selected_dic, srchstrg);
+      worddic_hira_kata_search (gjitenApp->conf->selected_dic, srchstrg);
     }
 
     if ((gjitenApp->conf->searchlimit_enabled == TRUE) && (word_matches >= gjitenApp->conf->maxwordmatches)) truncated = 1;
     if (word_matches > 0) break;  // No need to search anymore
-    if (lower_search_option() == FALSE) break;
+    if (lower_search_option () == FALSE) break;
   }
 
-  if (word_matches) {
-    if (truncated) snprintf(appbarmsg, 50, _("Matches found (truncated): %d"), word_matches);
-    else snprintf(appbarmsg, 50, _("Matches found: %d"), word_matches);
-    gtk_label_set_text(GTK_LABEL(wordDic->appbar_mainwin), appbarmsg);
+  if (word_matches)
+  {
+    if (truncated) snprintf (appbarmsg, 50, _("Matches found (truncated): %d"), word_matches);
+    else snprintf (appbarmsg, 50, _("Matches found: %d"), word_matches);
+    gtk_label_set_text (GTK_LABEL (wordDic->appbar_mainwin), appbarmsg);
   }
-  else gtk_label_set_text(GTK_LABEL(wordDic->appbar_mainwin), _("No match found!"));
+  else gtk_label_set_text (GTK_LABEL (wordDic->appbar_mainwin), _("No match found!"));
 }
 
-void button_back_maybe_activate(){
+
+
+void
+button_back_maybe_activate()
+{
   // If: Application just started up && old entries are available?
   //   OR: Can we go back one more time?
   gint length = gtk_tree_model_length (GTK_TREE_MODEL (wordDic->word_search_history_model));
   if ((length > 0 && -1 == current_history_word_index)
     || current_history_word_index+1 < length )
-    gtk_widget_set_sensitive(GTK_WIDGET (wordDic->button_back), TRUE);
+    gtk_widget_set_sensitive (GTK_WIDGET (wordDic->button_back), TRUE);
   else
-    gtk_widget_set_sensitive(GTK_WIDGET (wordDic->button_back), FALSE);
+    gtk_widget_set_sensitive (GTK_WIDGET (wordDic->button_back), FALSE);
 }
 
-void button_next_maybe_activate(){
-  if (current_history_word_index > 0) {
-    gtk_widget_set_sensitive(GTK_WIDGET (wordDic->button_forward), TRUE);
+
+
+void
+button_next_maybe_activate()
+{
+  if (current_history_word_index > 0)
+  {
+    gtk_widget_set_sensitive (GTK_WIDGET (wordDic->button_forward), TRUE);
   }
   else
-    gtk_widget_set_sensitive(GTK_WIDGET (wordDic->button_forward), FALSE);
+    gtk_widget_set_sensitive (GTK_WIDGET (wordDic->button_forward), FALSE);
 }
 
-void on_search_clicked() {
+
+
+void
+on_search_clicked()
+{
   static gchar *new_entry_text = NULL;
 
-  gdk_window_set_cursor(gtk_text_view_get_window(GTK_TEXT_VIEW(wordDic->text_results_view), GTK_TEXT_WINDOW_TEXT), wordDic->regular_cursor);
+  gdk_window_set_cursor (gtk_text_view_get_window (GTK_TEXT_VIEW (wordDic->text_results_view), GTK_TEXT_WINDOW_TEXT), wordDic->regular_cursor);
   wordDic->is_cursor_regular = TRUE;
 
-  new_entry_text = g_strdup(gtk_entry_get_text(GTK_ENTRY (gtk_bin_get_child (GTK_BIN (wordDic->combo_entry)))));
-  if (g_utf8_validate(new_entry_text, -1, NULL) == FALSE) {
-    gjiten_print_error_and_wait(_("Invalid input: non-utf8\n"));
-    g_free(new_entry_text);
+  new_entry_text = g_strdup (gtk_entry_get_text (GTK_ENTRY (gtk_bin_get_child (GTK_BIN (wordDic->combo_entry)))));
+  if (g_utf8_validate (new_entry_text, -1, NULL) == FALSE)
+{
+    gjiten_print_error_and_wait (_("Invalid input: non-utf8\n"));
+    g_free (new_entry_text);
     return;
   }
-  if (strlen(new_entry_text) == 0) return;
-  if (append_to_history == TRUE) {
+  if (strlen (new_entry_text) == 0) return;
+  if (append_to_history == TRUE)
+  {
       current_glist_word = new_entry_text;
       gtk_list_store_string_prepend (wordDic->word_search_history_model, new_entry_text);
   }
 
-  button_back_maybe_activate();
-  button_next_maybe_activate();
+  button_back_maybe_activate ();
+  button_next_maybe_activate ();
 
-  gtk_text_buffer_set_text (GTK_TEXT_BUFFER(wordDic->text_results_buffer), "", 0);
-  gtk_text_buffer_get_start_iter(wordDic->text_results_buffer, &wordDic->iter);
+  gtk_text_buffer_set_text (GTK_TEXT_BUFFER (wordDic->text_results_buffer), "", 0);
+  gtk_text_buffer_get_start_iter (wordDic->text_results_buffer, &wordDic->iter);
 
-  gtk_label_set_text(GTK_LABEL(wordDic->appbar_mainwin), _("Searching..."));
+  gtk_label_set_text (GTK_LABEL (wordDic->appbar_mainwin), _("Searching..."));
 
-  worddic_search(new_entry_text);
+  worddic_search (new_entry_text);
 
-  g_free(new_entry_text);
+  g_free (new_entry_text);
 }
 
-static void on_forward_clicked() {
+
+
+static void
+on_forward_clicked()
+{
   append_to_history = FALSE;
   gtk_combo_box_previous (GTK_COMBO_BOX (wordDic->combo_entry));
-  on_search_clicked();
+  on_search_clicked ();
   append_to_history = TRUE;
 }
 
-static void on_back_clicked() {
+
+
+static void
+on_back_clicked()
+{
   append_to_history = FALSE;
   gtk_combo_box_next (GTK_COMBO_BOX (wordDic->combo_entry));
-  on_search_clicked();
+  on_search_clicked ();
   append_to_history = TRUE;
 }
+
+
 
 static void
 on_dicselection_clicked(GtkWidget *widget,
@@ -724,90 +839,130 @@ on_dicselection_clicked(GtkWidget *widget,
     gjitenApp->conf->selected_dic = NULL;
 }
 
-static void checkb_searchlimit_toggled() {
-  int state = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wordDic->checkb_searchlimit));
-  if (wordDic->spinb_searchlimit != NULL) gtk_widget_set_sensitive(wordDic->spinb_searchlimit, state);
+
+
+static void
+checkb_searchlimit_toggled()
+{
+  int state = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (wordDic->checkb_searchlimit));
+  if (wordDic->spinb_searchlimit != NULL) gtk_widget_set_sensitive (wordDic->spinb_searchlimit, state);
   gjitenApp->conf->searchlimit_enabled = state;
   if (gjitenApp->conf->maxwordmatches == 0) gjitenApp->conf->searchlimit_enabled = FALSE;
 }
 
-static void shade_worddic_widgets() {
+
+
+static void
+shade_worddic_widgets()
+{
   if ((wordDic->dicselection_menu != NULL) && (wordDic->radiob_searchdic != NULL))
-    gtk_widget_set_sensitive(wordDic->dicselection_menu, gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wordDic->radiob_searchdic)));
+    gtk_widget_set_sensitive (wordDic->dicselection_menu, gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (wordDic->radiob_searchdic)));
 
   if (wordDic->checkb_autoadjust != NULL)
-    gjitenApp->conf->autoadjust_enabled = (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wordDic->checkb_autoadjust)));
+    gjitenApp->conf->autoadjust_enabled = (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (wordDic->checkb_autoadjust)));
 }
 
 
-static void get_searchlimit() {
-  gjitenApp->conf->maxwordmatches = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(wordDic->spinb_searchlimit));
+
+static void
+get_searchlimit()
+{
+  gjitenApp->conf->maxwordmatches = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (wordDic->spinb_searchlimit));
   if (gjitenApp->conf->maxwordmatches == 0) gjitenApp->conf->searchlimit_enabled = FALSE;
 }
+
+
 
 /**
  * Automatically set focus to search entry if any key was pressed
  **/
-static gboolean set_focus_on_entry(GtkWidget *window, GdkEventKey *key, GtkWidget *entry) {
+static gboolean
+set_focus_on_entry(GtkWidget   *window,
+                   GdkEventKey *key,
+                   GtkWidget   *entry)
+{
   //Only set focus on the entry for real input
   if (key->state & (GDK_CONTROL_MASK | GDK_MOD1_MASK | GDK_MOD3_MASK | GDK_MOD4_MASK)) return FALSE;
   if ((key->keyval >= GDK_KEY_exclam && key->keyval <= GDK_KEY_overline) ||
-      (key->keyval >= GDK_KEY_space && key->keyval <= GDK_KEY_9)) {
-    if (gtk_widget_has_focus(entry) != TRUE) {
-      gtk_widget_grab_focus(entry);
+      (key->keyval >= GDK_KEY_space && key->keyval <= GDK_KEY_9))
+  {
+    if (gtk_widget_has_focus (entry) != TRUE)
+    {
+      gtk_widget_grab_focus (entry);
     }
   }
   return FALSE;
 }
 
-static void worddic_init_history(GtkListStore *history) {
+
+
+static void
+worddic_init_history(GtkListStore *history)
+{
   gint i;
 
-  for (i = 0; i <= 50; i++) {
+  for (i = 0; i <= 50; i++)
+  {
     if (gjitenApp->conf->history[i] == NULL) break;
-    if (g_utf8_validate(gjitenApp->conf->history[i], -1, NULL) == TRUE)
-      gtk_list_store_string_append (history, g_strdup(gjitenApp->conf->history[i]));
-    //   printf("Read: %s: %s\n", historystr, tmpptr);
+    if (g_utf8_validate (gjitenApp->conf->history[i], -1, NULL) == TRUE)
+      gtk_list_store_string_append (history, g_strdup (gjitenApp->conf->history[i]));
+    //   printf ("Read: %s: %s\n", historystr, tmpptr);
   }
 }
 
-void worddic_close() {
 
-  GJITEN_DEBUG("WORDDIC_CLOSE\n");
-  if (wordDic != NULL) {
-    conf_save_history(wordDic->word_search_history_model, gjitenApp->conf);
-    g_object_ref_sink(self);
+
+void
+worddic_close()
+{
+
+  GJITEN_DEBUG ("WORDDIC_CLOSE\n");
+  if (wordDic != NULL)
+  {
+    conf_save_history (wordDic->word_search_history_model, gjitenApp->conf);
+    g_object_ref_sink (self);
     wordDic = NULL;
     self = NULL;
     gjitenApp->worddic = NULL;
   }
-  gjiten_exit();
+  gjiten_exit ();
 
 }
 
-static void worddic_show_hide_options() {
-  GJITEN_DEBUG("worddic_show_hide_options()\n");
-  if (gtk_widget_get_visible(wordDic->hbox_options) == TRUE) {
-    gtk_widget_hide(wordDic->hbox_options);
+
+
+static void
+worddic_show_hide_options()
+{
+  GJITEN_DEBUG ("worddic_show_hide_options ()\n");
+  if (gtk_widget_get_visible (wordDic->hbox_options) == TRUE)
+  {
+    gtk_widget_hide (wordDic->hbox_options);
   }
-  else gtk_widget_show(wordDic->hbox_options);
+  else gtk_widget_show (wordDic->hbox_options);
 }
 
-void worddic_update_dic_menu() {
+
+
+void
+worddic_update_dic_menu()
+{
   GSList *dicfile_node;
   GtkWidget *menu_dictfiles_item;
   GjitenDicfile *dicfile;
 
   if (wordDic == NULL) return;
 
-  GJITEN_DEBUG("worddic_update_dic_menu()\n");
+  GJITEN_DEBUG ("worddic_update_dic_menu ()\n");
 
 
   gtk_combo_box_text_remove_all (GTK_COMBO_BOX (wordDic->dicselection_menu));
 
   dicfile_node = gjitenApp->conf->dicfile_list;
-  while (dicfile_node != NULL) {
-    if (dicfile_node->data != NULL) {
+  while (dicfile_node != NULL)
+  {
+    if (dicfile_node->data != NULL)
+    {
       dicfile = dicfile_node->data;
       gtk_combo_box_text_append_text (GTK_COMBO_BOX (wordDic->dicselection_menu), dicfile->name);
     }
@@ -816,9 +971,9 @@ void worddic_update_dic_menu() {
       gtk_combo_box_text_append_text (GTK_COMBO_BOX (wordDic->dicselection_menu), "");
     }
 
-    dicfile_node = g_slist_next(dicfile_node);
+    dicfile_node = g_slist_next (dicfile_node);
   }
-  gtk_widget_show(wordDic->dicselection_menu);
+  gtk_widget_show (wordDic->dicselection_menu);
 
   // set default selection:
   {
@@ -835,55 +990,63 @@ void worddic_update_dic_menu() {
 
 
 
-void worddic_apply_fonts() {
+void
+worddic_apply_fonts()
+{
 
   if (wordDic == NULL) return;
 
-  if ((gjitenApp->conf->largefont == NULL) || (strlen(gjitenApp->conf->largefont) == 0)) {
-    if (wordDic->tag_large_font != NULL) {
-      g_object_set(wordDic->tag_large_font, "size", 20 * PANGO_SCALE, NULL);
+  if ((gjitenApp->conf->largefont == NULL) || (strlen (gjitenApp->conf->largefont) == 0))
+  {
+    if (wordDic->tag_large_font != NULL)
+    {
+      g_object_set (wordDic->tag_large_font, "size", 20 * PANGO_SCALE, NULL);
     }
     else {
-      wordDic->tag_large_font = gtk_text_buffer_create_tag(wordDic->text_results_buffer, "largefont", "size", 20 * PANGO_SCALE, NULL);
+      wordDic->tag_large_font = gtk_text_buffer_create_tag (wordDic->text_results_buffer, "largefont", "size", 20 * PANGO_SCALE, NULL);
     }
   }
   else {
-    if (wordDic->tag_large_font != NULL) {
-      g_object_set(wordDic->tag_large_font, "font", gjitenApp->conf->largefont, NULL);
+    if (wordDic->tag_large_font != NULL)
+    {
+      g_object_set (wordDic->tag_large_font, "font", gjitenApp->conf->largefont, NULL);
     }
      else {
-      wordDic->tag_large_font = gtk_text_buffer_create_tag(wordDic->text_results_buffer, "largefont", "font", gjitenApp->conf->largefont, NULL);
+      wordDic->tag_large_font = gtk_text_buffer_create_tag (wordDic->text_results_buffer, "largefont", "font", gjitenApp->conf->largefont, NULL);
     }
   }
 }
 
 
+
 /*
  * Update the cursor image if the pointer is above a kanji.
  */
-static
-gboolean result_view_motion(GtkWidget *text_view,
-                            GdkEventMotion *event)
+static gboolean
+result_view_motion(GtkWidget      *text_view,
+                   GdkEventMotion *event)
 {
   gint x, y;
   GtkTextIter mouse_iter;
   gunichar kanji;
   gint trailing;
 
-  gtk_text_view_window_to_buffer_coords(GTK_TEXT_VIEW(text_view),
+  gtk_text_view_window_to_buffer_coords (GTK_TEXT_VIEW (text_view),
                                         GTK_TEXT_WINDOW_WIDGET,
                                         event->x, event->y, &x, &y);
 
-  gtk_text_view_get_iter_at_position(GTK_TEXT_VIEW(text_view), &mouse_iter, &trailing, x , y);
-  kanji = gtk_text_iter_get_char(&mouse_iter);
+  gtk_text_view_get_iter_at_position (GTK_TEXT_VIEW (text_view), &mouse_iter, &trailing, x , y);
+  kanji = gtk_text_iter_get_char (&mouse_iter);
 
   // Change the cursor if necessary
-  if ((isKanjiChar(kanji) == TRUE)) {
-    gdk_window_set_cursor(gtk_text_view_get_window(GTK_TEXT_VIEW(text_view), GTK_TEXT_WINDOW_TEXT), wordDic->selection_cursor);
+  if ((isKanjiChar (kanji) == TRUE))
+  {
+    gdk_window_set_cursor (gtk_text_view_get_window (GTK_TEXT_VIEW (text_view), GTK_TEXT_WINDOW_TEXT), wordDic->selection_cursor);
     wordDic->is_cursor_regular = FALSE;
   }
-  else if (wordDic->is_cursor_regular == FALSE) {
-    gdk_window_set_cursor(gtk_text_view_get_window(GTK_TEXT_VIEW(text_view), GTK_TEXT_WINDOW_TEXT), wordDic->regular_cursor);
+  else if (wordDic->is_cursor_regular == FALSE)
+  {
+    gdk_window_set_cursor (gtk_text_view_get_window (GTK_TEXT_VIEW (text_view), GTK_TEXT_WINDOW_TEXT), wordDic->regular_cursor);
     wordDic->is_cursor_regular = TRUE;
   }
 
@@ -904,45 +1067,56 @@ kanji_clicked(GtkWidget       *text_view,
 
   if (event->button != 1) return FALSE;
 
-  if (gtk_text_buffer_get_selection_bounds(wordDic->text_results_buffer, NULL, NULL) == TRUE )
+  if (gtk_text_buffer_get_selection_bounds (wordDic->text_results_buffer, NULL, NULL) == TRUE )
   {
     // don't look up kanji if it is in a selection
     return FALSE;
   }
 
-  gtk_text_view_window_to_buffer_coords(GTK_TEXT_VIEW (text_view),
+  gtk_text_view_window_to_buffer_coords (GTK_TEXT_VIEW (text_view),
                                         GTK_TEXT_WINDOW_WIDGET,
                                         event->x, event->y, &x, &y);
 
-  gtk_text_view_get_iter_at_position(GTK_TEXT_VIEW(text_view), &mouse_iter, &trailing, x, y);
-  kanji = gtk_text_iter_get_char(&mouse_iter);
-  if ((kanji != 0xFFFC) && (kanji != 0) && (isKanjiChar(kanji) == TRUE)) {
-    kanjidic_create();
-    kanji_selected(kanji);
+  gtk_text_view_get_iter_at_position (GTK_TEXT_VIEW (text_view), &mouse_iter, &trailing, x, y);
+  kanji = gtk_text_iter_get_char (&mouse_iter);
+  if ((kanji != 0xFFFC) && (kanji != 0) && (isKanjiChar (kanji) == TRUE))
+  {
+    kanjidic_create ();
+    kanji_selected (kanji);
   }
 
   return FALSE;
 }
 
-void _init_word_history(){
-  button_back_maybe_activate();
-  button_next_maybe_activate();
+
+
+void
+_init_word_history()
+{
+  button_back_maybe_activate ();
+  button_next_maybe_activate ();
 }
+
+
 
 gboolean close_on_focus_out(GtkWidget *window,
                             GdkEvent  *event,
                             gpointer   unused)
 {
-  gtk_widget_destroy(window);
+  gtk_widget_destroy (window);
   return TRUE;
 }
 
-gboolean close_on_escape(GtkWidget   *window,
-                         GdkEventKey *event,
-                         gpointer     unused)
+
+
+gboolean
+close_on_escape(GtkWidget   *window,
+                GdkEventKey *event,
+                gpointer     unused)
 {
-  if (event->keyval == GDK_KEY_Escape){
-    gtk_widget_destroy(window);
+  if (event->keyval == GDK_KEY_Escape)
+  {
+    gtk_widget_destroy (window);
     return TRUE;
   }
   return FALSE;
@@ -955,14 +1129,19 @@ gboolean close_on_escape(GtkWidget   *window,
  *  - Terminate application on ESC
  *  - Terminate application on unfocus window
  **/
-void enable_quick_lookup_mode() {
-  g_signal_connect(G_OBJECT (self), "focus-out-event",
-                    G_CALLBACK(close_on_focus_out), NULL);
-  g_signal_connect(G_OBJECT (self), "key-press-event",
-                  G_CALLBACK(close_on_escape), NULL);
+void
+enable_quick_lookup_mode()
+{
+  g_signal_connect (G_OBJECT (self), "focus-out-event",
+                    G_CALLBACK (close_on_focus_out), NULL);
+  g_signal_connect (G_OBJECT (self), "key-press-event",
+                  G_CALLBACK (close_on_escape), NULL);
 }
 
-GjWorddicWindow *worddic_create() {
+
+
+GjWorddicWindow *worddic_create()
+{
   //TODO:improve: remove function and use gj_worddic_window_new instead
   GtkApplication * app;
   app = GTK_APPLICATION (g_application_get_default ());
@@ -976,8 +1155,9 @@ GjWorddicWindow *worddic_create() {
 }
 
 
+
 static void
-_create_gui(GjWorddicWindow* self)
+_create_gui (GjWorddicWindow* self)
 {
   GtkWidget *vbox_main;
   GtkToolbar *toolbar;
@@ -1017,7 +1197,7 @@ _create_gui(GjWorddicWindow* self)
   wordDic->checkb_autoadjust = NULL;
   wordDic->checkb_verb = NULL;
 
-  wordDic->word_search_history_model = gtk_list_store_string_new();
+  wordDic->word_search_history_model = gtk_list_store_string_new ();
   worddic_init_history (wordDic->word_search_history_model);
   Verbinit ();
 
@@ -1033,25 +1213,25 @@ _create_gui(GjWorddicWindow* self)
   toolbar = GTK_TOOLBAR (gtk_toolbar_new ());
   gtk_container_add (GTK_CONTAINER (vbox_main), GTK_WIDGET (toolbar));
 
-  button_exit = gtk_toolbar_insert_stock(GTK_TOOLBAR(toolbar), "application-exit",
+  button_exit = gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar), "application-exit",
                                         _("Close Gjiten"), "Close", NULL, NULL, -1);
-  g_signal_connect_swapped(G_OBJECT(button_exit), "clicked",
-                          G_CALLBACK(gtk_widget_destroy), self);
+  g_signal_connect_swapped (G_OBJECT (button_exit), "clicked",
+                          G_CALLBACK (gtk_widget_destroy), self);
 
-  wordDic->button_back = gtk_toolbar_insert_stock(GTK_TOOLBAR(toolbar), "go-previous",
+  wordDic->button_back = gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar), "go-previous",
                                                   _("Previous search result"), "Back",
                                                   on_back_clicked, NULL, -1);
   gtk_widget_set_sensitive (GTK_WIDGET (wordDic->button_back), FALSE);
 
-  wordDic->button_forward = gtk_toolbar_insert_stock(GTK_TOOLBAR(toolbar), "go-next",
+  wordDic->button_forward = gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar), "go-next",
                                                      _("Next search result"), "Forward",
                                                      on_forward_clicked, NULL, -1);
   gtk_widget_set_sensitive (GTK_WIDGET (wordDic->button_back), FALSE);
 
   tmpimage = gtk_image_new_from_file (PIXMAPDIR"/kanjidic.png");
-  gtk_toolbar_append_item(GTK_TOOLBAR(toolbar), _("KanjiDic"),
+  gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), _("KanjiDic"),
                         _("Launch KanjiDic"), "KanjiDic", tmpimage,
-                         G_CALLBACK(gjiten_start_kanjidic), GTK_APPLICATION (g_application_get_default ()));
+                         G_CALLBACK (gjiten_start_kanjidic), GTK_APPLICATION (g_application_get_default ()));
 
   tmpimage = gtk_image_new_from_file (PIXMAPDIR"/kanjipad.png");
   gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), _("KanjiPad"),
@@ -1128,7 +1308,7 @@ _create_gui(GjWorddicWindow* self)
   gtk_box_pack_start (GTK_BOX (wordDic->hbox_options), frame_gopt, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (frame_gopt), 5);
 
-  grid = gtk_grid_new();
+  grid = gtk_grid_new ();
   //gtk_grid_set_row_spacing (GTK_GRID (grid), 10);
   //gtk_grid_set_column_spacing (GTK_GRID (grid), 10);
   //grid = gtk_table_new (3, 2, FALSE);
@@ -1204,8 +1384,8 @@ _create_gui(GjWorddicWindow* self)
   gtk_widget_style_add_class (GTK_WIDGET (gtk_bin_get_child (
                               GTK_BIN (wordDic->combo_entry))), "normalfont");
 
-  g_signal_connect(gtk_bin_get_child (GTK_BIN (wordDic->combo_entry)),
-									 "activate", G_CALLBACK(on_search_clicked), NULL);
+  g_signal_connect (gtk_bin_get_child (GTK_BIN (wordDic->combo_entry)),
+									 "activate", G_CALLBACK (on_search_clicked), NULL);
   g_signal_connect (G_OBJECT (self), "key_press_event",
                     G_CALLBACK (set_focus_on_entry), gtk_bin_get_child (GTK_BIN (wordDic->combo_entry)));
 
@@ -1281,6 +1461,8 @@ _create_gui(GjWorddicWindow* self)
   gjiten_flush_errors ();
 }
 
+
+
 /**
  * TODO:refactor: both lines are called several times in this code.
  *                replace their call with this function later.
@@ -1288,21 +1470,21 @@ _create_gui(GjWorddicWindow* self)
 void
 worddic_lookup_word(gchar * word_to_lookup)
 {
-  gtk_entry_set_text(GTK_ENTRY (gtk_bin_get_child (GTK_BIN (wordDic->combo_entry))), gjitenApp->conf->word_to_lookup);
-  on_search_clicked();
+  gtk_entry_set_text (GTK_ENTRY (gtk_bin_get_child (GTK_BIN (wordDic->combo_entry))), gjitenApp->conf->word_to_lookup);
+  on_search_clicked ();
 }
 
 
 
 static void
-gj_worddic_window_class_init (GjWorddicWindowClass* klass)
+gj_worddic_window_class_init(GjWorddicWindowClass* klass)
 {
 }
 
 
 
 static void
-gj_worddic_window_init (GjWorddicWindow* self)
+gj_worddic_window_init(GjWorddicWindow* self)
 {
   // init variables
 
@@ -1310,21 +1492,26 @@ gj_worddic_window_init (GjWorddicWindow* self)
   // GjWorddicWindowPrivate * priv = gj_worddic_window_get_instance_private (self);
 }
 
+
+
 static void
 menu_item_copy_clicked(GSimpleAction *action,
                        GVariant      *parameter,
                        gpointer       gtk_application)
 {
-  worddic_copy();
+  worddic_copy ();
 }
+
+
 
 static void
 menu_item_paste_clicked(GSimpleAction *action,
                         GVariant      *parameter,
                         gpointer       gtk_application)
 {
-  worddic_paste();
+  worddic_paste ();
 }
+
 
 
 static void
@@ -1341,8 +1528,9 @@ _setup_actions(GjWorddicWindow *self)
 }
 
 
+
 GtkWidget*
-gj_worddic_window_new (GtkApplication * app)
+gj_worddic_window_new(GtkApplication * app)
 {
   // for now we must make it Singleton here in ctor, because
   //  calls within _create_gui expect it to be.
@@ -1353,5 +1541,5 @@ gj_worddic_window_new (GtkApplication * app)
   _create_gui (GJ_WORDDIC_WINDOW (self));
   setWindowIcon (GTK_WINDOW (self), GJITEN_WINDOW_ICON);
 
-  return GTK_WIDGET(self);
+  return GTK_WIDGET (self);
 }
