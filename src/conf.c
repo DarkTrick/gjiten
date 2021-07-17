@@ -255,29 +255,29 @@ conf_load()
     gchar **diclist = NULL;
 
     gconf_diclist = data_store_get_string_array (store, SECTION_GENERAL, "dictionary_list", NULL);
-		diclist = gconf_diclist;
+    diclist = gconf_diclist;
     gint i = 0;
     if (diclist != NULL)
-		while (diclist[i] != NULL) {
-			//if (diclist->data == NULL) break;
-			tmpstrg = diclist[i];
-			if (tmpstrg != NULL) {
-				tmpptr = tmpstrg;
-				endptr = tmpptr + strlen (tmpstrg);
-				while ( (tmpptr != endptr) && (*tmpptr != '\n')) tmpptr++;
-				if (*tmpptr == '\n') {
-					*tmpptr = 0;
-					tmpptr++;
-				}
-				dicfile = g_new0 (GjitenDicfile, 1);
-				dicfile->path = g_strdup (tmpstrg);
-				dicfile->name = g_strdup (tmpptr);
+    while (diclist[i] != NULL) {
+      //if (diclist->data == NULL) break;
+      tmpstrg = diclist[i];
+      if (tmpstrg != NULL) {
+        tmpptr = tmpstrg;
+        endptr = tmpptr + strlen (tmpstrg);
+        while ( (tmpptr != endptr) && (*tmpptr != '\n')) tmpptr++;
+        if (*tmpptr == '\n') {
+          *tmpptr = 0;
+          tmpptr++;
+        }
+        dicfile = g_new0 (GjitenDicfile, 1);
+        dicfile->path = g_strdup (tmpstrg);
+        dicfile->name = g_strdup (tmpptr);
         *tmpptr = '\n';
-				//				printf ("%s\n%s\n", tmpstrg, tmpptr);
-				conf->dicfile_list = g_slist_append (conf->dicfile_list, dicfile);
-			}
+        //        printf ("%s\n%s\n", tmpstrg, tmpptr);
+        conf->dicfile_list = g_slist_append (conf->dicfile_list, dicfile);
+      }
       ++i;
-		}
+    }
     g_strfreev (gconf_diclist);
   }
   if (conf->dicfile_list != NULL) conf->selected_dic = conf->dicfile_list->data;

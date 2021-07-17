@@ -1385,7 +1385,7 @@ _create_gui (GjWorddicWindow* self)
                               GTK_BIN (wordDic->combo_entry))), "normalfont");
 
   g_signal_connect (gtk_bin_get_child (GTK_BIN (wordDic->combo_entry)),
-									 "activate", G_CALLBACK (on_search_clicked), NULL);
+                   "activate", G_CALLBACK (on_search_clicked), NULL);
   g_signal_connect (G_OBJECT (self), "key_press_event",
                     G_CALLBACK (set_focus_on_entry), gtk_bin_get_child (GTK_BIN (wordDic->combo_entry)));
 
