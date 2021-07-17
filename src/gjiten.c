@@ -136,7 +136,8 @@ gjiten_init_cmd_params(GApplication *app, GjitenConfig *conf)
 /**
  * Cleanly close gjiten from anywhere in the code
 **/
-void gjiten_exit()
+void
+gjiten_exit()
 {
   if ((gjitenApp->worddic == NULL) && (gjitenApp->kanjidic == NULL))
   {
@@ -155,7 +156,8 @@ void gjiten_exit()
 /**
  * Cleanly close gjiten from anywhere in the code
  **/
-void gjiten_quit()
+void
+gjiten_quit()
 {
   // Close all windows (gjiten_exit () will be called inside there)
   kanjidic_close ();
@@ -164,7 +166,9 @@ void gjiten_quit()
 
 
 
-void gjiten_start_kanjipad() {
+void
+gjiten_start_kanjipad()
+{
   FILE *kanjipad_binary;
   char *kpad_cmd;
   int32_t len;
