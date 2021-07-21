@@ -154,61 +154,83 @@ static void set_dic_name_cb(GtkFileChooser *fileentry, GtkEntry *entry) {
   g_free (filename);
 }
 
+
+
+gboolean
+widget_prevent_deletion(GtkWidget *dialog,
+                        GdkEvent  *event,
+                        gpointer   user_data)
+{
+	return TRUE;
+}
+
+
+
 static void add_dict(GtkWidget *button, gpointer nothing) {
 
-  GtkWidget *dialog_add_dic = NULL;
+  static GtkWidget *dialog_add_dic = NULL;
 	GtkWidget *fileselector;
 	GtkWidget *nameentry;
+	gboolean dialog_uninitialized = TRUE;
 	GJITEN_DEBUG("add_dict()\n");
+
+	if (GTK_IS_WIDGET (dialog_add_dic) == TRUE) {
+      dialog_uninitialized = FALSE;
+  }
 
   dialog_add_dic = GETWIDGET ("dialog_add_dic");
   nameentry = GETWIDGET ("entry_dic_name");
   fileselector = GETWIDGET ("file_dic_path");
   gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (fileselector), GJITEN_DICDIR);
 
-  g_signal_connect(G_OBJECT(dialog_add_dic), "response", G_CALLBACK(add_dic_response_cb), fileselector);
+	if ( dialog_uninitialized ) {
+		g_signal_connect(G_OBJECT(dialog_add_dic), "response", G_CALLBACK(add_dic_response_cb), fileselector);
+		g_signal_connect (G_OBJECT (dialog_add_dic), "delete-event", G_CALLBACK (widget_prevent_deletion), fileselector);
+	}
 
   gtk_widget_show_all(dialog_add_dic);
   gtk_dialog_run (GTK_DIALOG (dialog_add_dic));
 }
 
 static void change_dic_response_cb(GtkDialog *dialog, gint response, GtkFileChooser *fileentry) {
-
   gchar *dicpath, *dicname;
 	GtkWidget *nameentry;
   GtkTreeSelection *selection;
 
-  if (response != GTK_RESPONSE_CLOSE) {
+  if (response == GTK_RESPONSE_APPLY) {
 		nameentry = GETWIDGET ("entry_dic_name_change");
 		dicname = g_strdup(gtk_entry_get_text(GTK_ENTRY(nameentry)));
 
 		dicpath = gtk_file_chooser_get_filename(fileentry);
-		if (dicpath != NULL) {
+		if (dicpath != NULL && g_file_test (dicpath,G_FILE_TEST_EXISTS))
+    {
 			selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview));
 			if (gtk_tree_selection_get_selected(selection, &model, &iter) == FALSE) return;
 			gtk_list_store_set(GTK_LIST_STORE(model), &iter, COL_DICPATH, dicpath, -1);
 			gtk_list_store_set(GTK_LIST_STORE(model), &iter, COL_DICNAME, dicname, -1);
+			return;
 		}
-		else gjiten_print_error(_("Dictionary file not found!"));
+		else {
+			gjiten_print_error(_("Dictionary file not found!"));
+			return;
+		}
 	}
-	else gtk_widget_destroy(GTK_WIDGET(dialog));
+
+	gtk_widget_hide(GTK_WIDGET(dialog));
 }
 
-
-static void change_dict(GtkWidget *button, gpointer treeview) {
+static void change_dict(GtkWidget *various, gpointer treeview) {
 
 	GtkWidget *fileselector;
 	gchar *dicpath, *dicname;
 	static GtkWidget *dialog = NULL;
 	GtkWidget *nameentry;
-  GtkTreeSelection *selection;
+	GtkTreeSelection *selection;
+ 	gboolean dialog_uninitialized = TRUE;
 
-	//FIXME: segfault when called many times (click on row)
-
-	if (GTK_IS_WIDGET(dialog) == TRUE) {
-		gtk_widget_destroy(GTK_WIDGET(dialog));
-		dialog = NULL;
-	}
+  if (GTK_IS_WIDGET (dialog) == TRUE) {
+      dialog_uninitialized = FALSE;
+  }
 
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview));
 	if (gtk_tree_selection_get_selected(selection, &model, &iter) == FALSE) {
@@ -227,9 +249,22 @@ static void change_dict(GtkWidget *button, gpointer treeview) {
 	fileselector = GETWIDGET ("file_dic_path_change");
 	gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(fileselector), dicpath);
 
-	g_signal_connect(G_OBJECT(dialog), "response", G_CALLBACK(change_dic_response_cb), fileselector);
+	if ( dialog_uninitialized ) {
+    g_signal_connect (G_OBJECT (dialog), "response", G_CALLBACK (change_dic_response_cb), fileselector);
+    g_signal_connect (G_OBJECT (dialog), "delete-event", G_CALLBACK (widget_prevent_deletion), fileselector);
+	}
 
-	gtk_widget_show_all(dialog);
+	gtk_dialog_run (GTK_DIALOG (dialog));
+}
+
+
+void
+dict_list_row_activated (GtkTreeView       *treeview,
+                         GtkTreePath       *path,
+                         GtkTreeViewColumn *column,
+                         gpointer           user_data)
+{
+  change_dict (NULL, G_OBJECT (treeview));
 }
 
 
@@ -403,7 +438,8 @@ void create_dialog_preferences() {
   column = gtk_tree_view_column_new_with_attributes(_("Dictionary name"), renderer, "text", COL_DICNAME, NULL);
   gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), column);
 
-  g_signal_connect(G_OBJECT(treeview), "row_activated", G_CALLBACK(change_dict), NULL);
+  g_signal_connect (G_OBJECT (treeview), "row_activated", G_CALLBACK (dict_list_row_activated), G_OBJECT (treeview));
+
 
 	dicfile_node = gjitenApp->conf->dicfile_list;
 	while (dicfile_node != NULL) {
