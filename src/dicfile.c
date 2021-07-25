@@ -43,6 +43,27 @@
 
 
 
+static gboolean
+dicfile_is_utf8(GjitenDicfile *dicfile)
+{
+  gchar *testbuffer;
+  gint pos, bytesread;
+
+  if (dicfile->file > 0) {
+    testbuffer = (gchar *) g_malloc (3000);
+    bytesread = read (dicfile->file, testbuffer, 3000); // read a chunk into buffer
+    pos = bytesread - 1;
+    while (testbuffer[pos] != '\n') pos--;
+    if (g_utf8_validate (testbuffer, pos, NULL) == FALSE) {
+      return FALSE;
+    }
+    g_free (testbuffer);
+  }
+  return TRUE;
+}
+
+
+
 gboolean
 dicfile_check_all(GSList *dicfile_list)
 {
@@ -57,7 +78,8 @@ dicfile_check_all(GSList *dicfile_list)
     if (node->data != NULL) {
       dicfile = node->data;
       if (dicfile_init (dicfile) == FALSE) retval = FALSE;
-      if (dicfile_is_utf8(dicfile) == FALSE) {
+      if (dicfile_is_utf8 (dicfile) == FALSE) {
+        gjiten_print_error (_("Dictionary file is non-UTF: %s\nPlease convert it to UTF-8. See the docs for more."), dicfile->path);
         dicfile_close (dicfile);
         retval = FALSE;
       }
@@ -67,28 +89,6 @@ dicfile_check_all(GSList *dicfile_list)
   }
   GJITEN_DEBUG (" retval: %d\n", retval);
   return retval;
-}
-
-
-
-gboolean
-dicfile_is_utf8(GjitenDicfile *dicfile)
-{
-  gchar *testbuffer;
-  gint pos, bytesread;
-
-  if (dicfile->file > 0) {
-    testbuffer = (gchar *) g_malloc (3000);
-    bytesread = read (dicfile->file, testbuffer, 3000); // read a chunk into buffer
-    pos = bytesread - 1;
-    while (testbuffer[pos] != '\n') pos--;
-    if (g_utf8_validate (testbuffer, pos, NULL) == FALSE) {
-      gjiten_print_error (_("Dictionary file is non-UTF: %s\nPlease convert it to UTF-8. See the docs for more."), dicfile->path);
-      return FALSE;
-    }
-    g_free (testbuffer);
-  }
-  return TRUE;
 }
 
 
@@ -118,6 +118,38 @@ dicfile_init(GjitenDicfile *dicfile)
     dicfile->status = DICFILE_OK;
   }
   return TRUE;
+}
+
+
+/**
+ * Return:
+ *  ok: NULL
+ *  error: error string (must not be freed)
+ **/
+const gchar *
+dicfile_init2(GjitenDicfile *dicfile)
+{
+
+  if (dicfile->status != DICFILE_OK) {
+    dicfile->file = open (dicfile->path, O_RDONLY);
+
+    if (dicfile->file == -1) {
+      dicfile->status = DICFILE_BAD;
+      return _("Sorry, I could not load your dictionary.");
+    }
+    else {
+      if (stat (dicfile->path, &dicfile->stat) != 0) {
+        printf ("**ERROR** %s: stat() \n", dicfile->path);
+        dicfile->status = DICFILE_BAD;
+        return _("Sorry, I could not load your dictionary.");
+      }
+      else {
+        dicfile->size = dicfile->stat.st_size;
+      }
+    }
+    dicfile->status = DICFILE_OK;
+  }
+  return NULL;
 }
 
 
@@ -152,4 +184,38 @@ dicfile_list_free(GSList *dicfile_list)
 
   g_slist_free (dicfile_list);
 
+}
+
+
+
+/**
+ * Returns:
+ *    ok: NULL
+ *    error: string describing the error
+ *           (string must not be freed)
+ **/
+const gchar *
+dicfile_is_valid(GjitenDicfile *self)
+{
+  gchar * error = NULL;
+
+  if (self->path == NULL)
+    return _("Please select a dictionary file.");
+
+  if (FALSE == g_file_test (self->path,G_FILE_TEST_EXISTS))
+    return _("Dictionary file not found. ");
+
+  error = dicfile_init2 (self);
+  if (error != NULL)
+    return error;
+
+  if (dicfile_is_utf8 (self) == FALSE)
+  {
+    dicfile_close (self);
+    return _("Dictionary file is not in UTF-8 format. \nPlease convert it to UTF-8 format. See the docs for more information.");
+  }
+
+  dicfile_close (self);
+
+  return NULL;
 }

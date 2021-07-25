@@ -56,11 +56,11 @@ _show_error(GtkWindow  *parent_nullable,
                                      GTK_BUTTONS_OK,
                                      "%s", pstr );
 
-
     g_signal_connect_swapped (G_OBJECT (dialog), "response",
                              G_CALLBACK (gtk_widget_destroy),
                              G_OBJECT (dialog));
 
+    gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
     gtk_widget_show_all (dialog);
 
     g_free (pstr);

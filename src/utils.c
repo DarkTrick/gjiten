@@ -204,7 +204,7 @@ gtk_list_store_string_get(GtkListStore *self,
                           GtkTreeIter  *iter)
 {
   gchar *tmp;
-  gtk_tree_model_get (self, iter, 0, &tmp, -1);
+  gtk_tree_model_get (GTK_TREE_MODEL (self), iter, 0, &tmp, -1);
   return tmp;
 }
 
@@ -354,7 +354,7 @@ chr_replace (char *str,
 }
 
 
-
+void
 gtk_application_set_accel_for_action (GtkApplication *self,
                                       const gchar * detailed_action_name,
                                       const gchar * accelerator)
@@ -363,3 +363,16 @@ gtk_application_set_accel_for_action (GtkApplication *self,
   gtk_application_set_accels_for_action (self, detailed_action_name, shortcuts);
 }
 
+
+
+/**
+ * If this function is connected to GtkWidget::`delete-event`,
+ * the widget will not be `gtk_widget_destroy`ed
+ **/
+gboolean
+delete_event_prevent_destruction(GtkWidget *widget,
+                                GdkEvent  *unused1,
+                                gpointer   unused2)
+{
+  return TRUE;
+}

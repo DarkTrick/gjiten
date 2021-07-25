@@ -30,8 +30,8 @@ void gtk_entry_clear_callback(gpointer entrybox);
 void gtk_combo_box_text_add_entries(GtkComboBoxText *self,
                                     GList           *list_of_strings);
 
-void setWindowIcon (GtkWindow       *window,
-                    char            *icon_path);
+void setWindowIcon(GtkWindow       *window,
+                   char            *icon_path);
 
 void gtk_widget_register_action_entries(GtkWidget    *self,
                                         const gchar  *group_name,
@@ -59,29 +59,35 @@ gboolean gtk_combo_box_previous(GtkComboBox * self);
 gchar * g_pango_font_convert_to_css(const gchar * pango_font);
 
 gboolean
-g_settings_has_schema (const char * id);
+g_settings_has_schema(const char * id);
 
 gboolean
-g_settings_has_key (const gchar * schema_id,
+g_settings_has_key(const gchar * schema_id,
                     const char * key);
 
 GValue *
-g_value_new_int (int value);
+g_value_new_int(int value);
 GValue *
-g_value_new_string (const gchar * value);
+g_value_new_string(const gchar * value);
 GValue *
-g_value_new_boolean (gboolean value);
+g_value_new_boolean(gboolean value);
 
 char *
-chr_replace (char *str,
-             const char search_for,
-             const char replace_with);
+chr_replace(char *str,
+            const char search_for,
+            const char replace_with);
 
 gint
 gtk_list_store_length(GtkListStore *self);
 
-gtk_application_set_accel_for_action (GtkApplication *self,
-                                      const gchar * detailed_action_name,
-                                      const gchar * accelerator);
+void
+gtk_application_set_accel_for_action(GtkApplication *self,
+                                     const gchar * detailed_action_name,
+                                     const gchar * accelerator);
+
+gboolean
+delete_event_prevent_destruction(GtkWidget *widget,
+                                GdkEvent  *unused1,
+                                gpointer   unused2);
 
 #endif
