@@ -126,7 +126,11 @@ search4string(gint           srchtype,
   static gchar *linsrchptr;
 
   if (dicfile->status == DICFILE_NOT_INITIALIZED) {
-    if (dicfile_init (dicfile) == FALSE) return SRCH_FAIL;
+    const gchar * error = dicfile_init (dicfile);
+    if (error != FALSE){
+      gjiten_show_error (NULL, error);
+      return SRCH_FAIL;
+    }
   }
   if (dicfile->status != DICFILE_OK) return SRCH_FAIL;
 

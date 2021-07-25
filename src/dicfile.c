@@ -77,7 +77,11 @@ dicfile_check_all(GSList *dicfile_list)
   while (node != NULL) {
     if (node->data != NULL) {
       dicfile = node->data;
-      if (dicfile_init (dicfile) == FALSE) retval = FALSE;
+      const gchar * error = dicfile_init (dicfile);
+      if (error != FALSE){
+        gjiten_show_error (NULL, error);
+        retval = FALSE;
+      }
       if (dicfile_is_utf8 (dicfile) == FALSE) {
         gjiten_print_error (_("Dictionary file is non-UTF: %s\nPlease convert it to UTF-8. See the docs for more."), dicfile->path);
         dicfile_close (dicfile);
@@ -93,41 +97,13 @@ dicfile_check_all(GSList *dicfile_list)
 
 
 
-gboolean
-dicfile_init(GjitenDicfile *dicfile)
-{
-
-  if (dicfile->status != DICFILE_OK) {
-    dicfile->file = open (dicfile->path, O_RDONLY);
-
-    if (dicfile->file == -1) {
-      gjiten_print_error (_("Error opening dictfile:  %s\nCheck your preferences!"), dicfile->path);
-      dicfile->status = DICFILE_BAD;
-      return FALSE;
-    }
-    else {
-      if (stat (dicfile->path, &dicfile->stat) != 0) {
-        printf ("**ERROR** %s: stat() \n", dicfile->path);
-        dicfile->status = DICFILE_BAD;
-        return FALSE;
-      }
-      else {
-        dicfile->size = dicfile->stat.st_size;
-      }
-    }
-    dicfile->status = DICFILE_OK;
-  }
-  return TRUE;
-}
-
-
 /**
  * Return:
  *  ok: NULL
  *  error: error string (must not be freed)
  **/
 const gchar *
-dicfile_init2(GjitenDicfile *dicfile)
+dicfile_init(GjitenDicfile *dicfile)
 {
 
   if (dicfile->status != DICFILE_OK) {
@@ -205,7 +181,7 @@ dicfile_is_valid(GjitenDicfile *self)
   if (FALSE == g_file_test (self->path,G_FILE_TEST_EXISTS))
     return _("Dictionary file not found. ");
 
-  error = dicfile_init2 (self);
+  error = dicfile_init (self);
   if (error != NULL)
     return error;
 

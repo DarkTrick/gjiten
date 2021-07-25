@@ -49,7 +49,7 @@ enum {
 };
 
 
-gboolean     dicfile_init     (GjitenDicfile *dicfile);
+const gchar *dicfile_init     (GjitenDicfile *dicfile);
 void         dicfile_close    (GjitenDicfile *dicfile);
 void         dicfile_list_free(GSList *dicfile_list);
 gboolean     dicfile_check_all(GSList *dicfile_list);
