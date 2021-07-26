@@ -421,6 +421,15 @@ gjiten_start_kanjidic(GtkApplication *app)
 
 
 void
+gjiten_start_kanjidic_with_search(gunichar kanji)
+{
+  gjiten_start_kanjidic (NULL);
+  kanji_selected (kanji);
+}
+
+
+
+void
 gjiten_apply_fonts(GjitenApp * gjitenApp)
 {
   // apply css styles

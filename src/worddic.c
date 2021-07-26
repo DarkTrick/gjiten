@@ -39,7 +39,6 @@
 
 #include "worddic.h"
 #include "constants.h"
-//#include "kanjidic.h"
 #include "conf.h"
 #include "dicfile.h"
 #include "gjiten.h"
@@ -1081,8 +1080,7 @@ kanji_clicked(GtkWidget       *text_view,
   kanji = gtk_text_iter_get_char (&mouse_iter);
   if ((kanji != 0xFFFC) && (kanji != 0) && (isKanjiChar (kanji) == TRUE))
   {
-    kanjidic_create ();
-    kanji_selected (kanji);
+    gjiten_start_kanjidic_with_search (kanji);
   }
 
   return FALSE;
