@@ -376,7 +376,8 @@ preferences_response_cb(GtkDialog *dialog,
   gchar *kanjidic_path = NULL;
   gchar *kanjipad_path = NULL;
 
-  if (response == GTK_RESPONSE_CANCEL) {
+  if (response == GTK_RESPONSE_CANCEL ||
+      response == GTK_RESPONSE_DELETE_EVENT) {
     preferences_exit ();
     return;
   }
@@ -584,6 +585,7 @@ create_dialog_preferences()
   }
 
   g_signal_connect (G_OBJECT (dialog_preferences), "response", G_CALLBACK (preferences_response_cb), NULL);
+  g_signal_connect (G_OBJECT (dialog_preferences), "delete-event", G_CALLBACK (delete_event_prevent_destruction), NULL);
 
 
   gtk_widget_show_all (dialog_preferences);
