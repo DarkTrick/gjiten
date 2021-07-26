@@ -90,8 +90,8 @@ extern GtkWidget *dialog_preferences;
 extern GjitenConfig conf;
 extern GjitenApp *gjitenApp;
 
-GjWorddicWindow *self = NULL;
-GjWorddicWindowPrivate *wordDic = NULL;
+static GjWorddicWindow *self = NULL;
+static GjWorddicWindowPrivate *wordDic = NULL;
 
 int word_matches;
 gchar *vconj_types[40];
@@ -914,7 +914,6 @@ worddic_init_history(GtkListStore *history)
 void
 worddic_close()
 {
-
   GJITEN_DEBUG ("WORDDIC_CLOSE\n");
   if (wordDic != NULL)
   {
@@ -925,7 +924,6 @@ worddic_close()
     gjitenApp->worddic = NULL;
   }
   gjiten_quit_if_all_windows_closed ();
-
 }
 
 
@@ -1138,7 +1136,8 @@ enable_quick_lookup_mode()
 
 
 
-GjWorddicWindow *worddic_create()
+GjWorddicWindow *
+worddic_create()
 {
   //TODO:improve: remove function and use gj_worddic_window_new instead
   GtkApplication * app;

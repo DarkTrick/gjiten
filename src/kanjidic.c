@@ -49,6 +49,44 @@
 /*====== Prototypes========================================================*/
 void get_rad_of_kanji (gunichar kanji);
 
+
+typedef struct _GjKanjidicWindowPrivate GjKanjidicWindowPrivate;
+struct _GjKanjidicWindowPrivate
+{
+  GtkWidget *window_kanjinfo;
+  GtkWidget *window_radicals;
+  GtkWidget *combo_entry_key;
+  GtkWidget *combo_entry_radical;
+  GtkTextBuffer *text_kanjinfo_buffer;
+  GtkWidget *text_kanjinfo_view;
+  GtkTextIter kinfo_iter;
+  GtkWidget *kanji_results_view;
+  GtkTextBuffer *kanji_results_buffer;
+  GtkTextIter kanji_results_iter;
+  GtkWidget *appbar_kanji;
+  GtkListStore * combo_entry_key_list;
+  GtkListStore *combo_entry_radical_list;
+  GtkWidget *spinb_strokenum;
+  GtkWidget *spinb_plusmin;
+  GtkWidget *label_plusmin;
+  GtkWidget *checkb_ksearch;
+  GtkWidget *checkb_radical;
+  GtkWidget *checkb_stroke;
+  GtkWidget *button_radtable;
+  GtkWidget *button_clearrad;
+  GtkWidget *button_cleark;
+  GtkWidget *vbox_history;
+  GtkWidget *scrolledwin_history;
+  GSList *kanji_history_list;
+  GtkTextTag *tag_large_font;
+  GHashTable *rad_button_hash;
+  GHashTable *kanji_info_hash;
+  GHashTable *rad_info_hash;
+  GList *rad_info_list;
+};
+G_DEFINE_TYPE_WITH_PRIVATE (GjKanjidicWindow, gj_kanjidic_window,  GTK_TYPE_APPLICATION_WINDOW)
+
+
 /* VARIABLES ************************/
 gchar *kdic_line = NULL;  /*size = KCFGNUM * KBUFSIZE */
 gchar kanjiselected[2];
@@ -58,12 +96,16 @@ extern guint32 srchpos;
 
 GList *klinklist = NULL, *tmpklinklist = NULL;
 
-KanjiDic *kanjiDic;
+static GjKanjidicWindow *self = NULL;
+static GjKanjidicWindowPrivate *kanjiDic = NULL;
+
 extern gchar *strginfo[];
 extern GjitenApp *gjitenApp;
 
 
 /* ************************************************************ */
+
+
 void
 do_kdicline(gchar *kstr)
 {
@@ -940,18 +982,20 @@ create_window_radicals()
 void
 kanjidic_close()
 {
-  if (kanjiDic != NULL) {
+  GJITEN_DEBUG ("KANJIDIC_CLOSE\n");
+  if (kanjiDic != NULL)
+  {
     KanjiDic *tmp;
     radical_window_close ();
 
     /* Avoid recursion */
     tmp = kanjiDic;
+    g_object_ref_sink (self);
     kanjiDic = NULL;
-    gtk_widget_destroy (tmp->window);
-    g_free (tmp);
+    self = NULL;
     gjitenApp->kanjidic = NULL;
-    gjiten_quit_if_all_windows_closed ();
   }
+  gjiten_quit_if_all_windows_closed ();
 }
 
 void
@@ -1046,8 +1090,23 @@ clear_radical_entry_box(gpointer entrybox)
 }
 
 
-KanjiDic *
+GjKanjidicWindow *
 kanjidic_create()
+{
+  //TODO:improve: remove function and use gj_worddic_window_new instead
+  GtkApplication * app;
+  app = GTK_APPLICATION (g_application_get_default ());
+
+  if (NULL == self)
+  {
+    gj_kanjidic_window_new (app);
+  }
+
+  return self;
+}
+
+static void
+_create_gui (GjKanjidicWindow* self)
 {
   GtkWidget *vbox_maink;
   GtkWidget *hbox_spinb;
@@ -1069,35 +1128,26 @@ kanjidic_create()
   GtkWidget *tmpimage;
   GtkWidget *vpane;
 
-  if (kanjiDic != NULL) {
-    gtk_window_present (GTK_WINDOW (kanjiDic->window));
-    return kanjiDic;
-  }
-
-  kanjiDic = g_new0(KanjiDic, 1);
-  gjitenApp->kanjidic = kanjiDic;
+  GjKanjidicWindowPrivate * kanjiDic = gj_kanjidic_window_get_instance_private (self);
 
   load_radkfile ();
 
-  if (kdic_line == NULL) kdic_line = (gchar *)g_malloc (KCFGNUM * KBUFSIZE);
-  if (kdic_line == NULL) gjiten_abort_with_msg ("Couldn't allocate memory\n");
-  {
-    //TODO:refactor: app should come per parameter
-    GtkApplication * app = GTK_APPLICATION (g_application_get_default ());
-    kanjiDic->window = gtk_application_window_new (app);
-    setWindowIcon (GTK_WINDOW (kanjiDic->window), GJITEN_WINDOW_ICON);
-    gtk_window_set_title (GTK_WINDOW (kanjiDic->window), "Gjiten - KanjiDic");
-  }
-  gtk_widget_get_can_default (kanjiDic->window);
-  g_signal_connect (G_OBJECT (kanjiDic->window), "destroy", G_CALLBACK (kanjidic_close), NULL);
-  gtk_window_set_default_size (GTK_WINDOW (kanjiDic->window), 500, 500);
+  if (kdic_line == NULL)
+    kdic_line = (gchar *)g_malloc (KCFGNUM * KBUFSIZE);
+  if (kdic_line == NULL)
+    gjiten_abort_with_msg ("Couldn't allocate memory\n");
 
-  gtk_application_window_set_show_menubar (GTK_WINDOW (kanjiDic->window), gjitenApp->conf->menubar);
+  gtk_window_set_title (GTK_WINDOW (self), "Gjiten - KanjiDic");
+  gtk_widget_get_can_default (self);
+  g_signal_connect (G_OBJECT (self), "destroy", G_CALLBACK (kanjidic_close), NULL);
+  gtk_window_set_default_size (GTK_WINDOW (self), 500, 500);
+
+  gtk_application_window_set_show_menubar (GTK_WINDOW (self), gjitenApp->conf->menubar);
 
 
   vbox_maink = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
   gtk_widget_show (vbox_maink);
-  gtk_container_add (GTK_CONTAINER (kanjiDic->window), vbox_maink);
+  gtk_container_add (GTK_CONTAINER (self), vbox_maink);
 
   if (gjitenApp->conf->toolbar) {
     toolbar_kanji = gtk_toolbar_new ();
@@ -1108,7 +1158,7 @@ kanjidic_create()
                                              _("Close KanjiDic"), "Close",
                                              NULL, NULL, -1);
     g_signal_connect_swapped (G_OBJECT (button_closek), "clicked",
-                             G_CALLBACK (gtk_widget_destroy), kanjiDic->window);
+                             G_CALLBACK (gtk_widget_destroy), self);
 
     tmpimage = gtk_image_new_from_file (PIXMAPDIR"/kanjidic.png");
     button_worddic = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar_kanji), _("WordDic"),
@@ -1290,7 +1340,41 @@ kanjidic_create()
 
   kanjidic_apply_fonts ();
 
-  gtk_widget_show (kanjiDic->window);
+  gtk_widget_show (self);
 
   return kanjiDic;
+}
+
+
+
+static void
+gj_kanjidic_window_class_init (GjKanjidicWindowClass* klass)
+{
+}
+
+
+
+static void
+gj_kanjidic_window_init (GjKanjidicWindow* self)
+{
+  // init variables
+
+  // init private variables:
+  // GjKanjidicWindowPrivate * priv = gj_kanjidic_window_get_instance_private(self);
+}
+
+
+
+GtkWidget*
+gj_kanjidic_window_new (GtkApplication * app)
+{
+  // for now we must make it Singleton here in ctor, because
+  //  calls within _create_gui expect it to be.
+  self = GJ_KANJIDIC_WINDOW ((g_object_new (gj_kanjidic_window_get_type(), "application", app, NULL)));
+
+  kanjiDic = gj_kanjidic_window_get_instance_private (self);
+  _create_gui (GJ_KANJIDIC_WINDOW (self));
+  setWindowIcon (GTK_WINDOW (self), GJITEN_WINDOW_ICON);
+
+  return GTK_WIDGET (self);
 }

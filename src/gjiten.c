@@ -413,9 +413,9 @@ gjiten_start_kanjidic(GtkApplication *app)
     gtk_window_present (GTK_WINDOW (gjitenApp->kanjidic));
   }
 
-  gjitenApp->kanjidic =  kanjidic_create ();
-  GtkWindow *window = GTK_WINDOW (kanjidic_create ()->window);
-  gtk_widget_show_all (GTK_WIDGET (gjitenApp->kanjidic->window));
+  GjKanjidicWindow *window = kanjidic_create (app);
+  gjitenApp->kanjidic = window;
+  gtk_widget_show_all ((GtkWidget*)window);
 }
 
 
@@ -563,3 +563,5 @@ gjiten_new()
 
   return app;
 }
+
+

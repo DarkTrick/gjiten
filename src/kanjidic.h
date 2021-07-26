@@ -42,45 +42,29 @@ typedef struct _KanjiInfo {
   GList *rad_info_list;
 } KanjiInfo;
 
-struct _KanjiDic {
-/* GTK variables */
-  GtkWidget *window;
-  GtkWidget *window_kanjinfo;
-  GtkWidget *window_radicals;
-  GtkWidget *combo_entry_key;
-  GtkWidget *combo_entry_radical;
-  GtkTextBuffer *text_kanjinfo_buffer;
-  GtkWidget *text_kanjinfo_view;
-  GtkTextIter kinfo_iter;
-  GtkWidget *kanji_results_view;
-  GtkTextBuffer *kanji_results_buffer;
-  GtkTextIter kanji_results_iter;
-  GtkWidget *appbar_kanji;
-  GtkListStore * combo_entry_key_list;
-  GtkListStore *combo_entry_radical_list;
-  GtkWidget *spinb_strokenum;
-  GtkWidget *spinb_plusmin;
-  GtkWidget *label_plusmin;
-  GtkWidget *checkb_ksearch;
-  GtkWidget *checkb_radical;
-  GtkWidget *checkb_stroke;
-  GtkWidget *button_radtable;
-  GtkWidget *button_clearrad;
-  GtkWidget *button_cleark;
-  GtkWidget *vbox_history;
-  GtkWidget *scrolledwin_history;
-  GSList *kanji_history_list;
-  GtkTextTag *tag_large_font;
-  GHashTable *rad_button_hash;
-  GHashTable *kanji_info_hash;
-  GHashTable *rad_info_hash;
-  GList *rad_info_list;
+
+
+G_BEGIN_DECLS
+
+#define TYPE_GJ_KANJIDIC_WINDOW gj_kanjidic_window_get_type ()
+
+
+
+G_DECLARE_DERIVABLE_TYPE (GjKanjidicWindow, gj_kanjidic_window, GJ, KANJIDIC_WINDOW, GtkApplicationWindow)
+struct _GjKanjidicWindowClass
+{
+  GtkApplicationWindowClass parent_class;
 };
 
-KanjiDic *kanjidic_create();
-void kanjidic_close();
-void print_kanjinfo(gunichar kanji);
-void kanjidic_apply_fonts();
-void kanji_selected(gunichar kanji);
+GjKanjidicWindow *kanjidic_create();
+void              kanjidic_close();
+GtkWidget*        gj_kanjidic_window_new (GtkApplication * app);
+void              print_kanjinfo(gunichar kanji);
+void              kanjidic_apply_fonts();
+void              kanji_selected(gunichar kanji);
+
+
+G_END_DECLS
+
 
 #endif
