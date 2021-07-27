@@ -51,7 +51,7 @@ typedef struct _GjWorddicWindowPrivate GjWorddicWindowPrivate;
 struct _GjWorddicWindowPrivate
 {
   GtkWidget     *hbox_options;
-  GtkComboBox   *combo_entry;
+  GtkComboBox   *cbo_search_term;
   GtkWidget     *text_results_view;
   GtkTextBuffer *text_results_buffer;
   GtkTextBuffer *info_buffer;
@@ -101,7 +101,7 @@ int engsrch, jpsrch;
 int dicname_printed;
 int append_to_history = TRUE;
 gpointer current_glist_word = NULL;
-// probably replace with `gtk_combo_box_get_active (wordDic->combo_entry)`
+// probably replace with `gtk_combo_box_get_active (wordDic->cbo_search_term)`
 gint current_history_word_index = -1;
 
 
@@ -125,11 +125,11 @@ worddic_paste()
 
   // First try the current selection
   selection = gtk_clipboard_wait_for_text (gtk_clipboard_get (GDK_SELECTION_PRIMARY));
-  if (selection != NULL) gtk_combo_box_set_text (wordDic->combo_entry, selection);
+  if (selection != NULL) gtk_combo_box_set_text (wordDic->cbo_search_term, selection);
   else {
     // if we didn't get anything, try the default clipboard
     selection = gtk_clipboard_wait_for_text (gtk_clipboard_get (GDK_SELECTION_CLIPBOARD));
-      if (selection != NULL) gtk_combo_box_set_text (wordDic->combo_entry, selection);
+      if (selection != NULL) gtk_combo_box_set_text (wordDic->cbo_search_term, selection);
   }
 }
 
@@ -689,7 +689,7 @@ worddic_search(gchar *srchstrg)
   while (g_ascii_isspace (srchstrg[strlen (srchstrg)-1]) != 0) srchstrg[strlen (srchstrg)-1] = 0;
 
   if (strlen (srchstrg) == 0) return;
-  gtk_combo_box_set_text (wordDic->combo_entry, srchstrg);
+  gtk_combo_box_set_text (wordDic->cbo_search_term, srchstrg);
 
   truncated = 0;
   while (TRUE)
@@ -770,7 +770,7 @@ on_search_clicked()
   gdk_window_set_cursor (gtk_text_view_get_window (GTK_TEXT_VIEW (wordDic->text_results_view), GTK_TEXT_WINDOW_TEXT), wordDic->regular_cursor);
   wordDic->is_cursor_regular = TRUE;
 
-  new_entry_text = g_strdup (gtk_combo_box_get_text (wordDic->combo_entry));
+  new_entry_text = g_strdup (gtk_combo_box_get_text (wordDic->cbo_search_term));
   if (g_utf8_validate (new_entry_text, -1, NULL) == FALSE)
 {
     gjiten_print_error_and_wait (_("Invalid input: non-utf8\n"));
@@ -803,7 +803,7 @@ static void
 on_forward_clicked()
 {
   append_to_history = FALSE;
-  gtk_combo_box_previous (GTK_COMBO_BOX (wordDic->combo_entry));
+  gtk_combo_box_previous (GTK_COMBO_BOX (wordDic->cbo_search_term));
   on_search_clicked ();
   append_to_history = TRUE;
 }
@@ -814,7 +814,7 @@ static void
 on_back_clicked()
 {
   append_to_history = FALSE;
-  gtk_combo_box_next (GTK_COMBO_BOX (wordDic->combo_entry));
+  gtk_combo_box_next (GTK_COMBO_BOX (wordDic->cbo_search_term));
   on_search_clicked ();
   append_to_history = TRUE;
 }
@@ -1372,24 +1372,24 @@ _create_gui (GjWorddicWindow* self)
   gtk_label_set_xalign (GTK_LABEL (label_enter), 1);
   gtk_label_set_yalign (GTK_LABEL (label_enter), 0.5);
 
-  wordDic->combo_entry = GTK_COMBO_BOX (gtk_combo_box_new_with_model_and_entry (GTK_TREE_MODEL (wordDic->word_search_history_model)));
+  wordDic->cbo_search_term = GTK_COMBO_BOX (gtk_combo_box_new_with_model_and_entry (GTK_TREE_MODEL (wordDic->word_search_history_model)));
   g_object_unref (wordDic->word_search_history_model);
-  gtk_combo_box_set_entry_text_column (GTK_COMBO_BOX (wordDic->combo_entry), 0);
-  gtk_combo_box_set_id_column (GTK_COMBO_BOX (wordDic->combo_entry), 0);
-  gtk_widget_show (wordDic->combo_entry);
-  gtk_box_pack_start (GTK_BOX (hbox_entry), wordDic->combo_entry, TRUE, TRUE, 0);
+  gtk_combo_box_set_entry_text_column (GTK_COMBO_BOX (wordDic->cbo_search_term), 0);
+  gtk_combo_box_set_id_column (GTK_COMBO_BOX (wordDic->cbo_search_term), 0);
+  gtk_widget_show (wordDic->cbo_search_term);
+  gtk_box_pack_start (GTK_BOX (hbox_entry), wordDic->cbo_search_term, TRUE, TRUE, 0);
   gtk_widget_style_add_class (GTK_WIDGET (gtk_bin_get_child (
-                              GTK_BIN (wordDic->combo_entry))), "normalfont");
+                              GTK_BIN (wordDic->cbo_search_term))), "normalfont");
 
-  g_signal_connect (gtk_bin_get_child (GTK_BIN (wordDic->combo_entry)),
+  g_signal_connect (gtk_bin_get_child (GTK_BIN (wordDic->cbo_search_term)),
                    "activate", G_CALLBACK (on_search_clicked), NULL);
   g_signal_connect (G_OBJECT (self), "key_press_event",
-                    G_CALLBACK (set_focus_on_entry), gtk_bin_get_child (GTK_BIN (wordDic->combo_entry)));
+                    G_CALLBACK (set_focus_on_entry), gtk_bin_get_child (GTK_BIN (wordDic->cbo_search_term)));
 
 
   _init_word_history ();
   {
-    GtkEntry * entry = GTK_ENTRY (gtk_bin_get_child (GTK_BIN (wordDic->combo_entry)));
+    GtkEntry * entry = GTK_ENTRY (gtk_bin_get_child (GTK_BIN (wordDic->cbo_search_term)));
     gtk_widget_set_can_default (GTK_WIDGET (entry), TRUE);
     gtk_widget_grab_focus (GTK_WIDGET (entry));
     gtk_widget_grab_default (GTK_WIDGET (entry));
@@ -1407,7 +1407,7 @@ _create_gui (GjWorddicWindow* self)
   gtk_box_pack_start (GTK_BOX (hbox_entry), button_clear, FALSE, FALSE, 0);
   g_signal_connect_swapped (G_OBJECT (button_clear), "clicked",
                            G_CALLBACK (gtk_entry_clear_callback),
-                           G_OBJECT (gtk_bin_get_child (GTK_BIN (wordDic->combo_entry))));
+                           G_OBJECT (gtk_bin_get_child (GTK_BIN (wordDic->cbo_search_term))));
 
   frame_results = gtk_frame_new (_("Search results :"));
   gtk_widget_show (frame_results);
@@ -1467,7 +1467,7 @@ _create_gui (GjWorddicWindow* self)
 void
 worddic_lookup_word(gchar * word_to_lookup)
 {
-  gtk_combo_box_set_text (wordDic->combo_entry, gjitenApp->conf->word_to_lookup);
+  gtk_combo_box_set_text (wordDic->cbo_search_term, gjitenApp->conf->word_to_lookup);
   on_search_clicked ();
 }
 
