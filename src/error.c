@@ -165,33 +165,6 @@ gjiten_flush_errors()
 
 
 
-gboolean
-gjiten_print_question(const char *fmt, ... )
-{
-  GtkWidget *dialog;
-  gint retval = GTK_RESPONSE_REJECT;
-
-  va_list args;
-  gchar *pstr;
-
-  va_start (args, fmt);
-  pstr = g_strdup_vprintf (fmt, args);
-  va_end (args);
-
-  if (pstr != NULL) {
-    dialog = gtk_message_dialog_new (NULL, 0, GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, "%s", pstr);
-
-    retval = gtk_dialog_run (GTK_DIALOG (dialog));
-    gtk_widget_destroy (dialog);
-    g_free (pstr);
-  }
-
-  if (retval == GTK_RESPONSE_YES) return TRUE;
-  else return FALSE;
-}
-
-
-
 void
 gjiten_abort_with_msg(const char *fmt, ... )
 {
