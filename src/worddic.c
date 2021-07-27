@@ -50,34 +50,34 @@
 typedef struct _GjWorddicWindowPrivate GjWorddicWindowPrivate;
 struct _GjWorddicWindowPrivate
 {
-  GtkWidget *hbox_options;
-  GtkWidget *combo_entry;
-  GtkWidget *text_results_view;
+  GtkWidget     *hbox_options;
+  GtkComboBox   *combo_entry;
+  GtkWidget     *text_results_view;
   GtkTextBuffer *text_results_buffer;
   GtkTextBuffer *info_buffer;
-  GtkWidget *checkb_verb;
-  GtkWidget *checkb_autoadjust;
-  GtkWidget *checkb_searchlimit;
-  GtkWidget *spinb_searchlimit;
-  GtkWidget *radiob_jpexact;
-  GtkWidget *radiob_startw;
-  GtkWidget *radiob_endw;
-  GtkWidget *radiob_any;
-  GtkWidget *radiob_engexact;
-  GtkWidget *radiob_words;
-  GtkWidget *radiob_partial;
-  GtkWidget *radiob_searchdic;
-  GtkWidget *radiob_searchall;
+  GtkWidget     *checkb_verb;
+  GtkWidget     *checkb_autoadjust;
+  GtkWidget     *checkb_searchlimit;
+  GtkWidget     *spinb_searchlimit;
+  GtkWidget     *radiob_jpexact;
+  GtkWidget     *radiob_startw;
+  GtkWidget     *radiob_endw;
+  GtkWidget     *radiob_any;
+  GtkWidget     *radiob_engexact;
+  GtkWidget     *radiob_words;
+  GtkWidget     *radiob_partial;
+  GtkWidget     *radiob_searchdic;
+  GtkWidget     *radiob_searchall;
   GtkToolButton *button_back;
   GtkToolButton *button_forward;
-  GtkTextIter iter;
-  GtkWidget *appbar_mainwin;
-  GtkListStore * word_search_history_model;
-  GtkWidget *dicselection_menu;
-  GtkTextTag *tag_large_font;
-  GdkCursor *selection_cursor;
-  GdkCursor *regular_cursor;
-  gboolean is_cursor_regular;
+  GtkTextIter    iter;
+  GtkWidget     *appbar_mainwin;
+  GtkListStore  *word_search_history_model;
+  GtkWidget     *dicselection_menu;
+  GtkTextTag    *tag_large_font;
+  GdkCursor     *selection_cursor;
+  GdkCursor     *regular_cursor;
+  gboolean       is_cursor_regular;
 };
 G_DEFINE_TYPE_WITH_PRIVATE (GjWorddicWindow, gj_worddic_window,  GTK_TYPE_APPLICATION_WINDOW)
 
@@ -125,11 +125,11 @@ worddic_paste()
 
   // First try the current selection
   selection = gtk_clipboard_wait_for_text (gtk_clipboard_get (GDK_SELECTION_PRIMARY));
-  if (selection != NULL) gtk_entry_set_text (GTK_ENTRY (gtk_bin_get_child (GTK_BIN (wordDic->combo_entry))), selection);
+  if (selection != NULL) gtk_combo_box_set_text (wordDic->combo_entry, selection);
   else {
     // if we didn't get anything, try the default clipboard
     selection = gtk_clipboard_wait_for_text (gtk_clipboard_get (GDK_SELECTION_CLIPBOARD));
-      if (selection != NULL) gtk_entry_set_text (GTK_ENTRY (gtk_bin_get_child (GTK_BIN (wordDic->combo_entry))), selection);
+      if (selection != NULL) gtk_combo_box_set_text (wordDic->combo_entry, selection);
   }
 }
 
@@ -689,7 +689,7 @@ worddic_search(gchar *srchstrg)
   while (g_ascii_isspace (srchstrg[strlen (srchstrg)-1]) != 0) srchstrg[strlen (srchstrg)-1] = 0;
 
   if (strlen (srchstrg) == 0) return;
-  gtk_entry_set_text (GTK_ENTRY (gtk_bin_get_child (GTK_BIN (wordDic->combo_entry))), srchstrg);
+  gtk_combo_box_set_text (wordDic->combo_entry, srchstrg);
 
   truncated = 0;
   while (TRUE)
@@ -770,7 +770,7 @@ on_search_clicked()
   gdk_window_set_cursor (gtk_text_view_get_window (GTK_TEXT_VIEW (wordDic->text_results_view), GTK_TEXT_WINDOW_TEXT), wordDic->regular_cursor);
   wordDic->is_cursor_regular = TRUE;
 
-  new_entry_text = g_strdup (gtk_entry_get_text (GTK_ENTRY (gtk_bin_get_child (GTK_BIN (wordDic->combo_entry)))));
+  new_entry_text = g_strdup (gtk_combo_box_get_text (wordDic->combo_entry));
   if (g_utf8_validate (new_entry_text, -1, NULL) == FALSE)
 {
     gjiten_print_error_and_wait (_("Invalid input: non-utf8\n"));
@@ -1372,7 +1372,7 @@ _create_gui (GjWorddicWindow* self)
   gtk_label_set_xalign (GTK_LABEL (label_enter), 1);
   gtk_label_set_yalign (GTK_LABEL (label_enter), 0.5);
 
-  wordDic->combo_entry = gtk_combo_box_new_with_model_and_entry (GTK_TREE_MODEL (wordDic->word_search_history_model));
+  wordDic->combo_entry = GTK_COMBO_BOX (gtk_combo_box_new_with_model_and_entry (GTK_TREE_MODEL (wordDic->word_search_history_model)));
   g_object_unref (wordDic->word_search_history_model);
   gtk_combo_box_set_entry_text_column (GTK_COMBO_BOX (wordDic->combo_entry), 0);
   gtk_combo_box_set_id_column (GTK_COMBO_BOX (wordDic->combo_entry), 0);
@@ -1467,7 +1467,7 @@ _create_gui (GjWorddicWindow* self)
 void
 worddic_lookup_word(gchar * word_to_lookup)
 {
-  gtk_entry_set_text (GTK_ENTRY (gtk_bin_get_child (GTK_BIN (wordDic->combo_entry))), gjitenApp->conf->word_to_lookup);
+  gtk_combo_box_set_text (wordDic->combo_entry, gjitenApp->conf->word_to_lookup);
   on_search_clicked ();
 }
 

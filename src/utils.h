@@ -90,4 +90,11 @@ delete_event_prevent_destruction(GtkWidget *widget,
                                 GdkEvent  *unused1,
                                 gpointer   unused2);
 
+const gchar  *
+gtk_combo_box_get_text (GtkComboBox *self);
+
+void
+gtk_combo_box_set_text (GtkComboBox *self,
+                        const gchar  *text);
+
 #endif

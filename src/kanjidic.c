@@ -53,36 +53,36 @@ void get_rad_of_kanji (gunichar kanji);
 typedef struct _GjKanjidicWindowPrivate GjKanjidicWindowPrivate;
 struct _GjKanjidicWindowPrivate
 {
-  GtkWidget *window_kanjinfo;
-  GtkWidget *window_radicals;
-  GtkWidget *combo_entry_key;
-  GtkWidget *combo_entry_radical;
+  GtkWidget     *window_kanjinfo;
+  GtkWidget     *window_radicals;
+  GtkComboBox   *combo_entry_key;
+  GtkComboBox   *combo_entry_radical;
   GtkTextBuffer *text_kanjinfo_buffer;
-  GtkWidget *text_kanjinfo_view;
-  GtkTextIter kinfo_iter;
-  GtkWidget *kanji_results_view;
+  GtkWidget     *text_kanjinfo_view;
+  GtkTextIter    kinfo_iter;
+  GtkWidget     *kanji_results_view;
   GtkTextBuffer *kanji_results_buffer;
-  GtkTextIter kanji_results_iter;
-  GtkWidget *appbar_kanji;
-  GtkListStore * combo_entry_key_list;
-  GtkListStore *combo_entry_radical_list;
-  GtkWidget *spinb_strokenum;
-  GtkWidget *spinb_plusmin;
-  GtkWidget *label_plusmin;
-  GtkWidget *checkb_ksearch;
-  GtkWidget *checkb_radical;
-  GtkWidget *checkb_stroke;
-  GtkWidget *button_radtable;
-  GtkWidget *button_clearrad;
-  GtkWidget *button_cleark;
-  GtkWidget *vbox_history;
-  GtkWidget *scrolledwin_history;
-  GSList *kanji_history_list;
+  GtkTextIter    kanji_results_iter;
+  GtkWidget     *appbar_kanji;
+  GtkListStore  *combo_entry_key_list;
+  GtkListStore  *combo_entry_radical_list;
+  GtkWidget  *spinb_strokenum;
+  GtkWidget  *spinb_plusmin;
+  GtkWidget  *label_plusmin;
+  GtkWidget  *checkb_ksearch;
+  GtkWidget  *checkb_radical;
+  GtkWidget  *checkb_stroke;
+  GtkWidget  *button_radtable;
+  GtkWidget  *button_clearrad;
+  GtkWidget  *button_cleark;
+  GtkWidget  *vbox_history;
+  GtkWidget  *scrolledwin_history;
+  GSList     *kanji_history_list;
   GtkTextTag *tag_large_font;
   GHashTable *rad_button_hash;
   GHashTable *kanji_info_hash;
   GHashTable *rad_info_hash;
-  GList *rad_info_list;
+  GList      *rad_info_list;
 };
 G_DEFINE_TYPE_WITH_PRIVATE (GjKanjidicWindow, gj_kanjidic_window,  GTK_TYPE_APPLICATION_WINDOW)
 
@@ -489,12 +489,12 @@ on_kanji_search()
 
   push = TRUE;
   if (kentry != NULL) { //Check if we need to save the key entry in the history
-    if (strcmp (kentry, gtk_entry_get_text (GTK_ENTRY (gtk_bin_get_child (GTK_BIN (kanjiDic->combo_entry_key))))) == 0) {
+    if (strcmp (kentry, gtk_combo_box_get_text (kanjiDic->combo_entry_key)) == 0) {
       push = FALSE;
       g_free (kentry);
     }
   }
-  kentry = g_strdup (gtk_entry_get_text (GTK_ENTRY (gtk_bin_get_child (GTK_BIN (kanjiDic->combo_entry_key)))));
+  kentry = g_strdup (gtk_combo_box_get_text (kanjiDic->combo_entry_key));
   if (kentry != NULL) {
     if ((strlen (kentry) > 0) && (push == TRUE) ) {
       gtk_list_store_string_prepend (kanjiDic->combo_entry_key_list, kentry);
@@ -502,13 +502,13 @@ on_kanji_search()
   }
   push = TRUE;
   if (radentry != NULL) { //Check if we need to save the radical entry in the history
-    if (strcmp (radentry, gtk_entry_get_text (GTK_ENTRY (gtk_bin_get_child (GTK_BIN (kanjiDic->combo_entry_radical))))) == 0) {
+    if (strcmp (radentry, gtk_combo_box_get_text (kanjiDic->combo_entry_radical)) == 0) {
       push = FALSE;
       g_free (radentry);
     }
   }
 
-  radentry = g_strdup (gtk_entry_get_text (GTK_ENTRY (gtk_bin_get_child (GTK_BIN (kanjiDic->combo_entry_radical)))));
+  radentry = g_strdup (gtk_combo_box_get_text (kanjiDic->combo_entry_radical));
   if (radentry) {
     if ((strlen (radentry) > 0) && push) {
       gtk_list_store_string_prepend (kanjiDic->combo_entry_radical_list, radentry);
@@ -654,7 +654,7 @@ radical_selected(gunichar radical)
   memset (radical_selected, 0, sizeof (radical_selected));
   g_unichar_to_utf8(radical, radical_selected);
 
-  radline_ptr = (gchar*) gtk_entry_get_text (GTK_ENTRY (gtk_bin_get_child (GTK_BIN (kanjiDic->combo_entry_radical))));
+  radline_ptr = gtk_combo_box_get_text (kanjiDic->combo_entry_radical);
   newradline = g_strndup (radline_ptr, strlen (radline_ptr) + 6); //Enough space for one more character
   radline_length = g_utf8_strlen (newradline, -1);
 
@@ -672,7 +672,7 @@ radical_selected(gunichar radical)
   }
 
   if (removed == FALSE) strncat (newradline, radical_selected, 5); //Add the radical to the line
-  gtk_entry_set_text (GTK_ENTRY (gtk_bin_get_child (GTK_BIN (kanjiDic->combo_entry_radical))), newradline);
+  gtk_combo_box_set_text (kanjiDic->combo_entry_radical, newradline);
 
   g_free (newradline);
 

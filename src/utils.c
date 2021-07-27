@@ -376,3 +376,22 @@ delete_event_prevent_destruction(GtkWidget *widget,
 {
   return TRUE;
 }
+
+
+
+void
+gtk_combo_box_set_text (GtkComboBox *self,
+                        const gchar  *text)
+{
+  GtkEntry * entry = GTK_ENTRY (gtk_bin_get_child (GTK_BIN (self)));
+  gtk_entry_set_text (entry, text);
+}
+
+
+
+const gchar  *
+gtk_combo_box_get_text (GtkComboBox *self)
+{
+  GtkEntry * entry = GTK_ENTRY (gtk_bin_get_child (GTK_BIN (self)));
+  return gtk_entry_get_text (entry);
+}
