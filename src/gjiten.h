@@ -42,7 +42,10 @@ void gjiten_start_kanjipad();
 void gjiten_start_worddic();
 void gjiten_start_kanjidic();
 void gjiten_start_kanjidic_with_search(gunichar kanji);
-void gjiten_display_manual();
+
+void gjiten_display_manual(GtkWidget *parent_window_nullable,
+                           void      *data);
+
 void gjiten_quit_if_all_windows_closed();
 
 #endif

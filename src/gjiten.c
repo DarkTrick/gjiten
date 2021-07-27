@@ -205,13 +205,13 @@ gnome_help_display(const char *file_name,
 
 
 void
-gjiten_display_manual(GtkWidget *widget,
+gjiten_display_manual(GtkWidget *parent_window_nullable,
                       void      *data)
 {
   GError *err = NULL;
 
   gboolean retval = FALSE;
-  retval = gtk_show_uri_on_window ( GTK_WINDOW (widget),
+  retval = gtk_show_uri_on_window ( GTK_WINDOW (parent_window_nullable),
                                     "ghelp:gjiten",
                                     GDK_CURRENT_TIME,
                                     &err);
@@ -222,7 +222,8 @@ gjiten_display_manual(GtkWidget *widget,
     if (err)
       message = err->message;
 
-    gjiten_show_error (GTK_WINDOW (widget), _("Could not display help: %s"), message);
+    gjiten_show_error (GTK_WINDOW (parent_window_nullable),
+                       _("Could not display help: %s"), message);
 
     if (err)
       g_error_free (err);
