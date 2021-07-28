@@ -383,7 +383,7 @@ preferences_response_cb(GtkDialog *dialog,
   }
 
   if (response == GTK_RESPONSE_HELP) {
-    gjiten_display_manual (dialog, NULL);
+    gjiten_display_manual (GTK_WIDGET (dialog), NULL);
     return;
   }
 
