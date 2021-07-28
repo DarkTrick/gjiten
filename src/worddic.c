@@ -1086,7 +1086,7 @@ kanji_clicked(GtkWidget       *text_view,
 
 
 
-void
+static void
 _init_word_history()
 {
   button_back_maybe_activate ();
@@ -1368,14 +1368,14 @@ _create_gui (GjWorddicWindow* self)
 
 
   _init_word_history ();
+
+  //setup search term input
   {
     GtkEntry * entry = GTK_ENTRY (gtk_bin_get_child (GTK_BIN (wordDic->cbo_search_term)));
     gtk_widget_set_can_default (GTK_WIDGET (entry), TRUE);
     gtk_widget_grab_focus (GTK_WIDGET (entry));
     gtk_widget_grab_default (GTK_WIDGET (entry));
   }
-
-  button_back_maybe_activate ();
 
   button_search = gtk_button_new_with_label (_("Search"));
   gtk_box_pack_start (GTK_BOX (hbox_entry), button_search, FALSE, FALSE, 7);
