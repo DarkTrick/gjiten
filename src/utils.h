@@ -97,4 +97,8 @@ void
 gtk_combo_box_set_text (GtkComboBox *self,
                         const gchar  *text);
 
+const char *
+str_find_last_of(const char *haystack,
+                 const char  needle);
+
 #endif

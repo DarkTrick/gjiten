@@ -276,9 +276,12 @@ g_pango_font_convert_to_css(const gchar * pango_font)
 
   //we need a modifyable string
   gchar * pango_font_m = g_strdup (pango_font);
-  char * saveptr = NULL;
-  font_family = strtok_r (pango_font_m, " ", &saveptr);
-  font_size   = strtok_r (NULL,         " ", &saveptr);
+
+  char * last_space = (char*)str_find_last_of (pango_font_m, ' ');
+  last_space[0] = '\0';
+
+  font_family = pango_font_m;
+  font_size   = last_space+1;
 
   GString * css = g_string_new ("");
   g_string_printf (css, "%spx %s", font_size, font_family);
@@ -394,4 +397,49 @@ gtk_combo_box_get_text (GtkComboBox *self)
 {
   GtkEntry * entry = GTK_ENTRY (gtk_bin_get_child (GTK_BIN (self)));
   return gtk_entry_get_text (entry);
+}
+
+
+
+/**
+ * Find `needle` in `haystack`. This function does not depend
+ * on integer sizes.
+ *
+ * Params:
+ *        \0-terminated strings.
+ *        `needle` cannot be '\0'.
+ *
+ * Return: pointer to last occurance of `needle` in haystack.
+ *         0, if nothing was found
+ **/
+const char *
+str_find_last_of(const char *haystack,
+                 const char  needle)
+{
+  if (haystack[0] == '\0'){
+    return (const char*)(0);
+  }
+
+  const char * cur = haystack;
+  const char * last_location = haystack;
+  int found = 0;
+
+  // Check each single character...
+  while (cur[0] != '\0')
+  {
+    // ... if it matches the `needle`, store the location...
+    if (cur[0] == needle)
+    {
+      last_location = cur;
+      found = 1;
+    }
+    ++cur;
+  }
+
+  // ... and return the last stored location.
+  if (1 == found)
+    return last_location;
+
+  // Otherwise return 0.
+  return (const char*)(0);
 }
