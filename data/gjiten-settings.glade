@@ -838,13 +838,15 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="orientation">vertical</property>
+                    <property name="spacing">4</property>
                     <child>
-                      <!-- n-columns=3 n-rows=3 -->
+                      <!-- n-columns=2 n-rows=2 -->
                       <object class="GtkGrid" id="table_fonts_grid">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="border-width">10</property>
-                        <property name="row-spacing">10</property>
+                        <property name="row-spacing">6</property>
+                        <property name="column-spacing">12</property>
                         <child>
                           <object class="GtkLabel" id="label8">
                             <property name="visible">True</property>
@@ -872,28 +874,6 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkEntry" id="entry_normal_font">
-                            <property name="visible">True</property>
-                            <property name="can-focus">True</property>
-                            <property name="invisible-char">*</property>
-                          </object>
-                          <packing>
-                            <property name="left-attach">1</property>
-                            <property name="top-attach">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkEntry" id="entry_large_font">
-                            <property name="visible">True</property>
-                            <property name="can-focus">True</property>
-                            <property name="invisible-char">*</property>
-                          </object>
-                          <packing>
-                            <property name="left-attach">1</property>
-                            <property name="top-attach">1</property>
-                          </packing>
-                        </child>
-                        <child>
                           <object class="GtkFontButton" id="font_picker_normal_font">
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
@@ -903,7 +883,7 @@
                             <property name="preview-text">Nihongo: 日本語</property>
                           </object>
                           <packing>
-                            <property name="left-attach">2</property>
+                            <property name="left-attach">1</property>
                             <property name="top-attach">0</property>
                           </packing>
                         </child>
@@ -917,18 +897,9 @@
                             <property name="preview-text">Nihongo: 日本語</property>
                           </object>
                           <packing>
-                            <property name="left-attach">2</property>
+                            <property name="left-attach">1</property>
                             <property name="top-attach">1</property>
                           </packing>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
                         </child>
                       </object>
                       <packing>

@@ -93,18 +93,6 @@ enum {
 
 
 
-
-void
-font_set(GtkFontChooser *fontpicker,
-         GtkWidget      *entry)
-{
-  const gchar *fontname;
-  fontname = gtk_font_chooser_get_font (GTK_FONT_CHOOSER (fontpicker));
-  gtk_entry_set_text (GTK_ENTRY (entry), fontname);
-}
-
-
-
 static void
 add_dic_response_cb(GtkDialog      *dialog,
                     gint            response,
@@ -135,6 +123,18 @@ add_dic_response_cb(GtkDialog      *dialog,
   }
 
   gtk_widget_hide (GTK_WIDGET (dialog));
+}
+
+
+
+static void
+_setup_fontpicker (GtkWidget *fontpicker,
+                   gchar     *font_nullable)
+{
+  gtk_widget_show (fontpicker);
+  if (font_nullable != NULL) {
+    gtk_font_chooser_set_font (GTK_FONT_CHOOSER (fontpicker), font_nullable);
+  }
 }
 
 
@@ -411,8 +411,8 @@ preferences_response_cb(GtkDialog *dialog,
   gjitenApp->conf->force_language_c = TOGGLE_BUTTON_ACTIVE ("checkbutton_language_c");
   gjitenApp->conf->envvar_override   = TOGGLE_BUTTON_ACTIVE ("checkbutton_envvar_override");
 
-  gjitenApp->conf->normalfont       = g_strdup (gtk_entry_get_text (GTK_ENTRY (GETWIDGET ("entry_normal_font"))));
-  gjitenApp->conf->largefont        = g_strdup (gtk_entry_get_text (GTK_ENTRY (GETWIDGET ("entry_large_font"))));
+  gjitenApp->conf->normalfont       = g_strdup (gtk_font_chooser_get_font (GTK_FONT_CHOOSER (GETWIDGET ("font_picker_normal_font"))));
+  gjitenApp->conf->largefont        = g_strdup (gtk_font_chooser_get_font (GTK_FONT_CHOOSER (GETWIDGET ("font_picker_large_font"))));
 
   gjitenApp->conf->search_kata_on_hira = TOGGLE_BUTTON_ACTIVE ("checkbutton_search_kata_on_hira");
   gjitenApp->conf->search_hira_on_kata = TOGGLE_BUTTON_ACTIVE ("checkbutton_search_hira_on_kata");
@@ -547,21 +547,10 @@ create_dialog_preferences()
   }
 
   fontpicker = GETWIDGET ("font_picker_normal_font");
-  gtk_widget_show (fontpicker);
-  if (gjitenApp->conf->normalfont != NULL) {
-    gtk_entry_set_text (GTK_ENTRY (GETWIDGET ("entry_normal_font")), gjitenApp->conf->normalfont);
-    gtk_font_chooser_set_font (GTK_FONT_CHOOSER (fontpicker), gjitenApp->conf->normalfont);
-  }
-  g_signal_connect (G_OBJECT (fontpicker), "font-set", G_CALLBACK (font_set), (gpointer)GETWIDGET ("entry_normal_font"));
+  _setup_fontpicker (fontpicker, gjitenApp->conf->normalfont);
 
   fontpicker = GETWIDGET ("font_picker_large_font");
-  gtk_widget_show (fontpicker);
-  if (gjitenApp->conf->largefont != NULL) {
-    gtk_entry_set_text (GTK_ENTRY (GETWIDGET ("entry_large_font")), gjitenApp->conf->largefont);
-    gtk_font_chooser_set_font (GTK_FONT_CHOOSER (fontpicker), gjitenApp->conf->largefont);
-  }
-  g_signal_connect (G_OBJECT (fontpicker), "font-set", G_CALLBACK (font_set), (gpointer)GETWIDGET ("entry_large_font"));
-
+  _setup_fontpicker (fontpicker, gjitenApp->conf->largefont);
 
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (GETWIDGET ("checkbutton_largefont_worddic")), gjitenApp->conf->bigwords);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (GETWIDGET ("checkbutton_largefont_kanjidic")), gjitenApp->conf->bigkanji);
