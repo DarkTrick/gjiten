@@ -734,30 +734,38 @@ worddic_search(gchar *srchstrg)
 
 
 
-void
-button_back_maybe_activate()
+static void
+_button_back_maybe_activate()
 {
-  // If: Application just started up && old entries are available?
-  //   OR: Can we go back one more time?
-  gint length = gtk_tree_model_length (GTK_TREE_MODEL (wordDic->word_search_history_model));
-  if ((length > 0 && -1 == current_history_word_index)
-    || current_history_word_index+1 < length )
+  gint curSelected = gtk_combo_box_get_active (GTK_COMBO_BOX (wordDic->cbo_search_term));
+  gint numElements = gtk_combo_box_length (GTK_COMBO_BOX (wordDic->cbo_search_term));
+
+  if (curSelected < numElements-1 ||
+      curSelected == -1)
+  {
     gtk_widget_set_sensitive (GTK_WIDGET (wordDic->button_back), TRUE);
+  }
   else
+  {
     gtk_widget_set_sensitive (GTK_WIDGET (wordDic->button_back), FALSE);
+  }
+  return;
 }
 
 
 
-void
-button_next_maybe_activate()
+static void
+_button_next_maybe_activate()
 {
-  if (current_history_word_index > 0)
+  gint curSelected = gtk_combo_box_get_active (GTK_COMBO_BOX (wordDic->cbo_search_term));
+  if (curSelected > 0)
   {
     gtk_widget_set_sensitive (GTK_WIDGET (wordDic->button_forward), TRUE);
   }
   else
+  {
     gtk_widget_set_sensitive (GTK_WIDGET (wordDic->button_forward), FALSE);
+  }
 }
 
 
@@ -784,8 +792,8 @@ on_search_clicked()
       gtk_list_store_string_prepend (wordDic->word_search_history_model, new_entry_text);
   }
 
-  button_back_maybe_activate ();
-  button_next_maybe_activate ();
+  _button_back_maybe_activate ();
+  _button_next_maybe_activate ();
 
   gtk_text_buffer_set_text (GTK_TEXT_BUFFER (wordDic->text_results_buffer), "", 0);
   gtk_text_buffer_get_start_iter (wordDic->text_results_buffer, &wordDic->iter);
@@ -1087,10 +1095,21 @@ kanji_clicked(GtkWidget       *text_view,
 
 
 static void
-_init_word_history()
+_search_history_buttons_set_sensitivity()
 {
-  button_back_maybe_activate ();
-  button_next_maybe_activate ();
+  _button_back_maybe_activate ();
+  _button_next_maybe_activate ();
+}
+
+void
+cbo_search_term_on_changed (GtkComboBox *widget,
+               gpointer     user_data)
+{
+  // If user selected a different item
+  // from the ComboBox
+  gint curSelected = gtk_combo_box_get_active (GTK_COMBO_BOX (wordDic->cbo_search_term));
+  if (-1 != curSelected)
+    on_search_clicked();
 }
 
 
@@ -1361,13 +1380,13 @@ _create_gui (GjWorddicWindow* self)
   gtk_widget_style_add_class (GTK_WIDGET (gtk_bin_get_child (
                               GTK_BIN (wordDic->cbo_search_term))), "normalfont");
 
-  g_signal_connect (gtk_bin_get_child (GTK_BIN (wordDic->cbo_search_term)),
-                   "activate", G_CALLBACK (on_search_clicked), NULL);
+    g_signal_connect (G_OBJECT (wordDic->cbo_search_term), "changed",
+                    G_CALLBACK (cbo_search_term_on_changed), self);
   g_signal_connect (G_OBJECT (self), "key_press_event",
                     G_CALLBACK (set_focus_on_entry), gtk_bin_get_child (GTK_BIN (wordDic->cbo_search_term)));
 
 
-  _init_word_history ();
+  _search_history_buttons_set_sensitivity ();
 
   //setup search term input
   {

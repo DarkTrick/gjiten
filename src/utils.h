@@ -101,4 +101,8 @@ const char *
 str_find_last_of(const char *haystack,
                  const char  needle);
 
+
+gint
+gtk_combo_box_length(GtkComboBox * self);
+
 #endif
