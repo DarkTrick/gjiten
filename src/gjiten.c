@@ -245,7 +245,6 @@ gjiten_create_about()
 
   /*
     _("Released under the terms of the GNU GPL.\n"
-    "Check out http://gjiten.sourceforge.net for updates"),
   */
   {
 
