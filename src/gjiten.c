@@ -85,7 +85,7 @@ gjiten_init_cmd_params(GApplication *app, GjitenConfig *conf)
       .short_name = 'k',
       .flags = G_OPTION_FLAG_NONE,
       .arg = G_OPTION_ARG_NONE,
-      .arg_data = &(conf->startkanjidic),
+      .arg_data = &(conf->cli_option_startkanjidic),
       .description = N_("Start up Kanjidic instead of Word dictionary"),
       .arg_description = NULL,
     },
@@ -94,7 +94,7 @@ gjiten_init_cmd_params(GApplication *app, GjitenConfig *conf)
       .short_name = 'w',
       .flags = G_OPTION_FLAG_NONE,
       .arg = G_OPTION_ARG_STRING,
-      .arg_data = &(conf->word_to_lookup),
+      .arg_data = &(conf->cli_option_word_to_lookup),
       .description = N_("Look up WORD in first dictionary"),
       .arg_description = N_("WORD")
     },
@@ -103,7 +103,7 @@ gjiten_init_cmd_params(GApplication *app, GjitenConfig *conf)
       .short_name = 'l',
       .flags = G_OPTION_FLAG_NONE,
       .arg = G_OPTION_ARG_STRING,
-      .arg_data = &(conf->kanji_to_lookup),
+      .arg_data = &(conf->cli_option_kanji_to_lookup),
       .description = N_("Look up KANJI in kanji dictionary"),
       .arg_description = N_("KANJI")
     },
@@ -112,7 +112,7 @@ gjiten_init_cmd_params(GApplication *app, GjitenConfig *conf)
       .short_name = 'c',
       .flags = G_OPTION_FLAG_NONE,
       .arg = G_OPTION_ARG_NONE,
-      .arg_data = &(conf->clip_kanji_lookup),
+      .arg_data = &(conf->cli_option_clip_kanji_lookup),
       .description = N_("Look up kanji from clipboard"),
       .arg_description = NULL,
     },
@@ -121,7 +121,7 @@ gjiten_init_cmd_params(GApplication *app, GjitenConfig *conf)
       .short_name = 'v',
       .flags = G_OPTION_FLAG_NONE,
       .arg = G_OPTION_ARG_NONE,
-      .arg_data = &(conf->clip_word_lookup),
+      .arg_data = &(conf->cli_option_clip_word_lookup),
       .description = N_("Look up word from clipboard"),
       .arg_description = NULL,
     },
@@ -130,7 +130,7 @@ gjiten_init_cmd_params(GApplication *app, GjitenConfig *conf)
       .short_name = '\0',
       .flags = G_OPTION_FLAG_NONE,
       .arg = G_OPTION_ARG_NONE,
-      .arg_data = &(conf->quick_lookup_mode),
+      .arg_data = &(conf->cli_option_quick_lookup_mode),
       .description = N_("Start in quick-lookup-mode: Terminate on Escape or clicking somewhere else."),
       .arg_description = NULL,
     },
@@ -474,14 +474,14 @@ gjiten_activate(GtkApplication *app,
   gjiten_apply_fonts (gjitenApp);
 
   // the following is for clipboard lookup.
-  if ((gjitenApp->conf->clip_kanji_lookup == TRUE) || (gjitenApp->conf->clip_word_lookup == TRUE)) {
-    if (gjitenApp->conf->clip_word_lookup) {
+  if ((gjitenApp->conf->cli_option_clip_kanji_lookup == TRUE) || (gjitenApp->conf->cli_option_clip_word_lookup == TRUE)) {
+    if (gjitenApp->conf->cli_option_clip_word_lookup) {
       gjiten_start_worddic (app);
       worddic_paste ();
       on_search_clicked ();
     }
     else {
-      if (gjitenApp->conf->clip_kanji_lookup){
+      if (gjitenApp->conf->cli_option_clip_kanji_lookup){
         clipboard_text = gtk_clipboard_wait_for_text (gtk_clipboard_get (GDK_SELECTION_PRIMARY));
         // validate
         // FIXME: try to convert EUC-JP to UTF8 if it's non-utf8
@@ -503,29 +503,29 @@ gjiten_activate(GtkApplication *app,
 
 
   {
-    if (gjitenApp->conf->startkanjidic) {
+    if (gjitenApp->conf->cli_option_startkanjidic) {
       gjiten_start_kanjidic (app);
     }
     else
-      if (gjitenApp->conf->word_to_lookup) {
+      if (gjitenApp->conf->cli_option_word_to_lookup) {
         gjiten_start_worddic (app);
-        worddic_lookup_word (gjitenApp->conf->word_to_lookup);
+        worddic_lookup_word (gjitenApp->conf->cli_option_word_to_lookup);
       }
-      else if (gjitenApp->conf->kanji_to_lookup != NULL) {
-        if (g_utf8_validate (gjitenApp->conf->kanji_to_lookup, -1, NULL) == FALSE) {
+      else if (gjitenApp->conf->cli_option_kanji_to_lookup != NULL) {
+        if (g_utf8_validate (gjitenApp->conf->cli_option_kanji_to_lookup, -1, NULL) == FALSE) {
           gjiten_print_error (_("Unable to look up kanji: NON-UTF8 string received from clipboard!\n"));
           exit (0); // FIXME
         }
-        else if (isKanjiChar (g_utf8_get_char (gjitenApp->conf->kanji_to_lookup)) == FALSE) {
-          gjiten_print_error (_("Non-kanji string received from clipboard: %s\n"), gjitenApp->conf->kanji_to_lookup);
+        else if (isKanjiChar (g_utf8_get_char (gjitenApp->conf->cli_option_kanji_to_lookup)) == FALSE) {
+          gjiten_print_error (_("Non-kanji string received from clipboard: %s\n"), gjitenApp->conf->cli_option_kanji_to_lookup);
           exit (0); // FIXME
         }
         else {
           if (gjitenApp->kanjidic == NULL) gjiten_start_kanjidic (app);
-          print_kanjinfo (g_utf8_get_char (gjitenApp->conf->kanji_to_lookup));
+          print_kanjinfo (g_utf8_get_char (gjitenApp->conf->cli_option_kanji_to_lookup));
         }
       }
-      else if (!gjitenApp->conf->clip_kanji_lookup && !gjitenApp->conf->clip_word_lookup)
+      else if (!gjitenApp->conf->cli_option_clip_kanji_lookup && !gjitenApp->conf->cli_option_clip_word_lookup)
         gjiten_start_worddic (app);
   }
 
@@ -538,7 +538,7 @@ gjiten_activate(GtkApplication *app,
   gjiten_flush_errors ();
 
   // enable quick lookup mode if set
-  if (gjitenApp->conf->quick_lookup_mode && gjitenApp->worddic)
+  if (gjitenApp->conf->cli_option_quick_lookup_mode && gjitenApp->worddic)
     enable_quick_lookup_mode ();
 
 }

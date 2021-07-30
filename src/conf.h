@@ -54,12 +54,12 @@ struct _GjitenConfig {
   gboolean override_env;
   gchar *kanjipad;
 
-  gboolean startkanjidic;
-  gchar *kanji_to_lookup;
-  gchar *word_to_lookup;
-  gboolean clip_kanji_lookup;
-  gboolean clip_word_lookup;
-  gboolean quick_lookup_mode;
+  gboolean cli_option_startkanjidic;
+  gchar *cli_option_kanji_to_lookup;
+  gchar *cli_option_word_to_lookup;
+  gboolean cli_option_clip_kanji_lookup;
+  gboolean cli_option_clip_word_lookup;
+  gboolean cli_option_quick_lookup_mode;
   gboolean cli_option_show_version;
 
   int maxwordmatches;

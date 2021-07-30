@@ -126,8 +126,8 @@ void
 gjitenconfig_free(GjitenConfig * self)
 {
   g_free (self->kanjipad);
-  g_free (self->kanji_to_lookup);
-  g_free (self->word_to_lookup);
+  g_free (self->cli_option_kanji_to_lookup);
+  g_free (self->cli_option_word_to_lookup);
   g_free (self->largefont);
   g_free (self->normalfont);
   dicfile_list_free (self->dicfile_list);

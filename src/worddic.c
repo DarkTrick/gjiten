@@ -1454,9 +1454,9 @@ _create_gui (GjWorddicWindow* self)
  *                replace their call with this function later.
  **/
 void
-worddic_lookup_word(gchar * word_to_lookup)
+worddic_lookup_word(gchar * cli_option_word_to_lookup)
 {
-  gtk_combo_box_set_text (wordDic->cbo_search_term, gjitenApp->conf->word_to_lookup);
+  gtk_combo_box_set_text (wordDic->cbo_search_term, gjitenApp->conf->cli_option_word_to_lookup);
   on_search_clicked ();
 }
 
