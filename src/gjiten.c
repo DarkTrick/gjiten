@@ -72,6 +72,15 @@ gjiten_init_cmd_params(GApplication *app, GjitenConfig *conf)
   const GOptionEntry cmd_params[] =
   {
     {
+      .long_name = "version",
+      .short_name = 'v',
+      .flags = G_OPTION_FLAG_NONE,
+      .arg = G_OPTION_ARG_NONE,
+      .arg_data = &(conf->cli_option_show_version),
+      .description = N_("Show version information."),
+      .arg_description = NULL,
+    },
+    {
       .long_name = "kanjidic",
       .short_name = 'k',
       .flags = G_OPTION_FLAG_NONE,
@@ -455,6 +464,11 @@ void
 gjiten_activate(GtkApplication *app,
                 gpointer        user_data)
 {
+  if (TRUE == gjitenApp->conf->cli_option_show_version)
+  {
+    g_print (PACKAGE_STRING "\n");
+    return;
+  }
   _gjiten_create_menu (GTK_APPLICATION (app));
 
   gjiten_apply_fonts (gjitenApp);

@@ -60,6 +60,8 @@ struct _GjitenConfig {
   gboolean clip_kanji_lookup;
   gboolean clip_word_lookup;
   gboolean quick_lookup_mode;
+  gboolean cli_option_show_version;
+
   int maxwordmatches;
   gchar *largefont;
   gchar *normalfont;
