@@ -151,9 +151,9 @@ gjiten_quit_if_all_windows_closed()
   if ((gjitenApp->worddic == NULL) && (gjitenApp->kanjidic == NULL))
   {
     GJITEN_DEBUG ("gjiten_quit_if_all_windows_closed ()\n");
-    conf_save_options (gjitenApp->conf);
+    gjitenconfig_save_options (gjitenApp->conf);
     dicutil_unload_dic ();
-    conf_close_handler (gjitenApp->conf);
+    gjitenconfig_free (gjitenApp->conf);
 
     GApplication * app = g_application_get_default ();
     g_application_quit (app);
@@ -549,8 +549,7 @@ GtkApplication *
 gjiten_new()
 {
   gjitenApp = g_new0(GjitenApp, 1);
-  conf_init_handler ();
-  gjitenApp->conf = conf_load ();
+  gjitenApp->conf = gjitenconfig_new_and_init ();
 
   if (gjitenApp->conf->envvar_override == TRUE) {
     if (gjitenApp->conf->gdk_use_xft == TRUE) putenv ("GDK_USE_XFT=1");

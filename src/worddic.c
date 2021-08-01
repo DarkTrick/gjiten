@@ -926,7 +926,7 @@ worddic_close()
   GJITEN_DEBUG ("WORDDIC_CLOSE\n");
   if (wordDic != NULL)
   {
-    conf_save_history (wordDic->word_search_history_model, gjitenApp->conf);
+    gjitenconfig_save_history (wordDic->word_search_history_model, gjitenApp->conf);
     g_object_ref_sink (self);
     wordDic = NULL;
     self = NULL;

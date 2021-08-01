@@ -102,15 +102,6 @@ dicfile_delete(DicFile * self)
 
 
 
-// @return: TRUE, if init was successfull
-gboolean
-store_init()
-{
-  return TRUE;
-}
-
-
-
 GjitenConfig *
 gjitenconfig_new()
 {
@@ -144,7 +135,7 @@ gjitenconfig_free(GjitenConfig * self)
 
 
 GjitenConfig *
-conf_load()
+gjitenconfig_new_and_init()
 {
   gchar *dicprefix = DICTPREFIX;
   gchar *tmpstrg;
@@ -164,30 +155,6 @@ conf_load()
 
 
   conf->version = store_get_string ("version");
-
-  //if (conf->version == NULL) { // FIXME: gconf schema
-  //  conf->kdiccfg[KANJI] = TRUE;
-  //  conf->kdiccfg[RADICAL] = TRUE;
-  //  conf->kdiccfg[STROKES] = TRUE;
-  //  conf->kdiccfg[READING] = TRUE;
-  //  conf->kdiccfg[ENGLISH] = TRUE;
-  //  conf->kdiccfg[FREQ] = TRUE;
-  //  conf->kdiccfg[JOUYOU] = TRUE;
-  //  conf->kdiccfg[CREF] = TRUE;
-  //  conf->toolbar = TRUE;
-  //  conf->menubar = TRUE;
-  //  conf->force_ja_JP = TRUE;
-  //  conf->force_language_c = TRUE;
-  //  if  (conf->kanjidic == NULL) conf->kanjidic = g_new0 (GjitenDicfile, 1);
-  //  conf->kanjidic->path = GJITEN_DICDIR"/kanjidic";
-  //  conf->dictpath = GJITEN_DICDIR;
-  //  conf->searchlimit_enabled = FALSE;
-  //  conf->maxwordmatches = DEFMAXWORDMATCHES;
-  //  conf->autoadjust_enabled = TRUE;
-  //  return conf;
-  //}
-
-
   conf->autoadjust_enabled = store_get_boolean ("autoadjust_enabled");
 
   conf->bigwords = store_get_boolean ("bigwords");
@@ -325,7 +292,7 @@ conf_load()
 
 
 void
-conf_save(GjitenConfig *conf)
+gjitenconfig_save(GjitenConfig *conf)
 {
   int i;
   gchar *confpath, *tmpstrg;
@@ -411,7 +378,7 @@ conf_save(GjitenConfig *conf)
 
 
 void
-conf_save_history(GtkListStore *history,
+gjitenconfig_save_history(GtkListStore *history,
                   GjitenConfig *conf)
 {
   int i;
@@ -446,7 +413,7 @@ conf_save_history(GtkListStore *history,
 
 
 void
-conf_save_options(GjitenConfig *conf)
+gjitenconfig_save_options(GjitenConfig *conf)
 {
     DataStore *store = conf->data_store;
 
@@ -457,23 +424,3 @@ conf_save_options(GjitenConfig *conf)
     data_store_save_to_disk (store);
 }
 
-
-
-gboolean
-conf_init_handler()
-{
-
-  if (store_init () != TRUE) {
-    gjiten_print_error (_("Could initialize persistent data store.\n"));
-    return FALSE;
-  }
-  return TRUE;
-}
-
-
-
-void
-conf_close_handler (GjitenConfig *self)
-{
-  gjitenconfig_free (self);
-}

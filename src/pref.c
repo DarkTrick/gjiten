@@ -435,7 +435,7 @@ preferences_response_cb(GtkDialog *dialog,
     valid = gtk_tree_model_iter_next (model, &iter);
   }
 
-  conf_save (gjitenApp->conf);
+  gjitenconfig_save (gjitenApp->conf);
 
   worddic_update_dic_menu ();
   worddic_apply_fonts ();

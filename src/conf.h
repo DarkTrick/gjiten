@@ -90,11 +90,13 @@ struct _GjitenConfig {
 };
 
 
-GjitenConfig *conf_load();
-void conf_save(GjitenConfig *conf);
-void conf_save_history(GtkListStore *history, GjitenConfig *conf);
-void conf_save_options(GjitenConfig *conf);
-gboolean conf_init_handler();
-void conf_close_handler(GjitenConfig *self);
+GjitenConfig *gjitenconfig_new_and_init();
+void gjitenconfig_free(        GjitenConfig *self);
+
+void gjitenconfig_save(        GjitenConfig *conf);
+void gjitenconfig_save_history(GtkListStore *history,
+                               GjitenConfig *conf);
+void gjitenconfig_save_options(GjitenConfig *conf);
+
 
 #endif
