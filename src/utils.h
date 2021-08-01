@@ -40,10 +40,6 @@ void gtk_combo_box_text_add_entries(GtkComboBoxText *self,
 void setWindowIcon(GtkWindow       *window,
                    char            *icon_path);
 
-void gtk_widget_register_action_entries(GtkWidget    *self,
-                                        const gchar  *group_name,
-                                        GActionEntry  actions[]);
-
 void set_global_css(gchar *css_class,
                    gchar *css);
 

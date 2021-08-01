@@ -102,18 +102,6 @@ setWindowIcon(GtkWindow *window,
 
 
 
-void
-gtk_widget_register_action_entries(GtkWidget    *self,
-                                   const gchar  *group_name,
-                                   GActionEntry  actions[])
-{
-  GSimpleActionGroup * group = g_simple_action_group_new ();
-  g_action_map_add_action_entries (G_ACTION_MAP (group), actions, G_N_ELEMENTS (actions), self);
-  gtk_widget_insert_action_group (GTK_WIDGET (self), group_name, G_ACTION_GROUP (group));
-}
-
-
-
 /**
  * Set css content, that will be valid for the whole application
  **/
@@ -154,7 +142,7 @@ void gtk_widget_style_add_class(GtkWidget   *widget,
 GtkListStore *
 gtk_list_store_string_new()
 {
-  gtk_list_store_new (1, G_TYPE_STRING);
+  return gtk_list_store_new (1, G_TYPE_STRING);
 }
 
 
