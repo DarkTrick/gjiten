@@ -173,7 +173,7 @@ dicfile_list_free(GSList *dicfile_list)
 const gchar *
 dicfile_is_valid(GjitenDicfile *self)
 {
-  gchar * error = NULL;
+  const gchar * error = NULL;
 
   if (self->path == NULL)
     return _("Please select a dictionary file.");
