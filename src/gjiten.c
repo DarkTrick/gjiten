@@ -191,12 +191,8 @@ gjiten_start_kanjipad()
                          "See the Documentation for more details about KanjiPad."));
   }
   else {
-    len = strlen (gjitenApp->conf->kanjipad) + 2;
-    fclose (kanjipad_binary);
-    kpad_cmd = g_malloc (len);
-    strncpy (kpad_cmd, gjitenApp->conf->kanjipad, len);
-    strncat (kpad_cmd, "&", 1);
-    int unused = system (kpad_cmd); // FIXME
+    kpad_cmd = g_strconcat (gjitenApp->conf->kanjipad, "&", NULL);
+    int unused = system (kpad_cmd);
     g_free (kpad_cmd);
   }
 }

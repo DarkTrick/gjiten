@@ -32,7 +32,7 @@ typedef struct _GjitenApp GjitenApp;
 
 struct _GjitenApp {
   GjWorddicWindow *worddic;
-  KanjiDic *kanjidic;
+  GjKanjidicWindow *kanjidic;
   GjitenConfig *conf;
 };
 
