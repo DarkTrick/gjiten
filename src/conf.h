@@ -36,6 +36,7 @@ typedef struct _GjitenConfig GjitenConfig;
 
 // forward decls
 
+#define HISTORY_MAX_WORDS 50
 
 struct _GjitenConfig {
   gchar *version;

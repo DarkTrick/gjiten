@@ -670,7 +670,8 @@ worddic_hira_kata_search(GjitenDicfile *dicfile,
 static void
 worddic_search(gchar *srchstrg)
 {
-  gchar appbarmsg[50];
+  const int LEN = 50;
+  gchar appbarmsg[LEN];
   int truncated;
   GjitenDicfile *dicfile;
   GSList *dicfile_node;
@@ -679,7 +680,7 @@ worddic_search(gchar *srchstrg)
 
   if (gjitenApp->conf->dicfile_list == NULL)
   {
-    snprintf (appbarmsg, 50, _("No dicfiles specified! Set your preferences first."));
+    snprintf (appbarmsg, LEN, _("No dicfiles specified! Set your preferences first."));
     gtk_label_set_text (GTK_LABEL (wordDic->appbar_mainwin),appbarmsg);
     return;
   }
@@ -725,8 +726,8 @@ worddic_search(gchar *srchstrg)
 
   if (word_matches)
   {
-    if (truncated) snprintf (appbarmsg, 50, _("Matches found (truncated): %d"), word_matches);
-    else snprintf (appbarmsg, 50, _("Matches found: %d"), word_matches);
+    if (truncated) snprintf (appbarmsg, LEN, _("Matches found (truncated): %d"), word_matches);
+    else snprintf (appbarmsg, LEN, _("Matches found: %d"), word_matches);
     gtk_label_set_text (GTK_LABEL (wordDic->appbar_mainwin), appbarmsg);
   }
   else gtk_label_set_text (GTK_LABEL (wordDic->appbar_mainwin), _("No match found!"));
@@ -908,7 +909,7 @@ worddic_init_history(GtkListStore *history)
 {
   gint i;
 
-  for (i = 0; i <= 50; i++)
+  for (i = 0; i <= HISTORY_MAX_WORDS; i++)
   {
     if (gjitenApp->conf->history[i] == NULL) break;
     if (g_utf8_validate (gjitenApp->conf->history[i], -1, NULL) == TRUE)

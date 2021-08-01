@@ -133,7 +133,7 @@ gjitenconfig_free(GjitenConfig * self)
   dicfile_list_free (self->dicfile_list);
 
   // can't use `g_strfreev` because `history` itself is on stack
-  for (int i = 0; i <= 50; i++) {
+  for (int i = 0; i <= HISTORY_MAX_WORDS; i++) {
     if (self->history[i] == NULL) break;
     g_free (self->history[i]);
   }
@@ -294,21 +294,21 @@ conf_load()
   //Load gjiten search history
   {
     // Be sure: init all to NULL
-    for (i = 0; i <= 50; ++i) {
+    for (i = 0; i <= HISTORY_MAX_WORDS; ++i) {
       conf->history[i] = NULL;
     }
 
     // get persistent values and save them
     gsize num_entries = 0;
     gchar ** history_array = data_store_get_string_array (store, SECTION_GENERAL, "word_search_history", &num_entries);
-    for (i = 0; i < MIN (num_entries, 50); ++i) {
+    for (i = 0; i < MIN (num_entries, HISTORY_MAX_WORDS); ++i) {
       conf->history[i] = history_array[i];
     }
 
-    // We can only hold 50 history entries.
+    // We can only hold HISTORY_MAX_WORDS history entries.
     // Free values, if there were more in the list from
     // persistent storage
-    for (i = 50; i < num_entries; ++i){
+    for (i = HISTORY_MAX_WORDS; i < num_entries; ++i){
       g_free (history_array[i]);
     }
 
@@ -427,7 +427,7 @@ conf_save_history(GtkListStore *history,
       gboolean iter_valid;
 
       iter_valid = gtk_tree_model_get_iter_first (GTK_TREE_MODEL (history), &iter);
-      for (i = 0; i <= 50; i++) {
+      for (i = 0; i <= HISTORY_MAX_WORDS; i++) {
         if (iter_valid == FALSE) break;
           history_array[i] = gtk_list_store_string_get (history, &iter);
           iter_valid = gtk_tree_model_iter_next (GTK_TREE_MODEL (history), &iter);
