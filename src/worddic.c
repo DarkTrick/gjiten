@@ -144,7 +144,6 @@ Verbinit()
   int vinfl_size = 0;
   struct stat vinfl_stat;
   gchar *vinfl_start, *vinfl_ptr, *vinfl_end;
-  int error = FALSE;
   int fd = 0;
   int vinfl_part = 1;
   int conj_type = 40;
@@ -160,14 +159,12 @@ Verbinit()
   if (stat (VINFL_FILENAME, &vinfl_stat) != 0)
   {
     printf ("**ERROR** %s: stat () \n", VINFL_FILENAME);
-    error = TRUE;
   }
   vinfl_size = vinfl_stat.st_size;
   fd = open (VINFL_FILENAME, O_RDONLY);
   if (fd == -1)
   {
     printf ("**ERROR** %s: open ()\n", VINFL_FILENAME);
-    error = TRUE;
   }
   // printf ("SIZE: %d\n", radkfile_size);
   vinfl_start = (gchar *) mmap (NULL, vinfl_size, PROT_READ, MAP_SHARED, fd, 0);
@@ -276,7 +273,7 @@ print_verb_inflections(GjitenDicfile *dicfile,
   gchar repstr[1024];
   GSList *tmp_list_ptr;
   struct vinfl_struct *tmp_vinfl_struct;
-  gchar *deinflected, *prevresult;
+  gchar *deinflected;
   int printit = TRUE;
 
   tmp_list_ptr = vinfl_list;
@@ -300,7 +297,6 @@ print_verb_inflections(GjitenDicfile *dicfile,
 
       oldrespos = srchpos = 0;
       gjit_search = SRCH_START;
-      prevresult = NULL;
       do { // search loop
         oldrespos = respos;
 
@@ -356,8 +352,6 @@ print_result(gchar *txt2print,
              int    result_offset,
              gchar *searchstrg)
 {
-  gchar *strg_to_roff;
-  glong strlen_to_roff;
   gchar *currentchar;
   gchar *kana_start;
   gchar *exp_start;
@@ -368,9 +362,6 @@ print_result(gchar *txt2print,
 
   linestart = gtk_text_buffer_create_mark (text_buffer_results,"linestart",
                                           &wordDic->iter, TRUE);
-
-  strg_to_roff = (gchar *) g_strndup (txt2print, result_offset);
-  strlen_to_roff = g_utf8_strlen (strg_to_roff, -1);
 
   currentchar = txt2print;
 
