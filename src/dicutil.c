@@ -33,6 +33,7 @@
 #include "conf.h"
 #include "dicutil.h"
 #include "error.h"
+#include "utils.h"
 
 extern GjitenConfig conf;
 
@@ -180,7 +181,7 @@ search4string(gint           srchtype,
     else copySize = 1023;
     strncpy (res_str, linestart, copySize);
     res_str[copySize] = 0;
-    *res_index  = (guint32)linestart;
+    *res_index  = POINTER_TO_UCHAR32 (linestart);
     search_result = SRCH_OK; // search succeeded
   }
   return search_result;

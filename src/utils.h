@@ -2,10 +2,17 @@
 #define UTILS_H
 
 #include <gtk/gtk.h>
-
-
 #include <glib/gi18n.h>
 #include <locale.h>
+
+// Why these macros?
+// Casts without `uintptr_t` raise a compiler warning.
+// These warning should not throw, as the consequences of
+//  the cast are known.
+#define TO_POINTER(X) (gpointer)(uintptr_t)(X)
+#define TO_CONST_POINTER(X) (gconstpointer)(uintptr_t)(X)
+#define POINTER_TO_UNICHAR(X) (gunichar)(uintptr_t)(X)
+#define POINTER_TO_UCHAR32(X) (guint32)(uintptr_t)(X)
 
 #define GJITEN_WINDOW_ICON PIXMAPDIR"/jiten.png"
 
