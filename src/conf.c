@@ -348,6 +348,7 @@ gjitenconfig_save(GjitenConfig *conf)
     gint size = g_slist_length (list) + 1;
     gchar ** array = g_malloc (sizeof (gchar*) * size);
 
+
     int i = 0;
     while (list){
       if (NULL != list->data)
@@ -363,7 +364,7 @@ gjitenconfig_save(GjitenConfig *conf)
 
     data_store_set_string_array (conf->data_store, SECTION_GENERAL,
                                  "dictionary_list",
-                                 array, size);
+                                 (const gchar **)(array), size);
     g_strfreev (array);
   }
 
@@ -403,7 +404,9 @@ gjitenconfig_save_history(GtkListStore *history,
       history_array[i] = NULL;
     }
 
-    data_store_set_string_array (conf->data_store, SECTION_GENERAL, "word_search_history", history_array, num_entries);
+    data_store_set_string_array (conf->data_store, SECTION_GENERAL,
+                                "word_search_history",
+                                (const gchar **)history_array, num_entries);
     g_strfreev (history_array);
 
     data_store_save_to_disk (conf->data_store);
