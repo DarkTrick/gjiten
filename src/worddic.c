@@ -1374,6 +1374,8 @@ _create_gui (GjWorddicWindow* self)
 
     g_signal_connect (G_OBJECT (wordDic->cbo_search_term), "changed",
                     G_CALLBACK (cbo_search_term_on_changed), self);
+  g_signal_connect (gtk_bin_get_child (GTK_BIN (wordDic->cbo_search_term)),
+									 "activate", G_CALLBACK(on_search_clicked), NULL);
   g_signal_connect (G_OBJECT (self), "key_press_event",
                     G_CALLBACK (set_focus_on_entry), gtk_bin_get_child (GTK_BIN (wordDic->cbo_search_term)));
 
