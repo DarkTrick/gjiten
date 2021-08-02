@@ -133,6 +133,32 @@ gjitenconfig_free(GjitenConfig * self)
 }
 
 
+/**
+ * Extract dictionary path and name of a dictionary
+ * from `str`, which is the format stored inside
+ * the config file
+ *
+ * Out-parameters must be freed
+ **/
+gboolean
+_dictionary_string_extract_path_and_name(gchar *str,
+                                         gchar ** o_path,
+                                         gchar ** o_name)
+{
+
+  gchar ** arr = g_strsplit (str, "\n", 2);
+
+  if (NULL == arr[0]  || NULL == arr[1])
+    return FALSE;
+
+  *o_path = arr[0];
+  *o_name = arr[1];
+
+  g_free (arr); // only cleanup array, not it's content!
+  return TRUE;
+}
+
+
 
 GjitenConfig *
 gjitenconfig_new_and_init()
@@ -226,21 +252,15 @@ gjitenconfig_new_and_init()
     gint i = 0;
     if (diclist != NULL)
     while (diclist[i] != NULL) {
-      //if (diclist->data == NULL) break;
-      tmpstrg = diclist[i];
-      if (tmpstrg != NULL) {
-        tmpptr = tmpstrg;
-        endptr = tmpptr + strlen (tmpstrg);
-        while ( (tmpptr != endptr) && (*tmpptr != '\n')) tmpptr++;
-        if (*tmpptr == '\n') {
-          *tmpptr = 0;
-          tmpptr++;
-        }
+      gchar * dictpath = NULL;
+      gchar * dictname = NULL;
+      if (_dictionary_string_extract_path_and_name (diclist[i], &dictpath, &dictname))
+      {
+        g_print ("name: %s\npath: %s\n", dictname, dictpath);
         dicfile = g_new0 (GjitenDicfile, 1);
-        dicfile->path = g_strdup (tmpstrg);
-        dicfile->name = g_strdup (tmpptr);
-        *tmpptr = '\n';
-        //        printf ("%s\n%s\n", tmpstrg, tmpptr);
+        dicfile->path = dictpath;
+        dicfile->name = dictname;
+
         conf->dicfile_list = g_slist_append (conf->dicfile_list, dicfile);
       }
       ++i;
