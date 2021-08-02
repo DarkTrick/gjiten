@@ -180,14 +180,16 @@ gjitenconfig_new_and_init()
     for (i = 0; i < conf->numofdics; i++) {
       //if (i == MAXDICFILES - 1) break;
       tmpstrg = g_strdup_printf ("%s%d", dicprefix, i);
-      dicfile = g_new0 (GjitenDicfile, 1);
-      dicfile->name = store_get_string (tmpstrg);
+      gchar * dicname = NULL;
+      gchar * dicpath = NULL;
+      dicname = store_get_string (tmpstrg);
       if (conf->dictpath[strlen (conf->dictpath - 1)] == '/') {
-        dicfile->path = g_strdup_printf ("%s%s", conf->dictpath, dicfile->name);
+        dicpath = g_strdup_printf ("%s%s", conf->dictpath, dicname);
       }
       else {
-        dicfile->path = g_strdup_printf ("%s/%s", conf->dictpath, dicfile->name);
+        dicpath = g_strdup_printf ("%s/%s", conf->dictpath, dicname);
       }
+      dicfile = dicfile_new (dicname, dicpath);
       conf->dicfile_list = g_slist_append (conf->dicfile_list, dicfile);
       g_free (tmpstrg);
     }
