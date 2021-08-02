@@ -47,58 +47,7 @@ GjitenConfig conf;
 
 
 
-/**
- * Struct for storing dictionary file information.
- * Pointers are owned.
- **/
-// TODO:0 remove again and use GjitenDicfile directly
-//        also remove functions
-//        instead: create gjitendicfile_new (path, name)
-typedef struct
-{
-  gchar * path;
-  gchar * name;
-}  DicFile;
 
-
-
-/**
- * Param `path`: will be owned by struct
- * Param `name`: will be owned by struct
- **/
-DicFile *
-dicfile_new(gchar * path,
-            gchar * name)
-{
-  DicFile * self = g_new (DicFile, 1);
-  self->path = path;
-  self->name = name;
-
-  return self;
-}
-
-
-
-/**
- *  Free memory of members and itself
- **/
-void
-dicfile_delete(DicFile * self)
-{
-  if (NULL == self)
-    return;
-
-  if (NULL != self->path)
-    g_free (self->path);
-  if (NULL != self->name)
-    g_free (self->name);
-
-  self->path = NULL;
-  self->name = NULL;
-
-  g_free (self);
-  self = NULL;
-}
 
 
 
@@ -249,21 +198,18 @@ gjitenconfig_new_and_init()
 
     gconf_diclist = data_store_get_string_array (store, SECTION_GENERAL, "dictionary_list", NULL);
     diclist = gconf_diclist;
-    gint i = 0;
     if (diclist != NULL)
-    while (diclist[i] != NULL) {
-      gchar * dictpath = NULL;
-      gchar * dictname = NULL;
-      if (_dictionary_string_extract_path_and_name (diclist[i], &dictpath, &dictname))
+    {
+      for (gint i = 0; diclist[i] != NULL; ++i)
       {
-        g_print ("name: %s\npath: %s\n", dictname, dictpath);
-        dicfile = g_new0 (GjitenDicfile, 1);
-        dicfile->path = dictpath;
-        dicfile->name = dictname;
-
-        conf->dicfile_list = g_slist_append (conf->dicfile_list, dicfile);
+        gchar * dicpath = NULL;
+        gchar * dicname = NULL;
+        if (_dictionary_string_extract_path_and_name (diclist[i], &dicpath, &dicname))
+        {
+          GjitenDicfile *dicfile= dicfile_new (dicname, dicpath);
+          conf->dicfile_list = g_slist_append (conf->dicfile_list, dicfile);
+        }
       }
-      ++i;
     }
     g_strfreev (gconf_diclist);
   }

@@ -142,28 +142,6 @@ dicfile_close(GjitenDicfile *dicfile)
 
 
 
-void
-dicfile_list_free(GSList *dicfile_list)
-{
-  GSList *node;
-  GjitenDicfile *dicfile;
-
-  node = dicfile_list;
-  while (node != NULL) {
-    if (node->data != NULL) {
-      dicfile = node->data;
-      dicfile_close (dicfile);
-      g_free (dicfile);
-    }
-    node = g_slist_next (node);
-  }
-
-  g_slist_free (dicfile_list);
-
-}
-
-
-
 /**
  * Returns:
  *    ok: NULL
@@ -194,4 +172,48 @@ dicfile_is_valid(GjitenDicfile *self)
   dicfile_close (self);
 
   return NULL;
+}
+
+GjitenDicfile *
+dicfile_new(gchar *name,
+            gchar *path)
+{
+  GjitenDicfile *self = g_new0 (GjitenDicfile, 1);
+  self->name = name;
+  self->path = path;
+
+  return self;
+}
+
+
+
+void
+dicfile_free(GjitenDicfile *self)
+{
+  if (NULL == self)
+    return;
+
+  dicfile_close (self);
+
+  if (NULL != self->path) {
+    g_free (self->path);
+    self->path = NULL;
+  }
+
+  if (NULL != self->name) {
+    g_free (self->name);
+    self->name = NULL;
+  }
+
+  g_free (self);
+  self = NULL;
+}
+
+
+
+void
+dicfile_list_free(GSList *dicfile_list)
+{
+  g_slist_free_full (dicfile_list,
+                    (GDestroyNotify)dicfile_free);
 }
