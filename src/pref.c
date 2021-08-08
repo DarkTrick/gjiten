@@ -479,19 +479,35 @@ create_dialog_preferences()
   dialog_preferences = GETWIDGET ("gjiten_settings");
 
   // Set up the dicfile list
-  treeview = GTK_TREE_VIEW (GETWIDGET ("treeview_dics"));
-  model = GTK_TREE_MODEL (gtk_list_store_new (NUM_COLS, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INT));
-  gtk_tree_view_set_model (GTK_TREE_VIEW (treeview), model);
+  {
+    treeview = GTK_TREE_VIEW (GETWIDGET ("treeview_dics"));
+    model = GTK_TREE_MODEL (gtk_list_store_new (NUM_COLS, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INT));
+    gtk_tree_view_set_model (GTK_TREE_VIEW (treeview), model);
+    g_object_set (treeview, "tooltip-column", 1, NULL);
 
-  renderer = gtk_cell_renderer_text_new ();
-  column = gtk_tree_view_column_new_with_attributes (_("Dictionary file path"), renderer, "text", COL_DICPATH, NULL);
-  gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
+    // column "Dictionary name"
+    {
+      renderer = gtk_cell_renderer_text_new ();
+      column = gtk_tree_view_column_new_with_attributes (_("Dictionary name"), renderer, "text", COL_DICNAME, NULL);
+      gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
+    }
 
-  renderer = gtk_cell_renderer_text_new ();
-  column = gtk_tree_view_column_new_with_attributes (_("Dictionary name"), renderer, "text", COL_DICNAME, NULL);
-  gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
+    // column "Dictionary Path"
+    {
+      renderer = gtk_cell_renderer_text_new ();
+      column = gtk_tree_view_column_new_with_attributes (_("Dictionary file path"), renderer, "text", COL_DICPATH, NULL);
 
-  g_signal_connect (G_OBJECT (treeview), "row_activated", G_CALLBACK (dict_list_row_activated), G_OBJECT (treeview));
+      // column size settings
+      //gtk_tree_view_column_set_fixed_width (column, 350);
+      g_object_set (column, "resizable", TRUE, NULL);
+      g_object_set (renderer, "ellipsize-set", TRUE, NULL);
+      g_object_set (renderer, "ellipsize", PANGO_ELLIPSIZE_MIDDLE, NULL);
+
+      gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
+    }
+
+    g_signal_connect (G_OBJECT (treeview), "row_activated", G_CALLBACK (dict_list_row_activated), G_OBJECT (treeview));
+  }
 
   dicfile_node = gjitenApp->conf->dicfile_list;
   while (dicfile_node != NULL) {
