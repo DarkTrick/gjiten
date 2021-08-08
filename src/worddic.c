@@ -109,11 +109,13 @@ gint current_history_word_index = -1;
 static void
 worddic_copy()
 {
-  gchar *selection = NULL;
-
-  selection = gtk_clipboard_wait_for_text (gtk_clipboard_get (GDK_SELECTION_PRIMARY));
-  if (selection == NULL) return;
-  gtk_clipboard_set_text (gtk_clipboard_get (GDK_SELECTION_CLIPBOARD), selection, -1);
+  GtkWidget * focus = gtk_window_get_focus (GTK_WINDOW (self));
+  if (focus){
+    if (GTK_IS_EDITABLE (focus) || GTK_IS_TEXT_VIEW (focus))
+    {
+      g_signal_emit_by_name (focus, "copy-clipboard", NULL);
+    }
+  }
 }
 
 
