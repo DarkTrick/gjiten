@@ -1157,7 +1157,7 @@ _create_gui (GjKanjidicWindow* self)
 
     gtk_container_add (GTK_CONTAINER (vbox_maink), toolbar_kanji);
 
-    tmpimage = gtk_image_new_from_file (PIXMAPDIR"/kanjidic.png");
+    tmpimage = gtk_image_new_from_file (PIXMAPDIR"/worddic.png");
     gtk_toolbar_append_item (GTK_TOOLBAR (toolbar_kanji), _("WordDic"),
                                              _("Launch WordDic"), "WordDic", tmpimage,
                                              G_CALLBACK (gjiten_start_worddic), GTK_APPLICATION (g_application_get_default ()));
