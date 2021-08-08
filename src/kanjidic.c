@@ -1166,10 +1166,6 @@ _create_gui (GjKanjidicWindow* self)
     gtk_toolbar_append_item (GTK_TOOLBAR (toolbar_kanji), _("KanjiPad"),
                 _("Launch KanjiPad"), "KanjiPad", tmpimage,
                  G_CALLBACK (gjiten_start_kanjipad), NULL);
-
-    gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar_kanji), "edit-find",
-                _("Search entered Kanji"), "Search",
-                on_kanji_search, NULL, -1);
   }
 
   frame_koptions = gtk_frame_new (_("Kanji Search Options"));

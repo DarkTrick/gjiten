@@ -1247,10 +1247,6 @@ _create_gui (GjWorddicWindow* self)
                           _("Launch KanjiPad"), "KanjiPad", tmpimage,
                             G_CALLBACK (gjiten_start_kanjipad), NULL);
 
-    gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar), "edit-find",
-                                        _("Search for entered expression"), "Search",
-                                          on_search_clicked, NULL, -1);
-
     gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), _("Show/Hide\noptions"),
                             _("Show/Hide options"), "Show/Hide options", NULL,
                             G_CALLBACK (worddic_show_hide_options), NULL);
