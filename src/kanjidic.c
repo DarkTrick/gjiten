@@ -1118,7 +1118,6 @@ _create_gui (GjKanjidicWindow* self)
   GtkWidget *hbox_spinb;
   GtkWidget *table_koptions;
   GtkWidget *toolbar_kanji;
-  GtkToolButton *button_closek;
   GtkWidget *frame_koptions;
   GtkAdjustment *spinb_strokenum_adj;
   GtkAdjustment *spinb_plusmin_adj;
@@ -1157,11 +1156,6 @@ _create_gui (GjKanjidicWindow* self)
 
 
     gtk_container_add (GTK_CONTAINER (vbox_maink), toolbar_kanji);
-    button_closek = gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar_kanji), "application-exit",
-                                             _("Close KanjiDic"), "Close",
-                                             NULL, NULL, -1);
-    g_signal_connect_swapped (G_OBJECT (button_closek), "clicked",
-                             G_CALLBACK (gtk_widget_destroy), self);
 
     tmpimage = gtk_image_new_from_file (PIXMAPDIR"/kanjidic.png");
     gtk_toolbar_append_item (GTK_TOOLBAR (toolbar_kanji), _("WordDic"),

@@ -1171,7 +1171,6 @@ _create_gui (GjWorddicWindow* self)
 {
   GtkWidget *vbox_main;
   GtkToolbar *toolbar;
-  GtkToolButton *button_exit;
   GtkWidget *button_clear;
   GtkWidget *frame_japopt;
   GtkWidget *vbox_japopt;
@@ -1227,11 +1226,6 @@ _create_gui (GjWorddicWindow* self)
   {
     toolbar = GTK_TOOLBAR (gtk_toolbar_new ());
     gtk_container_add (GTK_CONTAINER (vbox_main), GTK_WIDGET (toolbar));
-
-    button_exit = gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar), "application-exit",
-                                          _("Close Gjiten"), "Close", NULL, NULL, -1);
-    g_signal_connect_swapped (G_OBJECT (button_exit), "clicked",
-                            G_CALLBACK (gtk_widget_destroy), self);
 
     wordDic->button_back = gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar), "go-previous",
                                                     _("Previous search result"), "Back",
