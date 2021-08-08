@@ -498,7 +498,6 @@ create_dialog_preferences()
       column = gtk_tree_view_column_new_with_attributes (_("Dictionary file path"), renderer, "text", COL_DICPATH, NULL);
 
       // column size settings
-      //gtk_tree_view_column_set_fixed_width (column, 350);
       g_object_set (column, "resizable", TRUE, NULL);
       g_object_set (renderer, "ellipsize-set", TRUE, NULL);
       g_object_set (renderer, "ellipsize", PANGO_ELLIPSIZE_MIDDLE, NULL);
