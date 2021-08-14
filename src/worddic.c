@@ -1227,12 +1227,12 @@ _create_gui (GjWorddicWindow* self)
     toolbar = GTK_TOOLBAR (gtk_toolbar_new ());
     gtk_container_add (GTK_CONTAINER (vbox_main), GTK_WIDGET (toolbar));
 
-    wordDic->button_back = gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar), "go-previous",
+    wordDic->button_back = gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar), "go-previous-symbolic",
                                                     _("Previous search result"), "Back",
                                                     on_back_clicked, NULL, -1);
     gtk_widget_set_sensitive (GTK_WIDGET (wordDic->button_back), FALSE);
 
-    wordDic->button_forward = gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar), "go-next",
+    wordDic->button_forward = gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar), "go-next-symbolic",
                                                       _("Next search result"), "Forward",
                                                       on_forward_clicked, NULL, -1);
     gtk_widget_set_sensitive (GTK_WIDGET (wordDic->button_back), FALSE);
