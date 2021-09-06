@@ -42,6 +42,7 @@
 #define return_if(expression, value) if (expression){ return value; }
 
 
+
 void
 _init_config_paths(DataStore *self)
 {
@@ -54,6 +55,7 @@ _init_config_paths(DataStore *self)
 }
 
 
+
 DataStore *
 data_store_new()
 {
@@ -62,6 +64,8 @@ data_store_new()
 
   return self;
 }
+
+
 
 void
 data_store_free(DataStore *self)
@@ -85,6 +89,7 @@ data_store_init(DataStore *self)
 }
 
 
+
 void
 data_store_finalize(DataStore *self)
 {
@@ -105,6 +110,8 @@ data_store_set_boolean(DataStore   *self,
   g_key_file_set_boolean (self->storage, section, key, value);
 }
 
+
+
 void
 data_store_set_string(DataStore   *self,
                       const gchar * section,
@@ -114,6 +121,8 @@ data_store_set_string(DataStore   *self,
   g_key_file_set_string (self->storage, section, key, value);
 }
 
+
+
 void
 data_store_set_int(DataStore   *self,
                    const gchar * section,
@@ -122,6 +131,7 @@ data_store_set_int(DataStore   *self,
 {
   g_key_file_set_integer (self->storage, section, key, value);
 }
+
 
 
 
@@ -205,6 +215,7 @@ keyfile_save(GKeyFile    *storage,
 }
 
 
+
 static gboolean
 _data_store_initialize_storage_file(DataStore *self)
 {
@@ -251,7 +262,6 @@ create_config_file_if_necessary(DataStore *self)
 
 
 
-
 /**
  *  This function should only be called once
  *    per instance.
@@ -276,6 +286,8 @@ data_store_save_to_disk(DataStore * self)
   return keyfile_save (self->storage, self->config_dir, self->config_file);
 }
 
+
+
 /**
  * Parameters:
  *  `value`: NULL-terminated list of chars. [no owner transfer]
@@ -290,6 +302,8 @@ data_store_set_string_array (DataStore   *  self,
   g_key_file_set_string_list (self->storage,section,
                               key, value, length);
 }
+
+
 
 /**
  *  Return
@@ -315,6 +329,7 @@ data_store_get_string_array (DataStore   * self,
 }
 
 
+
 /**
  *  Persistent store interface functions
  *  (currently mocked)
@@ -335,15 +350,15 @@ data_store_get_string (DataStore   *self,
 
   // return defaults
 
-  MATCH("dictpath", g_strdup (GJITEN_DATADIR "/dics/"))
-  MATCH("kanjipad", g_strdup (GJITEN_BINDIR "/kanjipad"))
-  MATCH("largefont", g_strdup ("Sans 14"))
-  MATCH("normalfont", g_strdup ("Sans 22"))
-  MATCH("version", g_strdup ("3.0"))
+  MATCH ("dictpath", g_strdup (GJITEN_DATADIR "/dics/"))
+  MATCH ("kanjipad", g_strdup (GJITEN_BINDIR "/kanjipad"))
+  MATCH ("largefont", g_strdup ("Sans 14"))
+  MATCH ("normalfont", g_strdup ("Sans 22"))
+  MATCH ("version", g_strdup ("3.0"))
 
   MATCH ("kanjidicfile", g_strdup (GJITEN_DATADIR "/dics/kanjidic"));
 
-  #define HISTORY(N) MATCH ("history" N, g_strdup("testhistory" N));
+  #define HISTORY(N) MATCH ("history" N, g_strdup ("testhistory" N));
   HISTORY ("0"); HISTORY ("1"); HISTORY ("2"); HISTORY ("3"); HISTORY ("4"); HISTORY ("5"); HISTORY ("6");
   HISTORY ("7"); HISTORY ("8"); HISTORY ("9"); HISTORY ("10"); HISTORY ("11");
   HISTORY ("12"); HISTORY ("13"); HISTORY ("14"); HISTORY ("15");
@@ -362,7 +377,7 @@ data_store_get_string (DataStore   *self,
   g_printerr ("Programming Error: Settings key \"%s\" does not"
               " even have a default value. Please report a bug\n", key);
 
-  return g_strdup("");
+  return g_strdup ("");
 }
 
 

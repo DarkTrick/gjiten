@@ -32,7 +32,7 @@ typedef struct _GjitenApp GjitenApp;
 
 struct _GjitenApp {
   GjWorddicWindow *worddic;
-  KanjiDic *kanjidic;
+  GjKanjidicWindow *kanjidic;
   GjitenConfig *conf;
 };
 
@@ -41,7 +41,11 @@ GtkApplication * gjiten_new();
 void gjiten_start_kanjipad();
 void gjiten_start_worddic();
 void gjiten_start_kanjidic();
-void gjiten_display_manual();
-void gjiten_exit();
+void gjiten_start_kanjidic_with_search(gunichar kanji);
+
+void gjiten_display_manual(GtkWidget *parent_window_nullable,
+                           void      *data);
+
+void gjiten_quit_if_all_windows_closed();
 
 #endif

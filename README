@@ -1,19 +1,10 @@
-IMPORTANT
-=========
-This code is currently undergoing a GTK3 migration. The migration intermediate results are not public, because they don't compile well. 
-I will upload my migrated code as soon as it's finished.
-
-In case you like to contribute, contact me ( IRC: freenode.org #xfce ##programming ).
-
-
-
 Regular Readme
 ==============
 gjiten Manual V2.0
 
 Botond Botyanszki
 
- <boti@rocketmail.com> 
+ <boti@rocketmail.com>
 
 Copyright   1999 - 2001 Botond Botyanszki
 
@@ -137,8 +128,8 @@ Creating a debian package from the tarball:
 
             % tar zxpvf gjiten-x.x.tar.gz
             % cd gjiten-x.x
-            % dpkg-buildpackage -rfakeroot 
-            
+            % dpkg-buildpackage -rfakeroot
+
 
 This should create ../gjiten_x.x-1_i386.deb.
 
@@ -154,7 +145,7 @@ some other dictionary files also you might be interested in. (j_places,
 compdic, etc.) gunzip the dictionary files to the Path To Dictionary Files set
 in Preferences. This should be the same directory where the radkfile and vconj
 files got installed. [default: /usr/share/gjiten/]. The source tarball contains
-a script dicfiles/getdics that will download a bunch of dictionary files with 
+a script dicfiles/getdics that will download a bunch of dictionary files with
 wget.
 
 The Debian distribution contains three dictionary packages that you can install
@@ -166,7 +157,7 @@ dictionary and data files in UTF-8 encoding instead of EUC-JP. Please convert
 the dictionary and data files to UTF-8. You can use iconv for this.
 
             % iconv -f EUC-JP -t UTF-8 dictfile -o dictfile.utf8
-        
+
 
 If the dictionary file is not UTF-8, Gjiten will complain after you add them in
 the preferences.
@@ -206,7 +197,7 @@ Kanji dictionary usage
 I'll refer to the kanji dictionary part of gjiten as KanjiDic.
 
 If you know the stroke number of the kanji, enable the Search By Strokes
-option. Set the stroke number. If you are not exactly sure, use the +/- field 
+option. Set the stroke number. If you are not exactly sure, use the +/- field
 also.
 
 Enable the Search By Radical option if you know the radical(s) of the kanji.
@@ -264,14 +255,14 @@ The latest version of KanjiPad can be downloaded from http://www.gtk.org/
 
 Troubleshooting
 
-Here are some common errors and their solutions users usually get when running 
+Here are some common errors and their solutions users usually get when running
 gjiten.
 
 File errors
 
 If you get a message unable to open file: vconj.utf8 or unable to open file:
 radkfile.utf8 then you need to put these two data files in the same directory
-with your dictionary files set under the Path To Dictionary Files under 
+with your dictionary files set under the Path To Dictionary Files under
 Preferences. Please read the installation instructions again.
 
 Japanese input (mostly Kinput2)
@@ -352,7 +343,7 @@ characters. This is a font problem.
 Antialiasing (with GDK) and Japanese don't work well at the time. You should
 disable it in the Preferences.
 
-You also need to select a fontset that has Japanese characters to be used with 
+You also need to select a fontset that has Japanese characters to be used with
 Gjiten. "Sans" and "Serif" and also "unifont" should usually work.
 
 kinput2 needs LC_ALL to be set to ja_JP. If you don't have the LANGUAGE
@@ -363,59 +354,53 @@ widget text and menus will be in Japanese. If you wan't English then check the
 The last three options under the Fonts tab need gjiten to be restarted for
 these to take effect, because they are setting environment variables.
 
+
+User Settings
+====================
+User settings are stored in `<system config path>/gjiten/gjiten.config` .
+Under Ubuntu this amounts to `~/.config/gjiten/gjiten.conf`.
+
+
+
+Future Improvements
+====================
+
+Check out https://github.com/DarkTrick/gjiten/ for the latest release. Read the
+TODO file to see what's planned for future releases. Feel free to me with other
+suggestions.
+
+
+Bugs / Feedback
+================
+
+File on Github: https://github.com/DarkTrick/gjiten/issues
+
+If you file bugs please try to include the following information:
+- gjiten version ( `gjiten --version` )
+- distribution and other info about your OS
+  (under Ubuntu: `lsb_release --all`)
+- gtk release ( `pkg-config --modversion gtk+-3.0` )
+- output of `gdb gjiten` and/or `strace gjiten`
+- and any other info you might think is important.
+
+
+Troubleshooting
+=====================
+
 Pasting from Netscape
+---------------------
 
 If pasting Japanese text from Netscape into Gjiten has no effect, only
 non-japanese can be pasted, then set the LC_ALL environment variable to ja_JP
 in your shell before starting Netscape (export LC_ALL=ja_JP for bash). This
 solved the problem in my case.
 
-Settings
 
-Gjiten uses gconf to store its settings, so you can use the gconf-editor to
-poke the settings directly under apps/gjiten.
 
-Bugs
 
-Check for known bugs here first: http://gjiten.sourceforge.net/BUGS. If it's
-not listed here and you can reproduce it then report it to me please.
-
-Future Improvements
-
-Check out http://gjiten.sourceforge.net for the latest release. Read the TODO
-file to see what's planned for future releases. Feel free to email me with
-other suggestions.
-
-A few people have asked for a --disable-gnome configure option (that is a GTK+
-only build). IMHO: if you can afford to have the GTK+ libs installed on your
-system, then you can afford the Gnome libs also. The gnome libraries provide
-features that would take me much longer to code in pure GTK+. I would have to
-rewrite and add lots of stuff to the sources for this, and I just don't have
-the time. Instead I'd like to add new features. If you want to do this, then
-feel free to hack code and send a patch to me.
-
-Feedback
-
-Send me suggestions, wishes, comments, patches, bug reports, money [optional]
-;) You can contact me at: <boti@rocketmail.com>
-
-If you send me bugreports, please include the following information also:
-
-  ● gjiten version
-
-  ● distribution and other info about your OS
-
-  ● Xfree release
-
-  ● gtk release
-
-  ● gnome releas
-
-  ● output of gdb gjiten and strace gjiten
-
-  ● and any other info you might think is important.
 
 Credits
+=======
 
 Thanx go to:
 

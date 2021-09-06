@@ -3,6 +3,7 @@
 #include <gtk/gtk.h>
 
 
+
 /**
  *  Reimplementation of original function from gtk 2
  **/
@@ -32,6 +33,7 @@ gtk_toolbar_insert_stock (GtkToolbar *toolbar,
 }
 
 
+
 /**
  *  Reimplementation of original function from gtk 2
  **/
@@ -58,6 +60,8 @@ gtk_toolbar_append_item(GtkToolbar *toolbar,
   return button;
 }
 
+
+
 /**
  *  allow clearing an entry as callback
  **/
@@ -65,8 +69,10 @@ void
 gtk_entry_clear_callback(gpointer entrybox)
 {
   g_return_if_fail (GTK_IS_ENTRY (entrybox));
-  gtk_entry_set_text(GTK_ENTRY(entrybox), "");
+  gtk_entry_set_text (GTK_ENTRY (entrybox), "");
 }
+
+
 
 void
 gtk_combo_box_text_add_entries(GtkComboBoxText *self,
@@ -81,6 +87,7 @@ gtk_combo_box_text_add_entries(GtkComboBoxText *self,
 }
 
 
+
 void
 setWindowIcon(GtkWindow *window,
               char      *icon_path)
@@ -89,20 +96,10 @@ setWindowIcon(GtkWindow *window,
     g_warning ("Could not find %s", icon_path);
   }
   else {
-    gtk_window_set_icon_from_file(window, icon_path, NULL);
+    gtk_window_set_icon_from_file (window, icon_path, NULL);
   }
 }
 
-
-void
-gtk_widget_register_action_entries(GtkWidget    *self,
-                                   const gchar  *group_name,
-                                   GActionEntry  actions[])
-{
-  GSimpleActionGroup * group = g_simple_action_group_new ();
-  g_action_map_add_action_entries (G_ACTION_MAP (group), actions, G_N_ELEMENTS (actions), self);
-  gtk_widget_insert_action_group (GTK_WIDGET (self), group_name, G_ACTION_GROUP (group));
-}
 
 
 /**
@@ -115,11 +112,11 @@ void set_global_css(gchar     *css_class,
   //       onto the screen. But the user won't
   //       run this code too often, so I guess it's ok
 
-  GtkCssProvider * cssProvider = gtk_css_provider_new();
+  GtkCssProvider * cssProvider = gtk_css_provider_new ();
   {
     GString * cssContent = g_string_new("");
     g_string_printf (cssContent, ".%s{%s}", css_class, css);
-    gtk_css_provider_load_from_data(cssProvider, cssContent->str, cssContent->len, NULL);
+    gtk_css_provider_load_from_data (cssProvider, cssContent->str, cssContent->len, NULL);
     g_string_free (cssContent, TRUE);
   }
 
@@ -140,11 +137,15 @@ void gtk_widget_style_add_class(GtkWidget   *widget,
   gtk_style_context_add_class (context, css_class);
 }
 
+
+
 GtkListStore *
 gtk_list_store_string_new()
 {
-  gtk_list_store_new (1, G_TYPE_STRING);
+  return gtk_list_store_new (1, G_TYPE_STRING);
 }
+
+
 
 /**
  * Prepends `string` onto `store`.
@@ -159,6 +160,9 @@ gtk_list_store_string_prepend(GtkListStore * store,
   gtk_list_store_set (store, &iter, 0, theString, -1);
 }
 
+
+
+
 /**
  * Appends `string` onto `store`.
  * `self` is a GtkListStore storing only strings and has only one column.
@@ -171,6 +175,8 @@ gtk_list_store_string_append(GtkListStore * self,
   gtk_list_store_append (self, &iter);
   gtk_list_store_set (self, &iter, 0, theString, -1);
 }
+
+
 
 /**
  *  Returns stored string value
@@ -186,9 +192,11 @@ gtk_list_store_string_get(GtkListStore *self,
                           GtkTreeIter  *iter)
 {
   gchar *tmp;
-  gtk_tree_model_get (self, iter, 0, &tmp, -1);
+  gtk_tree_model_get (GTK_TREE_MODEL (self), iter, 0, &tmp, -1);
   return tmp;
 }
+
+
 
 gint
 gtk_list_store_length(GtkListStore *self)
@@ -196,17 +204,22 @@ gtk_list_store_length(GtkListStore *self)
   return gtk_tree_model_length (GTK_TREE_MODEL (self));
 }
 
+
+
 gint
 gtk_tree_model_length(GtkTreeModel* self)
 {
-  return gtk_tree_model_iter_n_children(self, NULL);
+  return gtk_tree_model_iter_n_children (self, NULL);
 }
+
+
 
 gint
 gtk_combo_box_length(GtkComboBox * self)
 {
   return gtk_tree_model_length (gtk_combo_box_get_model (self));
 }
+
 
 
 gboolean
@@ -220,6 +233,8 @@ gtk_combo_box_next(GtkComboBox * self)
   return FALSE;
 }
 
+
+
 gboolean
 gtk_combo_box_previous(GtkComboBox * self)
 {
@@ -231,6 +246,8 @@ gtk_combo_box_previous(GtkComboBox * self)
   }
   return FALSE;
 }
+
+
 
 /**
  *   Converts a pango font string (E.g. "Sans 14")
@@ -247,9 +264,12 @@ g_pango_font_convert_to_css(const gchar * pango_font)
 
   //we need a modifyable string
   gchar * pango_font_m = g_strdup (pango_font);
-  char * saveptr = NULL;
-  font_family = strtok_r(pango_font_m, " ", &saveptr);
-  font_size   = strtok_r(NULL,         " ", &saveptr);
+
+  char * last_space = (char*)str_find_last_of (pango_font_m, ' ');
+  last_space[0] = '\0';
+
+  font_family = pango_font_m;
+  font_size   = last_space+1;
 
   GString * css = g_string_new ("");
   g_string_printf (css, "%spx %s", font_size, font_family);
@@ -262,6 +282,7 @@ g_pango_font_convert_to_css(const gchar * pango_font)
 }
 
 
+
 /**
  * Check if a schema exist.
  * This is important, because g_settings_new will core dump,
@@ -271,7 +292,7 @@ gboolean
 g_settings_has_schema (const char * id)
 {
   GSettingsSchema * res = g_settings_schema_source_lookup (
-                                 g_settings_schema_source_get_default(),
+                                 g_settings_schema_source_get_default (),
                                  id, FALSE);
   gboolean ret = FALSE;
   if (res != NULL)
@@ -290,7 +311,7 @@ g_settings_has_key (const gchar * schema_id,
                     const char * key)
 {
   GSettingsSchema * schema = g_settings_schema_source_lookup (
-                              g_settings_schema_source_get_default(),
+                              g_settings_schema_source_get_default (),
                               schema_id, FALSE);
   if (schema)
   {
@@ -300,6 +321,8 @@ g_settings_has_key (const gchar * schema_id,
 
   return FALSE;
 }
+
+
 
 /**
  * Changes the string in place (only even-byte-sized chars!)
@@ -321,6 +344,8 @@ chr_replace (char *str,
   return str;
 }
 
+
+void
 gtk_application_set_accel_for_action (GtkApplication *self,
                                       const gchar * detailed_action_name,
                                       const gchar * accelerator)
@@ -329,3 +354,80 @@ gtk_application_set_accel_for_action (GtkApplication *self,
   gtk_application_set_accels_for_action (self, detailed_action_name, shortcuts);
 }
 
+
+
+/**
+ * If this function is connected to GtkWidget::`delete-event`,
+ * the widget will not be `gtk_widget_destroy`ed
+ **/
+gboolean
+delete_event_prevent_destruction(GtkWidget *widget,
+                                GdkEvent  *unused1,
+                                gpointer   unused2)
+{
+  return TRUE;
+}
+
+
+
+void
+gtk_combo_box_set_text (GtkComboBox *self,
+                        const gchar  *text)
+{
+  GtkEntry * entry = GTK_ENTRY (gtk_bin_get_child (GTK_BIN (self)));
+  gtk_entry_set_text (entry, text);
+}
+
+
+
+const gchar  *
+gtk_combo_box_get_text (GtkComboBox *self)
+{
+  GtkEntry * entry = GTK_ENTRY (gtk_bin_get_child (GTK_BIN (self)));
+  return gtk_entry_get_text (entry);
+}
+
+
+
+/**
+ * Find `needle` in `haystack`. This function does not depend
+ * on integer sizes.
+ *
+ * Params:
+ *        \0-terminated strings.
+ *        `needle` cannot be '\0'.
+ *
+ * Return: pointer to last occurance of `needle` in haystack.
+ *         0, if nothing was found
+ **/
+const char *
+str_find_last_of(const char *haystack,
+                 const char  needle)
+{
+  if (haystack[0] == '\0'){
+    return (const char*)(0);
+  }
+
+  const char * cur = haystack;
+  const char * last_location = haystack;
+  int found = 0;
+
+  // Check each single character...
+  while (cur[0] != '\0')
+  {
+    // ... if it matches the `needle`, store the location...
+    if (cur[0] == needle)
+    {
+      last_location = cur;
+      found = 1;
+    }
+    ++cur;
+  }
+
+  // ... and return the last stored location.
+  if (1 == found)
+    return last_location;
+
+  // Otherwise return 0.
+  return (const char*)(0);
+}

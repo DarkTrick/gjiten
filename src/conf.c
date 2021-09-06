@@ -46,87 +46,34 @@ gchar *kanjidicstrg[] = { "kanji",  "radical", "strokes", "reading", "korean",
 GjitenConfig conf;
 
 
-/**
- * Struct for storing dictionary file information.
- * Pointers are owned.
- **/
-// TODO:0 remove again and use GjitenDicfile directly
-//        also remove functions
-//        instead: create gjitendicfile_new (path, name)
-typedef struct
-{
-  gchar * path;
-  gchar * name;
-}  DicFile;
 
 
-/**
- * Param `path`: will be owned by struct
- * Param `name`: will be owned by struct
- **/
-DicFile *
-dicfile_new(gchar * path,
-            gchar * name)
-{
-  DicFile * self = g_new (DicFile, 1);
-  self->path = path;
-  self->name = name;
 
-  return self;
-}
 
-/**
- *  Free memory of members and itself
- **/
-void
-dicfile_delete(DicFile * self)
-{
-  if (NULL == self)
-    return;
-
-  if (NULL != self->path)
-    g_free (self->path);
-  if (NULL != self->name)
-    g_free (self->name);
-
-  self->path = NULL;
-  self->name = NULL;
-
-  g_free (self);
-  self = NULL;
-}
-
-void store_set_string (const gchar *b, gchar   *key){}
-void store_set_boolean(const gchar *b, gboolean key){}
-void store_set_int    (const gchar *b, gint     key){}
-void store_set_list   (const gchar *b, GSList  *key){}
-
-// -----------------------------------------------------------------------
-
-// @return: TRUE, if init was successfull
-gboolean store_init(){return TRUE;}
 
 GjitenConfig *
 gjitenconfig_new()
 {
-  GjitenConfig * self = g_new0(GjitenConfig, 1);
+  GjitenConfig * self = g_new0 (GjitenConfig, 1);
 
-  self->data_store = data_store_new();
+  self->data_store = data_store_new ();
   return self;
 }
+
+
 
 void
 gjitenconfig_free(GjitenConfig * self)
 {
   g_free (self->kanjipad);
-  g_free (self->kanji_to_lookup);
-  g_free (self->word_to_lookup);
+  g_free (self->cli_option_kanji_to_lookup);
+  g_free (self->cli_option_word_to_lookup);
   g_free (self->largefont);
   g_free (self->normalfont);
-  dicfile_list_free(self->dicfile_list);
+  dicfile_list_free (self->dicfile_list);
 
   // can't use `g_strfreev` because `history` itself is on stack
-  for (int i = 0; i <= 50; i++) {
+  for (int i = 0; i <= HISTORY_MAX_WORDS; i++) {
     if (self->history[i] == NULL) break;
     g_free (self->history[i]);
   }
@@ -135,8 +82,35 @@ gjitenconfig_free(GjitenConfig * self)
 }
 
 
+/**
+ * Extract dictionary path and name of a dictionary
+ * from `str`, which is the format stored inside
+ * the config file
+ *
+ * Out-parameters must be freed
+ **/
+gboolean
+_dictionary_string_extract_path_and_name(gchar *str,
+                                         gchar ** o_path,
+                                         gchar ** o_name)
+{
 
-GjitenConfig *conf_load()
+  gchar ** arr = g_strsplit (str, "\n", 2);
+
+  if (NULL == arr[0]  || NULL == arr[1])
+    return FALSE;
+
+  *o_path = arr[0];
+  *o_name = arr[1];
+
+  g_free (arr); // only cleanup array, not it's content!
+  return TRUE;
+}
+
+
+
+GjitenConfig *
+gjitenconfig_new_and_init()
 {
   gchar *dicprefix = DICTPREFIX;
   gchar *tmpstrg;
@@ -155,73 +129,49 @@ GjitenConfig *conf_load()
   #define store_get_string(KEY)  data_store_get_string  (store, SECTION_GENERAL, KEY)
 
 
-  conf->version = store_get_string("version");
+  conf->version = store_get_string ("version");
+  conf->autoadjust_enabled = store_get_boolean ("autoadjust_enabled");
 
-  //if (conf->version == NULL) { // FIXME: gconf schema
-  //  conf->kdiccfg[KANJI] = TRUE;
-  //  conf->kdiccfg[RADICAL] = TRUE;
-  //  conf->kdiccfg[STROKES] = TRUE;
-  //  conf->kdiccfg[READING] = TRUE;
-  //  conf->kdiccfg[ENGLISH] = TRUE;
-  //  conf->kdiccfg[FREQ] = TRUE;
-  //  conf->kdiccfg[JOUYOU] = TRUE;
-  //  conf->kdiccfg[CREF] = TRUE;
-  //  conf->toolbar = TRUE;
-  //  conf->menubar = TRUE;
-  //  conf->force_ja_JP = TRUE;
-  //  conf->force_language_c = TRUE;
-  //  if (conf->kanjidic == NULL) conf->kanjidic = g_new0(GjitenDicfile, 1);
-  //  conf->kanjidic->path = GJITEN_DICDIR"/kanjidic";
-  //  conf->dictpath = GJITEN_DICDIR;
-  //  conf->searchlimit_enabled = FALSE;
-  //  conf->maxwordmatches = DEFMAXWORDMATCHES;
-  //  conf->autoadjust_enabled = TRUE;
-  //  return conf;
-  //}
+  conf->bigwords = store_get_boolean ("bigwords");
+  conf->bigkanji = store_get_boolean ("bigkanji");
+  conf->largefont = store_get_string ("largefont");
+  conf->normalfont = store_get_string ("normalfont");
+  conf->gdk_use_xft = store_get_boolean ("gdk_use_xft");
+  conf->force_ja_JP = store_get_boolean ("force_ja_JP");
+  conf->force_language_c = store_get_boolean ("force_language_c");
+  conf->envvar_override = store_get_boolean ("envvar_override");
 
-
-  conf->autoadjust_enabled = store_get_boolean("autoadjust_enabled");
-
-  conf->bigwords = store_get_boolean("bigwords");
-  conf->bigkanji = store_get_boolean("bigkanji");
-  conf->largefont = store_get_string("largefont");
-  conf->normalfont = store_get_string("normalfont");
-  conf->gdk_use_xft = store_get_boolean("gdk_use_xft");
-  conf->force_ja_JP = store_get_boolean("force_ja_JP");
-  conf->force_language_c = store_get_boolean("force_language_c");
-  conf->envvar_override = store_get_boolean("envvar_override");
-
-  conf->searchlimit_enabled = store_get_boolean("searchlimit_enabled");
-  conf->maxwordmatches = store_get_int("maxwordmatches");
+  conf->searchlimit_enabled = store_get_boolean ("searchlimit_enabled");
+  conf->maxwordmatches = store_get_int ("maxwordmatches");
   if (conf->maxwordmatches < 1) {
     conf->searchlimit_enabled = FALSE;
     conf->maxwordmatches = 100;
   }
 
-  conf->dictpath = store_get_string("dictpath");
-  conf->menubar = store_get_boolean("menubar");
-  conf->toolbar = store_get_boolean("toolbar");
+  conf->dictpath = store_get_string ("dictpath");
+  conf->menubar = store_get_boolean ("menubar");
+  conf->toolbar = store_get_boolean ("toolbar");
 
-  conf->search_kata_on_hira = store_get_boolean("search_kata_on_hira");
-  conf->search_hira_on_kata = store_get_boolean("search_hira_on_kata");
-  conf->verb_deinflection = store_get_boolean("deinflection_enabled");
+  conf->search_kata_on_hira = store_get_boolean ("search_kata_on_hira");
+  conf->search_hira_on_kata = store_get_boolean ("search_hira_on_kata");
+  conf->verb_deinflection = store_get_boolean ("deinflection_enabled");
 
-  if (conf->kanjidic == NULL) conf->kanjidic = g_new0(GjitenDicfile, 1);
-  conf->kanjidic->path = data_store_get_string(store, SECTION_KANJIDIC, "kanjidicfile");
-  if ((conf->kanjidic->path == NULL) || (strlen(conf->kanjidic->path)) == 0) {
+  if (conf->kanjidic == NULL) conf->kanjidic = g_new0 (GjitenDicfile, 1);
+  conf->kanjidic->path = data_store_get_string (store, SECTION_KANJIDIC, "kanjidicfile");
+  if ( (conf->kanjidic->path == NULL) || (strlen (conf->kanjidic->path)) == 0) {
     conf->kanjidic->path = GJITEN_DICDIR"/kanjidic";
   }
-  conf->unicode_radicals = data_store_get_boolean(store, SECTION_KANJIDIC, "unicode_radicals");
+  conf->unicode_radicals = data_store_get_boolean (store, SECTION_KANJIDIC, "unicode_radicals");
 
 
-  conf->kanjipad = store_get_string("kanjipad");
-  if (conf->kanjipad == NULL) conf->kanjipad = g_strdup("");
+  conf->kanjipad = store_get_string ("kanjipad");
+  if (conf->kanjipad == NULL) conf->kanjipad = g_strdup ("");
 
-  conf->numofdics = store_get_int("numofdics");
+  conf->numofdics = store_get_int ("numofdics");
 
   if (conf->dicfile_list != NULL) {
-    dicutil_unload_dic();
-    dicfile_list_free(conf->dicfile_list);
+    dicutil_unload_dic ();
+    dicfile_list_free (conf->dicfile_list);
     conf->dicfile_list = NULL;
   }
 
@@ -229,17 +179,19 @@ GjitenConfig *conf_load()
     //Load dicfiles from old style config [compatibility with older versions]
     for (i = 0; i < conf->numofdics; i++) {
       //if (i == MAXDICFILES - 1) break;
-      tmpstrg = g_strdup_printf("%s%d", dicprefix, i);
-      dicfile = g_new0(GjitenDicfile, 1);
-      dicfile->name = store_get_string(tmpstrg);
-      if (conf->dictpath[strlen(conf->dictpath - 1)] == '/') {
-        dicfile->path = g_strdup_printf("%s%s", conf->dictpath, dicfile->name);
+      tmpstrg = g_strdup_printf ("%s%d", dicprefix, i);
+      gchar * dicname = NULL;
+      gchar * dicpath = NULL;
+      dicname = store_get_string (tmpstrg);
+      if (conf->dictpath[strlen (conf->dictpath - 1)] == '/') {
+        dicpath = g_strdup_printf ("%s%s", conf->dictpath, dicname);
       }
       else {
-        dicfile->path = g_strdup_printf("%s/%s", conf->dictpath, dicfile->name);
+        dicpath = g_strdup_printf ("%s/%s", conf->dictpath, dicname);
       }
-      conf->dicfile_list = g_slist_append(conf->dicfile_list, dicfile);
-      g_free(tmpstrg);
+      dicfile = dicfile_new (dicname, dicpath);
+      conf->dicfile_list = g_slist_append (conf->dicfile_list, dicfile);
+      g_free (tmpstrg);
     }
   }
   else { //new config
@@ -247,38 +199,29 @@ GjitenConfig *conf_load()
     gchar **diclist = NULL;
 
     gconf_diclist = data_store_get_string_array (store, SECTION_GENERAL, "dictionary_list", NULL);
-		diclist = gconf_diclist;
-    gint i = 0;
+    diclist = gconf_diclist;
     if (diclist != NULL)
-		while (diclist[i] != NULL) {
-			//if (diclist->data == NULL) break;
-			tmpstrg = diclist[i];
-			if (tmpstrg != NULL) {
-				tmpptr = tmpstrg;
-				endptr = tmpptr + strlen(tmpstrg);
-				while ((tmpptr != endptr) && (*tmpptr != '\n')) tmpptr++;
-				if (*tmpptr == '\n') {
-					*tmpptr = 0;
-					tmpptr++;
-				}
-				dicfile = g_new0(GjitenDicfile, 1);
-				dicfile->path = g_strdup(tmpstrg);
-				dicfile->name = g_strdup(tmpptr);
-        *tmpptr = '\n';
-				//				printf("%s\n%s\n", tmpstrg, tmpptr);
-				conf->dicfile_list = g_slist_append(conf->dicfile_list, dicfile);
-			}
-      ++i;
-		}
+    {
+      for (gint i = 0; diclist[i] != NULL; ++i)
+      {
+        gchar * dicpath = NULL;
+        gchar * dicname = NULL;
+        if (_dictionary_string_extract_path_and_name (diclist[i], &dicpath, &dicname))
+        {
+          GjitenDicfile *dicfile= dicfile_new (dicname, dicpath);
+          conf->dicfile_list = g_slist_append (conf->dicfile_list, dicfile);
+        }
+      }
+    }
     g_strfreev (gconf_diclist);
   }
   if (conf->dicfile_list != NULL) conf->selected_dic = conf->dicfile_list->data;
 
   //Load kanji info settings
   for (i = 0; i < KCFGNUM; i++) {
-    if (data_store_get_boolean(store, SECTION_KANJIDIC, kanjidicstrg[i])) {
+    if (data_store_get_boolean (store, SECTION_KANJIDIC, kanjidicstrg[i])) {
       conf->kdiccfg[i] = TRUE;
-      // printf("%s : %d\n",kanjidicstrg[i], conf->kdiccfg[i]);
+      // printf ("%s : %d\n",kanjidicstrg[i], conf->kdiccfg[i]);
     }
     else conf->kdiccfg[i] = FALSE;
   }
@@ -286,21 +229,21 @@ GjitenConfig *conf_load()
   //Load gjiten search history
   {
     // Be sure: init all to NULL
-    for (i = 0; i <= 50; ++i) {
+    for (i = 0; i <= HISTORY_MAX_WORDS; ++i) {
       conf->history[i] = NULL;
     }
 
     // get persistent values and save them
     gsize num_entries = 0;
-    gchar ** history_array = data_store_get_string_array(store, SECTION_GENERAL, "word_search_history", &num_entries);
-    for (i = 0; i < MIN(num_entries, 50); ++i) {
+    gchar ** history_array = data_store_get_string_array (store, SECTION_GENERAL, "word_search_history", &num_entries);
+    for (i = 0; i < MIN (num_entries, HISTORY_MAX_WORDS); ++i) {
       conf->history[i] = history_array[i];
     }
 
-    // We can only hold 50 history entries.
+    // We can only hold HISTORY_MAX_WORDS history entries.
     // Free values, if there were more in the list from
     // persistent storage
-    for (i = 50; i < num_entries; ++i){
+    for (i = HISTORY_MAX_WORDS; i < num_entries; ++i){
       g_free (history_array[i]);
     }
 
@@ -314,7 +257,11 @@ GjitenConfig *conf_load()
   #undef store_get_string
 }
 
-void conf_save(GjitenConfig *conf) {
+
+
+void
+gjitenconfig_save(GjitenConfig *conf)
+{
   int i;
   gchar *confpath, *tmpstrg;
   GSList *gconf_diclist = NULL;
@@ -327,40 +274,40 @@ void conf_save(GjitenConfig *conf) {
   #define store_set_int(KEY, VALUE)     data_store_set_int     (store, SECTION_GENERAL, KEY, VALUE)
   #define store_set_string(KEY, VALUE)  data_store_set_string  (store, SECTION_GENERAL, KEY, VALUE)
 
-  store_set_string("version", VERSION);
+  store_set_string ("version", VERSION);
   //Save kanjidic display options
   for (i = 0; i < KCFGNUM; i++) {
-    confpath = g_strdup_printf("%s%s", SECTION_KANJIDIC, kanjidicstrg[i]);
-    data_store_set_boolean(store, SECTION_KANJIDIC, confpath, conf->kdiccfg[i]);
-    g_free(confpath);
+    confpath = g_strdup_printf ("%s%s", SECTION_KANJIDIC, kanjidicstrg[i]);
+    data_store_set_boolean (store, SECTION_KANJIDIC, confpath, conf->kdiccfg[i]);
+    g_free (confpath);
   }
 
 
-  store_set_boolean("menubar", conf->menubar);
-  store_set_boolean("toolbar", conf->toolbar);
-  store_set_string("dictpath", conf->dictpath == NULL ? g_strdup("") : conf->dictpath);
+  store_set_boolean ("menubar", conf->menubar);
+  store_set_boolean ("toolbar", conf->toolbar);
+  store_set_string ("dictpath", conf->dictpath == NULL ? g_strdup ("") : conf->dictpath);
   data_store_set_string (store, SECTION_KANJIDIC, "kanjidicfile", conf->kanjidic->path);
   data_store_set_boolean (store, SECTION_KANJIDIC,   "unicode_radicals", conf->unicode_radicals);
 
-  if (conf->kanjipad == NULL) conf->kanjipad = g_strdup("");
-  store_set_string("kanjipad", conf->kanjipad);
+  if (conf->kanjipad == NULL) conf->kanjipad = g_strdup ("");
+  store_set_string ("kanjipad", conf->kanjipad);
 
   //Deprecated dictionary file number, zero it out.
-  //store_set_int("numofdics", conf->numofdics);
-  store_set_int("numofdics", 0);
+  //store_set_int ("numofdics", conf->numofdics);
+  store_set_int ("numofdics", 0);
 
-  store_set_boolean("bigwords", conf->bigwords);
-  store_set_boolean("bigkanji", conf->bigkanji);
-  store_set_string("largefont", conf->largefont == NULL ? g_strdup("") : conf->largefont);
-  store_set_string("normalfont", conf->normalfont == NULL ? g_strdup("") : conf->normalfont);
-  store_set_boolean("gdk_use_xft", conf->gdk_use_xft);
-  store_set_boolean("force_ja_JP", conf->force_ja_JP);
-  store_set_boolean("force_language_c", conf->force_language_c);
-  store_set_boolean("envvar_override", conf->envvar_override);
+  store_set_boolean ("bigwords", conf->bigwords);
+  store_set_boolean ("bigkanji", conf->bigkanji);
+  store_set_string ("largefont", conf->largefont == NULL ? g_strdup ("") : conf->largefont);
+  store_set_string ("normalfont", conf->normalfont == NULL ? g_strdup ("") : conf->normalfont);
+  store_set_boolean ("gdk_use_xft", conf->gdk_use_xft);
+  store_set_boolean ("force_ja_JP", conf->force_ja_JP);
+  store_set_boolean ("force_language_c", conf->force_language_c);
+  store_set_boolean ("envvar_override", conf->envvar_override);
 
-  store_set_boolean("search_kata_on_hira", conf->search_kata_on_hira);
-  store_set_boolean("search_hira_on_kata", conf->search_hira_on_kata);
-  store_set_boolean("deinflection_enabled", conf->verb_deinflection);
+  store_set_boolean ("search_kata_on_hira", conf->search_kata_on_hira);
+  store_set_boolean ("search_hira_on_kata", conf->search_hira_on_kata);
+  store_set_boolean ("deinflection_enabled", conf->verb_deinflection);
 
   //Save dicfiles [path and name seperated with linebreak]
   {
@@ -369,12 +316,13 @@ void conf_save(GjitenConfig *conf) {
     gint size = g_slist_length (list) + 1;
     gchar ** array = g_malloc (sizeof (gchar*) * size);
 
+
     int i = 0;
     while (list){
       if (NULL != list->data)
       {
         dicfile = list->data;
-        tmpstrg = g_strdup_printf("%s\n%s", dicfile->path, dicfile->name);
+        tmpstrg = g_strdup_printf ("%s\n%s", dicfile->path, dicfile->name);
         array[i] = tmpstrg;
         ++i;
       }
@@ -384,7 +332,7 @@ void conf_save(GjitenConfig *conf) {
 
     data_store_set_string_array (conf->data_store, SECTION_GENERAL,
                                  "dictionary_list",
-                                 array, size);
+                                 (const gchar **)(array), size);
     g_strfreev (array);
   }
 
@@ -396,7 +344,12 @@ void conf_save(GjitenConfig *conf) {
   #undef store_set_string
 }
 
-void conf_save_history(GtkListStore *history, GjitenConfig *conf) {
+
+
+void
+gjitenconfig_save_history(GtkListStore *history,
+                  GjitenConfig *conf)
+{
   int i;
 
   gint num_entries = gtk_list_store_length (history);
@@ -410,7 +363,7 @@ void conf_save_history(GtkListStore *history, GjitenConfig *conf) {
       gboolean iter_valid;
 
       iter_valid = gtk_tree_model_get_iter_first (GTK_TREE_MODEL (history), &iter);
-      for (i = 0; i <= 50; i++) {
+      for (i = 0; i <= HISTORY_MAX_WORDS; i++) {
         if (iter_valid == FALSE) break;
           history_array[i] = gtk_list_store_string_get (history, &iter);
           iter_valid = gtk_tree_model_iter_next (GTK_TREE_MODEL (history), &iter);
@@ -419,32 +372,26 @@ void conf_save_history(GtkListStore *history, GjitenConfig *conf) {
       history_array[i] = NULL;
     }
 
-    data_store_set_string_array (conf->data_store, SECTION_GENERAL, "word_search_history", history_array, num_entries);
+    data_store_set_string_array (conf->data_store, SECTION_GENERAL,
+                                "word_search_history",
+                                (const gchar **)history_array, num_entries);
     g_strfreev (history_array);
 
     data_store_save_to_disk (conf->data_store);
   }
 }
 
-void conf_save_options(GjitenConfig *conf) {
+
+
+void
+gjitenconfig_save_options(GjitenConfig *conf)
+{
     DataStore *store = conf->data_store;
 
-    data_store_set_boolean(store, SECTION_GENERAL, "autoadjust_enabled", conf->autoadjust_enabled);
-    data_store_set_boolean(store, SECTION_GENERAL, "searchlimit_enabled", conf->searchlimit_enabled);
-    data_store_set_int(store, SECTION_GENERAL, "maxwordmatches", conf->maxwordmatches);
+    data_store_set_boolean (store, SECTION_GENERAL, "autoadjust_enabled", conf->autoadjust_enabled);
+    data_store_set_boolean (store, SECTION_GENERAL, "searchlimit_enabled", conf->searchlimit_enabled);
+    data_store_set_int (store, SECTION_GENERAL, "maxwordmatches", conf->maxwordmatches);
 
     data_store_save_to_disk (store);
 }
 
-gboolean conf_init_handler() {
-
-  if (store_init() != TRUE) {
-    gjiten_print_error(_("Could initialize persistent data store.\n"));
-    return FALSE;
-  }
-  return TRUE;
-}
-
-void conf_close_handler(GjitenConfig *self) {
-  gjitenconfig_free (self);
-}

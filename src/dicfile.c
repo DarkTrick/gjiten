@@ -41,63 +41,83 @@
 #include <glib/gi18n.h>
 #include <locale.h>
 
-gboolean dicfile_check_all(GSList *dicfile_list) {
+
+
+static gboolean
+dicfile_is_utf8(GjitenDicfile *dicfile)
+{
+  gchar *testbuffer;
+  gint pos, bytesread;
+
+  if (dicfile->file > 0) {
+    testbuffer = (gchar *) g_malloc (3000);
+    bytesread = read (dicfile->file, testbuffer, 3000); // read a chunk into buffer
+    pos = bytesread - 1;
+    while (testbuffer[pos] != '\n') pos--;
+    if (g_utf8_validate (testbuffer, pos, NULL) == FALSE) {
+      return FALSE;
+    }
+    g_free (testbuffer);
+  }
+  return TRUE;
+}
+
+
+
+gboolean
+dicfile_check_all(GSList *dicfile_list)
+{
   GSList *node;
   GjitenDicfile *dicfile;
   gboolean retval = TRUE;
 
-  GJITEN_DEBUG("dicfile_check_all()\n");
+  GJITEN_DEBUG ("dicfile_check_all()\n");
 
   node = dicfile_list;
   while (node != NULL) {
     if (node->data != NULL) {
       dicfile = node->data;
-      if (dicfile_init(dicfile) == FALSE) retval = FALSE;
-      if (dicfile_is_utf8(dicfile) == FALSE) {
-        dicfile_close(dicfile);
+      const gchar * error = dicfile_init (dicfile);
+      if (error != FALSE){
+        gjiten_show_error (NULL, error);
         retval = FALSE;
       }
-      dicfile_close(dicfile);
+      if (dicfile_is_utf8 (dicfile) == FALSE) {
+        gjiten_print_error (_("Dictionary file is non-UTF: %s\nPlease convert it to UTF-8. See the docs for more."), dicfile->path);
+        dicfile_close (dicfile);
+        retval = FALSE;
+      }
+      dicfile_close (dicfile);
     }
-    node = g_slist_next(node);
+    node = g_slist_next (node);
   }
-  GJITEN_DEBUG(" retval: %d\n", retval);
+  GJITEN_DEBUG (" retval: %d\n", retval);
   return retval;
 }
 
-gboolean dicfile_is_utf8(GjitenDicfile *dicfile) {
-  gchar *testbuffer;
-  gint pos, bytesread;
 
-  if (dicfile->file > 0) {
-    testbuffer = (gchar *) g_malloc(3000);
-    bytesread = read(dicfile->file, testbuffer, 3000); // read a chunk into buffer
-    pos = bytesread - 1;
-    while (testbuffer[pos] != '\n') pos--;
-    if (g_utf8_validate(testbuffer, pos, NULL) == FALSE) {
-      gjiten_print_error(_("Dictionary file is non-UTF: %s\nPlease convert it to UTF-8. See the docs for more."), dicfile->path);
-      return FALSE;
-    }
-    g_free(testbuffer);
-  }
-  return TRUE;
-}
 
-gboolean dicfile_init(GjitenDicfile *dicfile) {
+/**
+ * Return:
+ *  ok: NULL
+ *  error: error string (must not be freed)
+ **/
+const gchar *
+dicfile_init(GjitenDicfile *dicfile)
+{
 
   if (dicfile->status != DICFILE_OK) {
-    dicfile->file = open(dicfile->path, O_RDONLY);
+    dicfile->file = open (dicfile->path, O_RDONLY);
 
     if (dicfile->file == -1) {
-      gjiten_print_error(_("Error opening dictfile:  %s\nCheck your preferences!"), dicfile->path);
       dicfile->status = DICFILE_BAD;
-      return FALSE;
+      return _("Sorry, I could not load your dictionary.");
     }
     else {
-      if (stat(dicfile->path, &dicfile->stat) != 0) {
-        printf("**ERROR** %s: stat() \n", dicfile->path);
+      if (stat (dicfile->path, &dicfile->stat) != 0) {
+        printf ("**ERROR** %s: stat() \n", dicfile->path);
         dicfile->status = DICFILE_BAD;
-        return FALSE;
+        return _("Sorry, I could not load your dictionary.");
       }
       else {
         dicfile->size = dicfile->stat.st_size;
@@ -105,31 +125,95 @@ gboolean dicfile_init(GjitenDicfile *dicfile) {
     }
     dicfile->status = DICFILE_OK;
   }
-  return TRUE;
+  return NULL;
 }
 
-void dicfile_close(GjitenDicfile *dicfile) {
+
+
+void
+dicfile_close(GjitenDicfile *dicfile)
+{
 
   if (dicfile->file > 0) {
-    close(dicfile->file);
+    close (dicfile->file);
   }
   dicfile->status = DICFILE_NOT_INITIALIZED;
 }
 
-void dicfile_list_free(GSList *dicfile_list) {
-  GSList *node;
-  GjitenDicfile *dicfile;
 
-  node = dicfile_list;
-  while (node != NULL) {
-    if (node->data != NULL) {
-      dicfile = node->data;
-      dicfile_close(dicfile);
-      g_free(dicfile);
-    }
-    node = g_slist_next(node);
+
+/**
+ * Returns:
+ *    ok: NULL
+ *    error: string describing the error
+ *           (string must not be freed)
+ **/
+const gchar *
+dicfile_is_valid(GjitenDicfile *self)
+{
+  const gchar * error = NULL;
+
+  if (self->path == NULL)
+    return _("Please select a dictionary file.");
+
+  if (FALSE == g_file_test (self->path,G_FILE_TEST_EXISTS))
+    return _("Dictionary file not found. ");
+
+  error = dicfile_init (self);
+  if (error != NULL)
+    return error;
+
+  if (dicfile_is_utf8 (self) == FALSE)
+  {
+    dicfile_close (self);
+    return _("Dictionary file is not in UTF-8 format. \nPlease convert it to UTF-8 format. See the docs for more information.");
   }
 
-  g_slist_free(dicfile_list);
+  dicfile_close (self);
 
+  return NULL;
+}
+
+GjitenDicfile *
+dicfile_new(gchar *name,
+            gchar *path)
+{
+  GjitenDicfile *self = g_new0 (GjitenDicfile, 1);
+  self->name = name;
+  self->path = path;
+
+  return self;
+}
+
+
+
+void
+dicfile_free(GjitenDicfile *self)
+{
+  if (NULL == self)
+    return;
+
+  dicfile_close (self);
+
+  if (NULL != self->path) {
+    g_free (self->path);
+    self->path = NULL;
+  }
+
+  if (NULL != self->name) {
+    g_free (self->name);
+    self->name = NULL;
+  }
+
+  g_free (self);
+  self = NULL;
+}
+
+
+
+void
+dicfile_list_free(GSList *dicfile_list)
+{
+  g_slist_free_full (dicfile_list,
+                    (GDestroyNotify)dicfile_free);
 }

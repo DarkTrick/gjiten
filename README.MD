@@ -57,3 +57,16 @@ With `--enable-debug` you have to start gjiten from within `src`. Otherwise stat
 # Reporting Bugs
 
 Report bugs directly here on Github.
+
+If you file bugs please try to include the following information:
+- gjiten version ( `gjiten --version` )
+- distribution and other info about your OS
+  (under Ubuntu: `lsb_release --all`)
+- gtk release ( `pkg-config --modversion gtk+-3.0` )
+- output of `gdb gjiten` and/or `strace gjiten`
+- and any other info you might think is important.
+
+
+# User Settings
+User settings are stored in `<system config path>/gjiten/gjiten.config` .
+Under Ubuntu this amounts to `~/.config/gjiten/gjiten.conf`.

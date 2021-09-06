@@ -2,10 +2,17 @@
 #define UTILS_H
 
 #include <gtk/gtk.h>
-
-
 #include <glib/gi18n.h>
 #include <locale.h>
+
+// Why these macros?
+// Casts without `uintptr_t` raise a compiler warning.
+// These warning should not throw, as the consequences of
+//  the cast are known.
+#define TO_POINTER(X) (gpointer)(uintptr_t)(X)
+#define TO_CONST_POINTER(X) (gconstpointer)(uintptr_t)(X)
+#define POINTER_TO_UNICHAR(X) (gunichar)(uintptr_t)(X)
+#define POINTER_TO_UCHAR32(X) (guint32)(uintptr_t)(X)
 
 #define GJITEN_WINDOW_ICON PIXMAPDIR"/jiten.png"
 
@@ -30,12 +37,8 @@ void gtk_entry_clear_callback(gpointer entrybox);
 void gtk_combo_box_text_add_entries(GtkComboBoxText *self,
                                     GList           *list_of_strings);
 
-void setWindowIcon (GtkWindow       *window,
-                    char            *icon_path);
-
-void gtk_widget_register_action_entries(GtkWidget    *self,
-                                        const gchar  *group_name,
-                                        GActionEntry  actions[]);
+void setWindowIcon(GtkWindow       *window,
+                   char            *icon_path);
 
 void set_global_css(gchar *css_class,
                    gchar *css);
@@ -59,29 +62,50 @@ gboolean gtk_combo_box_previous(GtkComboBox * self);
 gchar * g_pango_font_convert_to_css(const gchar * pango_font);
 
 gboolean
-g_settings_has_schema (const char * id);
+g_settings_has_schema(const char * id);
 
 gboolean
-g_settings_has_key (const gchar * schema_id,
+g_settings_has_key(const gchar * schema_id,
                     const char * key);
 
 GValue *
-g_value_new_int (int value);
+g_value_new_int(int value);
 GValue *
-g_value_new_string (const gchar * value);
+g_value_new_string(const gchar * value);
 GValue *
-g_value_new_boolean (gboolean value);
+g_value_new_boolean(gboolean value);
 
 char *
-chr_replace (char *str,
-             const char search_for,
-             const char replace_with);
+chr_replace(char *str,
+            const char search_for,
+            const char replace_with);
 
 gint
 gtk_list_store_length(GtkListStore *self);
 
-gtk_application_set_accel_for_action (GtkApplication *self,
-                                      const gchar * detailed_action_name,
-                                      const gchar * accelerator);
+void
+gtk_application_set_accel_for_action(GtkApplication *self,
+                                     const gchar * detailed_action_name,
+                                     const gchar * accelerator);
+
+gboolean
+delete_event_prevent_destruction(GtkWidget *widget,
+                                GdkEvent  *unused1,
+                                gpointer   unused2);
+
+const gchar  *
+gtk_combo_box_get_text (GtkComboBox *self);
+
+void
+gtk_combo_box_set_text (GtkComboBox *self,
+                        const gchar  *text);
+
+const char *
+str_find_last_of(const char *haystack,
+                 const char  needle);
+
+
+gint
+gtk_combo_box_length(GtkComboBox * self);
 
 #endif

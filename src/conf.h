@@ -36,6 +36,7 @@ typedef struct _GjitenConfig GjitenConfig;
 
 // forward decls
 
+#define HISTORY_MAX_WORDS 50
 
 struct _GjitenConfig {
   gchar *version;
@@ -54,12 +55,14 @@ struct _GjitenConfig {
   gboolean override_env;
   gchar *kanjipad;
 
-  gboolean startkanjidic;
-  gchar *kanji_to_lookup;
-  gchar *word_to_lookup;
-  gboolean clip_kanji_lookup;
-  gboolean clip_word_lookup;
-  gboolean quick_lookup_mode;
+  gboolean cli_option_startkanjidic;
+  gchar *cli_option_kanji_to_lookup;
+  gchar *cli_option_word_to_lookup;
+  gboolean cli_option_clip_kanji_lookup;
+  gboolean cli_option_clip_word_lookup;
+  gboolean cli_option_quick_lookup_mode;
+  gboolean cli_option_show_version;
+
   int maxwordmatches;
   gchar *largefont;
   gchar *normalfont;
@@ -87,11 +90,13 @@ struct _GjitenConfig {
 };
 
 
-GjitenConfig *conf_load();
-void conf_save(GjitenConfig *conf);
-void conf_save_history(GtkListStore *history, GjitenConfig *conf);
-void conf_save_options(GjitenConfig *conf);
-gboolean conf_init_handler();
-void conf_close_handler(GjitenConfig *self);
+GjitenConfig *gjitenconfig_new_and_init();
+void gjitenconfig_free(        GjitenConfig *self);
+
+void gjitenconfig_save(        GjitenConfig *conf);
+void gjitenconfig_save_history(GtkListStore *history,
+                               GjitenConfig *conf);
+void gjitenconfig_save_options(GjitenConfig *conf);
+
 
 #endif
