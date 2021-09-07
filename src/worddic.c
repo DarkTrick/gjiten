@@ -1195,7 +1195,7 @@ _create_gui (GjWorddicWindow* self)
 
   {
     GdkPixbuf *cursor_pixbuf;
-    cursor_pixbuf = gdk_pixbuf_new_from_file (PIXMAPDIR"/left_ptr_question.png", NULL);
+    cursor_pixbuf = gdk_pixbuf_new_from_resource (RESOURCE_PATH "cursors/left_ptr_question.png",NULL);
     wordDic->selection_cursor = gdk_cursor_new_from_pixbuf (gdk_display_get_default (), cursor_pixbuf, 0, 0);
     wordDic->regular_cursor = gdk_cursor_new_for_display (gdk_display_get_default (), GDK_XTERM);
     wordDic->is_cursor_regular = TRUE;

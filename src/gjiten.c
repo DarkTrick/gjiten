@@ -245,7 +245,7 @@ gjiten_create_about()
   const gchar *translator = _("TRANSLATORS! PUT YOUR NAME HERE");
   GdkPixbuf *pixbuf = NULL;
 
-  pixbuf = gdk_pixbuf_new_from_file (PIXMAPDIR_LOGO "/gjiten-logo.png", NULL);
+  pixbuf =  gdk_pixbuf_new_from_resource (RESOURCE_PATH "images/gjiten-logo.png",NULL);
 
   if (strncmp (translator, "translated_by", 13) == 0) translator = NULL;
 
@@ -463,7 +463,7 @@ _init_resources()
 {
   g_resources_register (resources_get_resource ());
   GtkIconTheme * icon_theme = gtk_icon_theme_get_default ();
-  gtk_icon_theme_add_resource_path (icon_theme, "/org/gjiten/data/icons/scalable/actions");
+  gtk_icon_theme_add_resource_path (icon_theme, RESOURCE_PATH "icons/scalable/actions");
 }
 
 
