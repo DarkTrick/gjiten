@@ -45,6 +45,7 @@
 #include "gjiten.h"
 #include "dicutil.h"
 #include "utils.h"
+#include "resources.h"
 
 GjitenApp *gjitenApp = NULL;
 
@@ -456,10 +457,24 @@ gjiten_apply_fonts(GjitenApp * gjitenApp)
 
 
 
+
+void
+_init_resources()
+{
+  g_resources_register (resources_get_resource ());
+  GtkIconTheme * icon_theme = gtk_icon_theme_get_default ();
+  gtk_icon_theme_add_resource_path (icon_theme, "/org/gjiten/data/icons/scalable/actions");
+}
+
+
+
+
 void
 gjiten_activate(GtkApplication *app,
                 gpointer        user_data)
 {
+  _init_resources();
+
   if (TRUE == gjitenApp->conf->cli_option_show_version)
   {
     g_print (PACKAGE_STRING "\n");

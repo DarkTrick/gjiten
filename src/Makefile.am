@@ -18,6 +18,7 @@ gjiten_SOURCES = 	      \
 	kanjidicconsts.h      \
 	gconf_reader.c gconf_reader.h \
 	data_store.c data_store.h \
+	resources.c resources.h	  \
 	migration2-6_3-0.c migration2-6_3-0.h \
 	constants.h
 

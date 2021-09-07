@@ -1237,12 +1237,12 @@ _create_gui (GjWorddicWindow* self)
                                                       on_forward_clicked, NULL, -1);
     gtk_widget_set_sensitive (GTK_WIDGET (wordDic->button_back), FALSE);
 
-    tmpimage = gtk_image_new_from_file (PIXMAPDIR"/kanjidic.png");
+    tmpimage = gtk_image_new_from_icon_name ("kanjidic-symbolic", GTK_ICON_SIZE_INVALID /*ignored*/);
     gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), _("KanjiDic"),
                           _("Launch KanjiDic"), "KanjiDic", tmpimage,
                           G_CALLBACK (gjiten_start_kanjidic), GTK_APPLICATION (g_application_get_default ()));
 
-    tmpimage = gtk_image_new_from_file (PIXMAPDIR"/kanjipad.png");
+    tmpimage = gtk_image_new_from_icon_name ("kanjipad-symbolic", GTK_ICON_SIZE_INVALID /*ignored*/);
     gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), _("KanjiPad"),
                           _("Launch KanjiPad"), "KanjiPad", tmpimage,
                             G_CALLBACK (gjiten_start_kanjipad), NULL);

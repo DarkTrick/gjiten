@@ -1157,12 +1157,12 @@ _create_gui (GjKanjidicWindow* self)
 
     gtk_container_add (GTK_CONTAINER (vbox_maink), toolbar_kanji);
 
-    tmpimage = gtk_image_new_from_file (PIXMAPDIR"/worddic.png");
+    tmpimage = gtk_image_new_from_icon_name ("worddic-symbolic", GTK_ICON_SIZE_INVALID /*ignored*/);
     gtk_toolbar_append_item (GTK_TOOLBAR (toolbar_kanji), _("WordDic"),
                                              _("Launch WordDic"), "WordDic", tmpimage,
                                              G_CALLBACK (gjiten_start_worddic), GTK_APPLICATION (g_application_get_default ()));
 
-    tmpimage = gtk_image_new_from_file (PIXMAPDIR"/kanjipad.png");
+    tmpimage = gtk_image_new_from_icon_name ("kanjipad-symbolic", GTK_ICON_SIZE_INVALID /*ignored*/);
     gtk_toolbar_append_item (GTK_TOOLBAR (toolbar_kanji), _("KanjiPad"),
                 _("Launch KanjiPad"), "KanjiPad", tmpimage,
                  G_CALLBACK (gjiten_start_kanjipad), NULL);
