@@ -270,7 +270,7 @@ change_dict(GtkWidget *various,
 
   selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview));
   if (gtk_tree_selection_get_selected (selection, &model, &iter) == FALSE) {
-    gjiten_print_error (_("Please select an entry!"));
+    gjiten_print_error (_("Please select an entry."));
     return;
   }
 

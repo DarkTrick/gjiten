@@ -723,7 +723,7 @@ worddic_search(gchar *srchstrg)
     else snprintf (appbarmsg, LEN, _("Matches found: %d"), word_matches);
     gtk_label_set_text (GTK_LABEL (wordDic->appbar_mainwin), appbarmsg);
   }
-  else gtk_label_set_text (GTK_LABEL (wordDic->appbar_mainwin), _("No match found!"));
+  else gtk_label_set_text (GTK_LABEL (wordDic->appbar_mainwin), _("No match found."));
 }
 
 

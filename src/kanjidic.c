@@ -572,7 +572,7 @@ on_kanji_search()
       klists_merge ();
     }
     if (klinklist == NULL) {
-      gtk_label_set_text (GTK_LABEL (kanjiDic->appbar_kanji), _("No Matches found!"));
+      gtk_label_set_text (GTK_LABEL (kanjiDic->appbar_kanji), _("No Matches found."));
       return;
     }
   }
@@ -846,7 +846,7 @@ load_radkfile()
 
   if (error == TRUE) {
     gjiten_print_error (_("Error opening %s.\n "\
-                         "Check your preferences or read the documentation!"),
+                         "Please check your preferences or read the documentation."),
                        radkfile_name);
     return;
   }
@@ -1352,7 +1352,7 @@ gj_kanjidic_window_new (GtkApplication * app)
   if (sizeof (gunichar) > sizeof (uintptr_t) ||
       sizeof (gunichar) > sizeof (gpointer))
   {
-    gjiten_show_error (GTK_WINDOW (self), _("Kanjidict is incompatible with your system. It could work, but it could also no work. \n\n Technical Details:\n uintptr_t and void* are smaller than integers."));
+    gjiten_show_error (GTK_WINDOW (self), _("Kanjidict is incompatible with your system. It could work, but it could also not work. \n\n Technical Details:\n uintptr_t and void* are smaller than integers."));
   }
 
 
