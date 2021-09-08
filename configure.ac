@@ -106,7 +106,7 @@ AC_SUBST(CLEANFILES)
 
 AC_OUTPUT([ Makefile
 	    pixmaps/Makefile
-	    rpm/gjiten.spec
+	    packaging/redhat/rpm/gjiten.spec
 	    src/Makefile
 	    data/Makefile
 	    po/Makefile.in
