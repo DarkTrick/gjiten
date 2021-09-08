@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-08 14:42+0900\n"
+"POT-Creation-Date: 2021-09-08 16:38+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: DarkTrick <https://github.com/DarkTrick/>\n"
 "Language-Team: \n"
@@ -219,8 +219,7 @@ msgstr "No se pudo mostrar la ayuda: %s"
 
 #: ../src/gjiten.c:245
 msgid "TRANSLATORS! PUT YOUR NAME HERE"
-msgstr ""
-"Google Translate & DarkTrick <https://github.com/DarkTrick/>"
+msgstr "Google Translate & DarkTrick <https://github.com/DarkTrick/>"
 
 #: ../src/gjiten.c:261
 msgid "Gjiten is a Japanese dictionary."
@@ -551,7 +550,7 @@ msgstr ""
 #: ../src/worddic.c:251
 #, c-format
 msgid "Matches in %s:\n"
-msgstr "Coincidencias en %s:"
+msgstr "Coincidencias en %s:\n"
 
 #: ../src/worddic.c:331
 msgid "Possible inflected verb or adjective: "
@@ -604,7 +603,9 @@ msgstr "Ejecutar diccionario de kanji"
 msgid ""
 "Show/Hide\n"
 "options"
-msgstr "Mostrar/Ocultar\nopciones"
+msgstr ""
+"Mostrar/Ocultar\n"
+"opciones"
 
 #: ../src/worddic.c:1211
 msgid "Show/Hide options"
