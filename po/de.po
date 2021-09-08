@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../data/gjiten-settings.glade.h:1
+#: ../data/uis/gjiten-settings.glade.h:1
 msgid ""
 "<i>If you change the following, please restart gjiten for the settings to "
 "take effect.</i>"
@@ -23,133 +23,133 @@ msgstr ""
 "<i>Bitte Gjiten neu starten wenn bei den folgenden Einstellungen etwas "
 "geändert wird"
 
-#: ../data/gjiten-settings.glade.h:2
+#: ../data/uis/gjiten-settings.glade.h:2
 msgid "Add dictionary files"
 msgstr "Wörterbuchdateien auswählen"
 
-#: ../data/gjiten-settings.glade.h:3
+#: ../data/uis/gjiten-settings.glade.h:3
 msgid "Dictionaries"
 msgstr "Wörterbücher"
 
-#: ../data/gjiten-settings.glade.h:4
+#: ../data/uis/gjiten-settings.glade.h:4
 msgid "Dictionary file"
 msgstr "Wörterbuchdatei"
 
-#: ../data/gjiten-settings.glade.h:5
+#: ../data/uis/gjiten-settings.glade.h:5
 msgid "Dictionary file properties"
 msgstr "Eigenschaften der Wörterbuchdatei"
 
-#: ../data/gjiten-settings.glade.h:6
+#: ../data/uis/gjiten-settings.glade.h:6
 msgid "Dictionary file:"
 msgstr "Wörterbuchdatei:"
 
-#: ../data/gjiten-settings.glade.h:7
+#: ../data/uis/gjiten-settings.glade.h:7
 msgid "Dictionary name:"
 msgstr "Wörterbuchname:"
 
-#: ../data/gjiten-settings.glade.h:8
+#: ../data/uis/gjiten-settings.glade.h:8
 msgid "Environment Variables"
 msgstr "Umgebungsvariablen"
 
-#: ../data/gjiten-settings.glade.h:9
+#: ../data/uis/gjiten-settings.glade.h:9
 msgid "Fonts"
 msgstr "Schriftarten"
 
-#: ../data/gjiten-settings.glade.h:10
+#: ../data/uis/gjiten-settings.glade.h:10
 msgid "General"
 msgstr "Allgemein"
 
-#: ../data/gjiten-settings.glade.h:11
+#: ../data/uis/gjiten-settings.glade.h:11
 msgid "Gjiten Settings"
 msgstr "Gjiten-Einstellungen"
 
-#: ../data/gjiten-settings.glade.h:12
+#: ../data/uis/gjiten-settings.glade.h:12
 msgid "Japanese"
 msgstr "Japanisch"
 
-#: ../data/gjiten-settings.glade.h:13
+#: ../data/uis/gjiten-settings.glade.h:13
 msgid "Kanji info"
 msgstr "Kanji-Info"
 
-#: ../data/gjiten-settings.glade.h:14 ../src/worddic.c:90
+#: ../data/uis/gjiten-settings.glade.h:14 ../src/worddic.c:90
 #: ../src/worddic.c:1008
 msgid "KanjiDic"
 msgstr "Kanji-Dic"
 
-#: ../data/gjiten-settings.glade.h:15 ../src/kanjidic.c:95
+#: ../data/uis/gjiten-settings.glade.h:15 ../src/kanjidic.c:95
 #: ../src/kanjidic.c:1154 ../src/worddic.c:94 ../src/worddic.c:1013
 msgid "KanjiPad"
 msgstr "Kanji-Pad"
 
-#: ../data/gjiten-settings.glade.h:16
+#: ../data/uis/gjiten-settings.glade.h:16
 msgid "Kanjidic dictionary file:"
 msgstr "Kanjidic-Wörterbuch:"
 
-#: ../data/gjiten-settings.glade.h:17
+#: ../data/uis/gjiten-settings.glade.h:17
 msgid "Large font:"
 msgstr "Große Schrift:"
 
-#: ../data/gjiten-settings.glade.h:18
+#: ../data/uis/gjiten-settings.glade.h:18
 msgid "Normal font:"
 msgstr "Standardschrift:"
 
-#: ../data/gjiten-settings.glade.h:19
+#: ../data/uis/gjiten-settings.glade.h:19
 msgid "Options"
 msgstr "Optionen"
 
-#: ../data/gjiten-settings.glade.h:20
+#: ../data/uis/gjiten-settings.glade.h:20
 msgid "Path to KanjiPad executable:"
 msgstr "Kanji-Pad-Programm:"
 
-#: ../data/gjiten-settings.glade.h:21
+#: ../data/uis/gjiten-settings.glade.h:21
 msgid "Search for Hiragana on Katakana input"
 msgstr "Nach Hiragana suchen wenn Katakana eingegeben wurde"
 
-#: ../data/gjiten-settings.glade.h:22
+#: ../data/uis/gjiten-settings.glade.h:22
 msgid "Search for Katakana on Hiragana input"
 msgstr "Nach Katakana suchen wenn Hiragana eingegeben wurde"
 
-#: ../data/gjiten-settings.glade.h:23
+#: ../data/uis/gjiten-settings.glade.h:23
 msgid ""
 "This will try to recognize inflected verbs and look up the deinflected form."
 msgstr ""
 
-#: ../data/gjiten-settings.glade.h:24
+#: ../data/uis/gjiten-settings.glade.h:24
 msgid "Use large font for Japanese in _WordDic search results"
 msgstr "Große Schrift für japanische _Wörter in den Suchresultaten benutzen"
 
-#: ../data/gjiten-settings.glade.h:25
+#: ../data/uis/gjiten-settings.glade.h:25
 msgid "Use unicode radicals"
 msgstr "Unicode Radikale"
 
-#: ../data/gjiten-settings.glade.h:26
+#: ../data/uis/gjiten-settings.glade.h:26
 msgid "Verb deinflection"
 msgstr "Grundform bestimmen"
 
-#: ../data/gjiten-settings.glade.h:27 ../src/kanjidic.c:99
+#: ../data/uis/gjiten-settings.glade.h:27 ../src/kanjidic.c:99
 #: ../src/kanjidic.c:1149
 msgid "WordDic"
 msgstr "Wörterbuch"
 
-#: ../data/gjiten-settings.glade.h:28
+#: ../data/uis/gjiten-settings.glade.h:28
 msgid "_Antialiasing   [GDK__USE__XFT=1]  (might not work with Japanese)"
 msgstr ""
 "_Anti-Aliasing   [GDK__USE__XFT=1](funktioniert möglicherweise nicht mit "
 "japanischen Schriften)"
 
-#: ../data/gjiten-settings.glade.h:29
+#: ../data/uis/gjiten-settings.glade.h:29
 msgid "_English interface [LANGUAGE=C]"
 msgstr "_Englische Oberfläche [LANGUAGE=C]"
 
-#: ../data/gjiten-settings.glade.h:30
+#: ../data/uis/gjiten-settings.glade.h:30
 msgid "_Kinput2 support   [LC__ALL=ja__JP]"
 msgstr "_Kinput2-Unterstützung   [LC__ALL=ja__JP]"
 
-#: ../data/gjiten-settings.glade.h:31
+#: ../data/uis/gjiten-settings.glade.h:31
 msgid "_Override environment variables"
 msgstr "_Umgebungsvariablen überschreiben"
 
-#: ../data/gjiten-settings.glade.h:32
+#: ../data/uis/gjiten-settings.glade.h:32
 msgid "_Use large font for kanji results in KanjiDic"
 msgstr "_Große Schrift für Kanji im Kanji-Dic benutzen"
 

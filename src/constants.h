@@ -6,6 +6,8 @@
 #define DEFMAXWORDMATCHES 100
 #define MAXDICFILES 100
 
+#define RESOURCE_PATH "/org/gjiten/data/"
+
 #define VINFL_FILENAME GJITEN_DATADIR"/vconj.utf8"
 #define RADKFILE_NAME GJITEN_DATADIR"/radkfile.utf8"
 #define GJITEN_DICDIR GJITEN_DATADIR"/dics"

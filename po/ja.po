@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../data/gjiten-settings.glade.h:1
+#: ../data/uis/gjiten-settings.glade.h:1
 msgid ""
 "<i>If you change the following, please restart gjiten for the settings to "
 "take effect.</i>"
@@ -28,132 +28,132 @@ msgstr ""
 "<i>以下のオプションを変更した場合は、設定を有効にするため Gjiten を再起動して"
 "下さい。</i>"
 
-#: ../data/gjiten-settings.glade.h:2
+#: ../data/uis/gjiten-settings.glade.h:2
 msgid "Add dictionary files"
 msgstr "辞典ファイルの追加"
 
-#: ../data/gjiten-settings.glade.h:3
+#: ../data/uis/gjiten-settings.glade.h:3
 msgid "Dictionaries"
 msgstr "各辞典"
 
-#: ../data/gjiten-settings.glade.h:4
+#: ../data/uis/gjiten-settings.glade.h:4
 msgid "Dictionary file"
 msgstr "辞典ファイル"
 
-#: ../data/gjiten-settings.glade.h:5
+#: ../data/uis/gjiten-settings.glade.h:5
 msgid "Dictionary file properties"
 msgstr "辞典ファイルのプロパティ"
 
-#: ../data/gjiten-settings.glade.h:6
+#: ../data/uis/gjiten-settings.glade.h:6
 msgid "Dictionary file:"
 msgstr "辞典ファイル:"
 
-#: ../data/gjiten-settings.glade.h:7
+#: ../data/uis/gjiten-settings.glade.h:7
 msgid "Dictionary name:"
 msgstr "辞典ファイル名:"
 
-#: ../data/gjiten-settings.glade.h:8
+#: ../data/uis/gjiten-settings.glade.h:8
 msgid "Environment Variables"
 msgstr "環境変数"
 
-#: ../data/gjiten-settings.glade.h:9
+#: ../data/uis/gjiten-settings.glade.h:9
 msgid "Fonts"
 msgstr "フォント"
 
-#: ../data/gjiten-settings.glade.h:10
+#: ../data/uis/gjiten-settings.glade.h:10
 msgid "General"
 msgstr "一般オプション"
 
-#: ../data/gjiten-settings.glade.h:11
+#: ../data/uis/gjiten-settings.glade.h:11
 msgid "Gjiten Settings"
 msgstr "Gjiten の設定"
 
-#: ../data/gjiten-settings.glade.h:12
+#: ../data/uis/gjiten-settings.glade.h:12
 msgid "Japanese"
 msgstr "日本語"
 
-#: ../data/gjiten-settings.glade.h:13
+#: ../data/uis/gjiten-settings.glade.h:13
 msgid "Kanji info"
 msgstr "漢字情報"
 
-#: ../data/gjiten-settings.glade.h:14 ../src/worddic.c:90
+#: ../data/uis/gjiten-settings.glade.h:14 ../src/worddic.c:90
 #: ../src/worddic.c:1008
 msgid "KanjiDic"
 msgstr "漢英字典"
 
-#: ../data/gjiten-settings.glade.h:15 ../src/kanjidic.c:95
+#: ../data/uis/gjiten-settings.glade.h:15 ../src/kanjidic.c:95
 #: ../src/kanjidic.c:1154 ../src/worddic.c:94 ../src/worddic.c:1013
 msgid "KanjiPad"
 msgstr "漢字パッド"
 
-#: ../data/gjiten-settings.glade.h:16
+#: ../data/uis/gjiten-settings.glade.h:16
 msgid "Kanjidic dictionary file:"
 msgstr "漢英字典ファイル:"
 
-#: ../data/gjiten-settings.glade.h:17
+#: ../data/uis/gjiten-settings.glade.h:17
 msgid "Large font:"
 msgstr "大きなフォント:"
 
-#: ../data/gjiten-settings.glade.h:18
+#: ../data/uis/gjiten-settings.glade.h:18
 msgid "Normal font:"
 msgstr "標準のフォント:"
 
-#: ../data/gjiten-settings.glade.h:19
+#: ../data/uis/gjiten-settings.glade.h:19
 msgid "Options"
 msgstr "他のオプション"
 
-#: ../data/gjiten-settings.glade.h:20
+#: ../data/uis/gjiten-settings.glade.h:20
 msgid "Path to KanjiPad executable:"
 msgstr "漢字パッド実行ファイル:"
 
-#: ../data/gjiten-settings.glade.h:21
+#: ../data/uis/gjiten-settings.glade.h:21
 msgid "Search for Hiragana on Katakana input"
 msgstr "カタカナを入力した場合ひらがなも検索する"
 
-#: ../data/gjiten-settings.glade.h:22
+#: ../data/uis/gjiten-settings.glade.h:22
 msgid "Search for Katakana on Hiragana input"
 msgstr "ひらがなを入力した場合カタカナも検索する"
 
-#: ../data/gjiten-settings.glade.h:23
+#: ../data/uis/gjiten-settings.glade.h:23
 msgid ""
 "This will try to recognize inflected verbs and look up the deinflected form."
 msgstr "動詞の活用形を認識して終止形を調べるようにします。"
 
-#: ../data/gjiten-settings.glade.h:24
+#: ../data/uis/gjiten-settings.glade.h:24
 msgid "Use large font for Japanese in _WordDic search results"
 msgstr "単語辞典での検索結果の日本語に大きなフォントを使用する(_W)"
 
-#: ../data/gjiten-settings.glade.h:25
+#: ../data/uis/gjiten-settings.glade.h:25
 msgid "Use unicode radicals"
 msgstr "ユニコード部首を使う"
 
-#: ../data/gjiten-settings.glade.h:26
+#: ../data/uis/gjiten-settings.glade.h:26
 msgid "Verb deinflection"
 msgstr "動詞は終止形にする"
 
-#: ../data/gjiten-settings.glade.h:27 ../src/kanjidic.c:99
+#: ../data/uis/gjiten-settings.glade.h:27 ../src/kanjidic.c:99
 #: ../src/kanjidic.c:1149
 msgid "WordDic"
 msgstr "単語辞典"
 
-#: ../data/gjiten-settings.glade.h:28
+#: ../data/uis/gjiten-settings.glade.h:28
 msgid "_Antialiasing   [GDK__USE__XFT=1]  (might not work with Japanese)"
 msgstr ""
 "アンチエイリアスを掛ける(_A) [GDK__USE__XFT=1] (文字化けの可能性があります)"
 
-#: ../data/gjiten-settings.glade.h:29
+#: ../data/uis/gjiten-settings.glade.h:29
 msgid "_English interface [LANGUAGE=C]"
 msgstr "インターフェイスを英語にする(_E) [LANGUAGE=C]"
 
-#: ../data/gjiten-settings.glade.h:30
+#: ../data/uis/gjiten-settings.glade.h:30
 msgid "_Kinput2 support   [LC__ALL=ja__JP]"
 msgstr "Kinput2 をサポートする(_K) [LC__ALL=ja__JP]"
 
-#: ../data/gjiten-settings.glade.h:31
+#: ../data/uis/gjiten-settings.glade.h:31
 msgid "_Override environment variables"
 msgstr "環境変数を上書きする(_O)"
 
-#: ../data/gjiten-settings.glade.h:32
+#: ../data/uis/gjiten-settings.glade.h:32
 msgid "_Use large font for kanji results in KanjiDic"
 msgstr "漢英字典での検索結果の漢字に大きなフォントを使用する(_U)"
 

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/org/gjiten/">
+    <file>data/icons/scalable/actions/worddic-symbolic.svg</file>
+    <file>data/icons/scalable/actions/kanjipad-symbolic.svg</file>
+    <file>data/icons/scalable/actions/kanjidic-symbolic.svg</file>
+    <file>data/cursors/left_ptr_question.png</file>
+    <file>data/images/gjiten-logo.png</file>
+
+    <file>data/uis/gjiten-settings.glade</file>
+  </gresource>
+</gresources>

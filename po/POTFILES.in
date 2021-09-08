@@ -1,4 +1,4 @@
-data/gjiten-settings.glade
+data/uis/gjiten-settings.glade
 gnome/gjiten.desktop.in
 src/gjiten.c
 src/pref.c

@@ -67,6 +67,15 @@ DIE=0
 }
 
 
+(glib-compile-resources --version) < /dev/null > /dev/null 2>&1 || {
+  echo
+  echo "**Warning**: You should have \`glib-compile-resources' installed."
+  echo "Otherwise you cannot build resource files."
+  echo "If you want to continue anyway, manually work around the \`all-local' target \`in Makefile.am'"
+}
+
+
+
 (automake --version) < /dev/null > /dev/null 2>&1 || {
   echo
   echo "**Error**: You must have \`automake' installed."

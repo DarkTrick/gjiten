@@ -45,6 +45,7 @@
 #include "gjiten.h"
 #include "dicutil.h"
 #include "utils.h"
+#include "resources.h"
 
 GjitenApp *gjitenApp = NULL;
 
@@ -244,7 +245,7 @@ gjiten_create_about()
   const gchar *translator = _("TRANSLATORS! PUT YOUR NAME HERE");
   GdkPixbuf *pixbuf = NULL;
 
-  pixbuf = gdk_pixbuf_new_from_file (PIXMAPDIR_LOGO "/gjiten-logo.png", NULL);
+  pixbuf =  gdk_pixbuf_new_from_resource (RESOURCE_PATH "images/gjiten-logo.png",NULL);
 
   if (strncmp (translator, "translated_by", 13) == 0) translator = NULL;
 
@@ -395,6 +396,15 @@ _gjiten_create_menu(GtkApplication *app)
   }
 }
 
+void
+_start_window (GtkWindow *window)
+{
+  gtk_widget_show_all (GTK_WIDGET (window));
+
+  if (gjitenApp->conf->cli_option_quick_lookup_mode)
+    gj_enable_quick_lookup_mode (GTK_WINDOW (window));
+}
+
 
 
 void
@@ -406,7 +416,7 @@ gjiten_start_worddic(GtkApplication *app){
 
   GjWorddicWindow *window = worddic_create (app);
   gjitenApp->worddic = window;
-  gtk_widget_show_all ((GtkWidget*)window);
+  _start_window (GTK_WINDOW (window));
 }
 
 
@@ -420,7 +430,7 @@ gjiten_start_kanjidic(GtkApplication *app)
 
   GjKanjidicWindow *window = kanjidic_create (app);
   gjitenApp->kanjidic = window;
-  gtk_widget_show_all ((GtkWidget*)window);
+  _start_window (GTK_WINDOW (window));
 }
 
 
@@ -456,10 +466,24 @@ gjiten_apply_fonts(GjitenApp * gjitenApp)
 
 
 
+
+void
+_init_resources()
+{
+  g_resources_register (resources_get_resource ());
+  GtkIconTheme * icon_theme = gtk_icon_theme_get_default ();
+  gtk_icon_theme_add_resource_path (icon_theme, RESOURCE_PATH "icons/scalable/actions");
+}
+
+
+
+
 void
 gjiten_activate(GtkApplication *app,
                 gpointer        user_data)
 {
+  _init_resources();
+
   if (TRUE == gjitenApp->conf->cli_option_show_version)
   {
     g_print (PACKAGE_STRING "\n");
@@ -532,11 +556,6 @@ gjiten_activate(GtkApplication *app,
   }
 
   gjiten_flush_errors ();
-
-  // enable quick lookup mode if set
-  if (gjitenApp->conf->cli_option_quick_lookup_mode && gjitenApp->worddic)
-    enable_quick_lookup_mode ();
-
 }
 
 

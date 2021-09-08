@@ -1112,13 +1112,12 @@ kanjidic_create()
 }
 
 static void
-_create_gui (GjKanjidicWindow* self)
+_create_gui(GjKanjidicWindow* self)
 {
   GtkWidget *vbox_maink;
   GtkWidget *hbox_spinb;
   GtkWidget *table_koptions;
   GtkWidget *toolbar_kanji;
-  GtkToolButton *button_closek;
   GtkWidget *frame_koptions;
   GtkAdjustment *spinb_strokenum_adj;
   GtkAdjustment *spinb_plusmin_adj;
@@ -1157,25 +1156,16 @@ _create_gui (GjKanjidicWindow* self)
 
 
     gtk_container_add (GTK_CONTAINER (vbox_maink), toolbar_kanji);
-    button_closek = gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar_kanji), "application-exit",
-                                             _("Close KanjiDic"), "Close",
-                                             NULL, NULL, -1);
-    g_signal_connect_swapped (G_OBJECT (button_closek), "clicked",
-                             G_CALLBACK (gtk_widget_destroy), self);
 
-    tmpimage = gtk_image_new_from_file (PIXMAPDIR"/kanjidic.png");
+    tmpimage = gtk_image_new_from_icon_name ("worddic-symbolic", GTK_ICON_SIZE_INVALID /*ignored*/);
     gtk_toolbar_append_item (GTK_TOOLBAR (toolbar_kanji), _("WordDic"),
                                              _("Launch WordDic"), "WordDic", tmpimage,
                                              G_CALLBACK (gjiten_start_worddic), GTK_APPLICATION (g_application_get_default ()));
 
-    tmpimage = gtk_image_new_from_file (PIXMAPDIR"/kanjipad.png");
+    tmpimage = gtk_image_new_from_icon_name ("kanjipad-symbolic", GTK_ICON_SIZE_INVALID /*ignored*/);
     gtk_toolbar_append_item (GTK_TOOLBAR (toolbar_kanji), _("KanjiPad"),
                 _("Launch KanjiPad"), "KanjiPad", tmpimage,
                  G_CALLBACK (gjiten_start_kanjipad), NULL);
-
-    gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar_kanji), "edit-find",
-                _("Search entered Kanji"), "Search",
-                on_kanji_search, NULL, -1);
   }
 
   frame_koptions = gtk_frame_new (_("Kanji Search Options"));

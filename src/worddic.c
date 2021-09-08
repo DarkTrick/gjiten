@@ -1108,46 +1108,6 @@ cbo_search_term_on_changed (GtkComboBox *widget,
 
 
 
-gboolean close_on_focus_out(GtkWidget *window,
-                            GdkEvent  *event,
-                            gpointer   unused)
-{
-  gtk_widget_destroy (window);
-  return TRUE;
-}
-
-
-
-gboolean
-close_on_escape(GtkWidget   *window,
-                GdkEventKey *event,
-                gpointer     unused)
-{
-  if (event->keyval == GDK_KEY_Escape)
-  {
-    gtk_widget_destroy (window);
-    return TRUE;
-  }
-  return FALSE;
-}
-
-
-
-/**
- * Quick lookup mode is currently defined as:
- *  - Terminate application on ESC
- *  - Terminate application on unfocus window
- **/
-void
-enable_quick_lookup_mode()
-{
-  g_signal_connect (G_OBJECT (self), "focus-out-event",
-                    G_CALLBACK (close_on_focus_out), NULL);
-  g_signal_connect (G_OBJECT (self), "key-press-event",
-                  G_CALLBACK (close_on_escape), NULL);
-}
-
-
 
 GjWorddicWindow *
 worddic_create()
@@ -1171,7 +1131,6 @@ _create_gui (GjWorddicWindow* self)
 {
   GtkWidget *vbox_main;
   GtkToolbar *toolbar;
-  GtkToolButton *button_exit;
   GtkWidget *button_clear;
   GtkWidget *frame_japopt;
   GtkWidget *vbox_japopt;
@@ -1196,7 +1155,7 @@ _create_gui (GjWorddicWindow* self)
 
   {
     GdkPixbuf *cursor_pixbuf;
-    cursor_pixbuf = gdk_pixbuf_new_from_file (PIXMAPDIR"/left_ptr_question.png", NULL);
+    cursor_pixbuf = gdk_pixbuf_new_from_resource (RESOURCE_PATH "cursors/left_ptr_question.png",NULL);
     wordDic->selection_cursor = gdk_cursor_new_from_pixbuf (gdk_display_get_default (), cursor_pixbuf, 0, 0);
     wordDic->regular_cursor = gdk_cursor_new_for_display (gdk_display_get_default (), GDK_XTERM);
     wordDic->is_cursor_regular = TRUE;
@@ -1228,34 +1187,25 @@ _create_gui (GjWorddicWindow* self)
     toolbar = GTK_TOOLBAR (gtk_toolbar_new ());
     gtk_container_add (GTK_CONTAINER (vbox_main), GTK_WIDGET (toolbar));
 
-    button_exit = gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar), "application-exit",
-                                          _("Close Gjiten"), "Close", NULL, NULL, -1);
-    g_signal_connect_swapped (G_OBJECT (button_exit), "clicked",
-                            G_CALLBACK (gtk_widget_destroy), self);
-
-    wordDic->button_back = gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar), "go-previous",
+    wordDic->button_back = gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar), "go-previous-symbolic",
                                                     _("Previous search result"), "Back",
                                                     on_back_clicked, NULL, -1);
     gtk_widget_set_sensitive (GTK_WIDGET (wordDic->button_back), FALSE);
 
-    wordDic->button_forward = gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar), "go-next",
+    wordDic->button_forward = gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar), "go-next-symbolic",
                                                       _("Next search result"), "Forward",
                                                       on_forward_clicked, NULL, -1);
     gtk_widget_set_sensitive (GTK_WIDGET (wordDic->button_back), FALSE);
 
-    tmpimage = gtk_image_new_from_file (PIXMAPDIR"/kanjidic.png");
+    tmpimage = gtk_image_new_from_icon_name ("kanjidic-symbolic", GTK_ICON_SIZE_INVALID /*ignored*/);
     gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), _("KanjiDic"),
                           _("Launch KanjiDic"), "KanjiDic", tmpimage,
                           G_CALLBACK (gjiten_start_kanjidic), GTK_APPLICATION (g_application_get_default ()));
 
-    tmpimage = gtk_image_new_from_file (PIXMAPDIR"/kanjipad.png");
+    tmpimage = gtk_image_new_from_icon_name ("kanjipad-symbolic", GTK_ICON_SIZE_INVALID /*ignored*/);
     gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), _("KanjiPad"),
                           _("Launch KanjiPad"), "KanjiPad", tmpimage,
                             G_CALLBACK (gjiten_start_kanjipad), NULL);
-
-    gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar), "edit-find",
-                                        _("Search for entered expression"), "Search",
-                                          on_search_clicked, NULL, -1);
 
     gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), _("Show/Hide\noptions"),
                             _("Show/Hide options"), "Show/Hide options", NULL,

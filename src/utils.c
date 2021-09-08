@@ -431,3 +431,53 @@ str_find_last_of(const char *haystack,
   // Otherwise return 0.
   return (const char*)(0);
 }
+
+
+
+gboolean
+gj_gtk_window_close_on_escape(GtkWidget   *window,
+                              GdkEventKey *event,
+                              gpointer     unused)
+{
+  if (event->keyval == GDK_KEY_Escape)
+  {
+    gtk_widget_destroy (window);
+    return TRUE;
+  }
+  return FALSE;
+}
+
+
+
+gboolean
+gj_gtk_window_close_on_focus_out(GtkWidget *window,
+                                 GdkEvent  *event,
+                                 gpointer   unused)
+{
+  // Problems:
+  //  - window will close, if comboboxes are opened
+  //  - window will close, if user moves it
+  //  Fix these problems, if there is an answer here:
+  //  https://discourse.gnome.org/t/how-to-detect-if-the-user-left-the-application/7492
+  //   ( How to detect, if the user left the application? )
+  gtk_widget_destroy (window);
+  return TRUE;
+}
+
+
+
+/**
+ * Enables quick lookup mode for `window`.
+ *
+ * Quick lookup mode is currently defined as:
+ *  - Terminate application on ESC
+ *  - Terminate application on unfocus window
+ **/
+void
+gj_enable_quick_lookup_mode(GtkWindow *window)
+{
+  g_signal_connect (G_OBJECT (window), "focus-out-event",
+                    G_CALLBACK (gj_gtk_window_close_on_focus_out), NULL);
+  g_signal_connect (G_OBJECT (window), "key-press-event",
+                  G_CALLBACK (gj_gtk_window_close_on_escape), NULL);
+}
