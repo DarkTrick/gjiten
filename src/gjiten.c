@@ -396,6 +396,15 @@ _gjiten_create_menu(GtkApplication *app)
   }
 }
 
+void
+_start_window (GtkWindow *window)
+{
+  gtk_widget_show_all (GTK_WIDGET (window));
+
+  if (gjitenApp->conf->cli_option_quick_lookup_mode)
+    gj_enable_quick_lookup_mode (GTK_WINDOW (window));
+}
+
 
 
 void
@@ -407,7 +416,7 @@ gjiten_start_worddic(GtkApplication *app){
 
   GjWorddicWindow *window = worddic_create (app);
   gjitenApp->worddic = window;
-  gtk_widget_show_all ((GtkWidget*)window);
+  _start_window (GTK_WINDOW (window));
 }
 
 
@@ -421,7 +430,7 @@ gjiten_start_kanjidic(GtkApplication *app)
 
   GjKanjidicWindow *window = kanjidic_create (app);
   gjitenApp->kanjidic = window;
-  gtk_widget_show_all ((GtkWidget*)window);
+  _start_window (GTK_WINDOW (window));
 }
 
 
@@ -547,11 +556,6 @@ gjiten_activate(GtkApplication *app,
   }
 
   gjiten_flush_errors ();
-
-  // enable quick lookup mode if set
-  if (gjitenApp->conf->cli_option_quick_lookup_mode && gjitenApp->worddic)
-    enable_quick_lookup_mode ();
-
 }
 
 

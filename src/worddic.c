@@ -1108,46 +1108,6 @@ cbo_search_term_on_changed (GtkComboBox *widget,
 
 
 
-gboolean close_on_focus_out(GtkWidget *window,
-                            GdkEvent  *event,
-                            gpointer   unused)
-{
-  gtk_widget_destroy (window);
-  return TRUE;
-}
-
-
-
-gboolean
-close_on_escape(GtkWidget   *window,
-                GdkEventKey *event,
-                gpointer     unused)
-{
-  if (event->keyval == GDK_KEY_Escape)
-  {
-    gtk_widget_destroy (window);
-    return TRUE;
-  }
-  return FALSE;
-}
-
-
-
-/**
- * Quick lookup mode is currently defined as:
- *  - Terminate application on ESC
- *  - Terminate application on unfocus window
- **/
-void
-enable_quick_lookup_mode()
-{
-  g_signal_connect (G_OBJECT (self), "focus-out-event",
-                    G_CALLBACK (close_on_focus_out), NULL);
-  g_signal_connect (G_OBJECT (self), "key-press-event",
-                  G_CALLBACK (close_on_escape), NULL);
-}
-
-
 
 GjWorddicWindow *
 worddic_create()

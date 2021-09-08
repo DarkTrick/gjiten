@@ -108,4 +108,17 @@ str_find_last_of(const char *haystack,
 gint
 gtk_combo_box_length(GtkComboBox * self);
 
+gboolean
+gj_gtk_window_close_on_focus_out(GtkWidget *window,
+                                 GdkEvent  *event,
+                                 gpointer   unused);
+
+gboolean
+gj_gtk_window_close_on_escape(GtkWidget   *window,
+                              GdkEventKey *event,
+                              gpointer     unused);
+
+void
+gj_enable_quick_lookup_mode(GtkWindow * window);
+
 #endif

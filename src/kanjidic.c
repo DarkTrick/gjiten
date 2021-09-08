@@ -1112,7 +1112,7 @@ kanjidic_create()
 }
 
 static void
-_create_gui (GjKanjidicWindow* self)
+_create_gui(GjKanjidicWindow* self)
 {
   GtkWidget *vbox_maink;
   GtkWidget *hbox_spinb;

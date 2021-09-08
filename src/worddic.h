@@ -58,8 +58,6 @@ void worddic_paste();
 void on_search_clicked();
 void worddic_update_dic_menu();
 void worddic_apply_fonts();
-void enable_quick_lookup_mode();
-
 void worddic_lookup_word(gchar * cli_option_word_to_lookup);
 
 G_END_DECLS
