@@ -7,5 +7,6 @@
     <file>data/cursors/left_ptr_question.png</file>
     <file>data/images/gjiten-logo.png</file>
 
+    <file>data/uis/gjiten-settings.glade</file>
   </gresource>
 </gresources>

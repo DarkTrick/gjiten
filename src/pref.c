@@ -474,7 +474,7 @@ create_dialog_preferences()
 
   if (dialog_preferences != NULL) return;
 
-  builder = gtk_builder_new_from_file (GJITEN_DATADIR"/gjiten-settings.glade");
+  builder = gtk_builder_new_from_resource (RESOURCE_PATH "uis/gjiten-settings.glade");
 
   dialog_preferences = GETWIDGET ("gjiten_settings");
 
