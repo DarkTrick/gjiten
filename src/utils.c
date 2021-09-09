@@ -28,6 +28,8 @@ gj_container_append_stock (GtkContainer *toolbar,
     g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (callback_nullable), user_data_nullable);
   }
 
+  gtk_widget_set_size_request (GTK_WIDGET (button), 32, 32);
+
   return button;
 }
 
@@ -55,7 +57,7 @@ gj_container_append_item(GtkContainer *toolbar,
   if (callback_nullable){
     g_signal_connect_swapped (G_OBJECT (button), "clicked", G_CALLBACK (callback_nullable), user_data_nullable);
   }
-
+  gtk_widget_set_size_request (GTK_WIDGET (button), 32, 32);
   return button;
 }
 
@@ -550,4 +552,13 @@ gx_utf8_validate(const gchar *str_nullable,
   if (NULL == str_nullable) return FALSE;
 
   return g_utf8_validate (str_nullable, max_len, end);
+}
+
+
+GtkImage *
+gj_toolbutton_image_new_from_icon_name (const char *name)
+{
+  GtkImage * tmp = gtk_image_new_from_icon_name (name, GTK_ICON_SIZE_INVALID /*ignored*/);
+  gtk_image_set_pixel_size (tmp, 28);
+  return tmp;
 }

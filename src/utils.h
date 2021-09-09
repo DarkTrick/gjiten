@@ -137,4 +137,8 @@ gx_utf8_validate(const gchar *str_nullable,
                  gssize max_len,
                  const gchar **end);
 
+
+GtkImage *
+gj_toolbutton_image_new_from_icon_name (const char *name);
+
 #endif
