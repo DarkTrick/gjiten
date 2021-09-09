@@ -925,9 +925,9 @@ load_radkfile()
 gint
 kanjidic_lookup (const gchar*  kanji)
 {
-  gtk_toggle_button_set_active (kanjiDic->checkb_stroke, FALSE);
-  gtk_toggle_button_set_active (kanjiDic->checkb_radical, FALSE);
-  gtk_toggle_button_set_active (kanjiDic->checkb_ksearch, TRUE);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (kanjiDic->checkb_stroke), FALSE);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (kanjiDic->checkb_radical), FALSE);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (kanjiDic->checkb_ksearch), TRUE);
   gtk_combo_box_set_text (kanjiDic->combo_entry_key, kanji);
 
   on_kanji_search();
