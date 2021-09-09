@@ -16,15 +16,14 @@
 
 #define GJITEN_WINDOW_ICON PIXMAPDIR"/jiten.png"
 
-GtkToolButton* gtk_toolbar_insert_stock(GtkToolbar *toolbar,
+GtkToolButton* gj_container_append_stock(GtkContainer *toolbar,
                                         const char *icon_name,
                                         const char *tooltip_text,
                                         const char *tooltip_private_text,
                                         GCallback   callback_nullable,
-                                        gpointer    user_data_nullable,
-                                        gint        position);
+                                        gpointer    user_data_nullable);
 
-GtkToolButton* gtk_toolbar_append_item(GtkToolbar *toolbar,
+GtkToolButton* gj_container_append_item(GtkContainer *toolbar,
                                        const char *text,
                                        const char *tooltip_text,
                                        const char *tooltip_private_text,

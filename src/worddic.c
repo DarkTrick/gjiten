@@ -56,6 +56,7 @@ struct _GjWorddicWindowPrivate
   GtkTextBuffer   *text_results_buffer;
   GtkTextBuffer   *info_buffer;
   GtkWidget       *checkb_verb;
+  GtkToolButton   *btn_options_show_hide;
   GtkWidget       *checkb_autoadjust;
   GtkWidget       *checkb_searchlimit;
   GtkWidget       *spinb_searchlimit;
@@ -929,6 +930,25 @@ worddic_close()
 }
 
 
+static void
+_btn_options_show_hide_update_ui(gboolean status)
+{
+  GtkToolButton * button = GTK_TOOL_BUTTON (wordDic->btn_options_show_hide);
+
+  if (status == TRUE)
+  {
+    gtk_widget_set_tooltip_text (GTK_WIDGET (button), _("Hide options"));
+    gtk_tool_button_set_label (button, "▲");
+    gtk_tool_button_set_icon_name (button, "gj_arrow_up-symbolic");
+  }
+  else
+  {
+    gtk_widget_set_tooltip_text (GTK_WIDGET (button), _("Show options"));
+    gtk_tool_button_set_label (button, "▼");
+    gtk_tool_button_set_icon_name (button, "gj_arrow_down-symbolic");
+  }
+}
+
 
 static void
 worddic_show_hide_options()
@@ -938,7 +958,11 @@ worddic_show_hide_options()
   {
     gtk_widget_hide (wordDic->hbox_options);
   }
-  else gtk_widget_show (wordDic->hbox_options);
+  else
+  {
+    gtk_widget_show (wordDic->hbox_options);
+  }
+  _btn_options_show_hide_update_ui (gtk_widget_get_visible (wordDic->hbox_options));
 }
 
 
@@ -1130,7 +1154,7 @@ static void
 _create_gui (GjWorddicWindow* self)
 {
   GtkWidget *vbox_main;
-  GtkToolbar *toolbar;
+  GtkBox *toolbar;
   GtkWidget *button_clear;
   GtkWidget *frame_japopt;
   GtkWidget *vbox_japopt;
@@ -1182,94 +1206,106 @@ _create_gui (GjWorddicWindow* self)
   gtk_widget_show (vbox_main);
   gtk_container_add (GTK_CONTAINER (self), GTK_WIDGET (vbox_main));
 
-  // setup toolbar // TODO: remove, because it's deprecated in GTK4
+  // setup toolbar
   {
-    toolbar = GTK_TOOLBAR (gtk_toolbar_new ());
+    toolbar = GTK_BOX (gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 10));
     gtk_container_add (GTK_CONTAINER (vbox_main), GTK_WIDGET (toolbar));
 
-    wordDic->button_back = gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar), "go-previous-symbolic",
+    wordDic->button_back = gj_container_append_stock (GTK_CONTAINER (toolbar), "go-previous-symbolic",
                                                     _("Previous search result"), "Back",
-                                                    on_back_clicked, NULL, -1);
+                                                    on_back_clicked, NULL);
     gtk_widget_set_sensitive (GTK_WIDGET (wordDic->button_back), FALSE);
 
-    wordDic->button_forward = gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar), "go-next-symbolic",
+    wordDic->button_forward = gj_container_append_stock (GTK_CONTAINER (toolbar), "go-next-symbolic",
                                                       _("Next search result"), "Forward",
-                                                      on_forward_clicked, NULL, -1);
+                                                      on_forward_clicked, NULL);
     gtk_widget_set_sensitive (GTK_WIDGET (wordDic->button_back), FALSE);
 
     tmpimage = gtk_image_new_from_icon_name ("kanjidic-symbolic", GTK_ICON_SIZE_INVALID /*ignored*/);
-    gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), _("KanjiDic"),
+    gj_container_append_item (GTK_CONTAINER (toolbar), _("KanjiDic"),
                           _("Launch KanjiDic"), "KanjiDic", tmpimage,
                           G_CALLBACK (gjiten_start_kanjidic), GTK_APPLICATION (g_application_get_default ()));
 
     tmpimage = gtk_image_new_from_icon_name ("kanjipad-symbolic", GTK_ICON_SIZE_INVALID /*ignored*/);
-    gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), _("KanjiPad"),
+    gj_container_append_item (GTK_CONTAINER (toolbar), _("KanjiPad"),
                           _("Launch KanjiPad"), "KanjiPad", tmpimage,
                             G_CALLBACK (gjiten_start_kanjipad), NULL);
 
-    gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), _("Show/Hide\noptions"),
-                            _("Show/Hide options"), "Show/Hide options", NULL,
-                            G_CALLBACK (worddic_show_hide_options), NULL);
+    {
+      GtkToolButton * hid = GTK_TOOL_BUTTON (gtk_tool_button_new (NULL, ""));
+
+      g_signal_connect (hid, "clicked", G_CALLBACK (worddic_show_hide_options), NULL);
+      gtk_box_pack_end (GTK_BOX (toolbar), GTK_WIDGET (hid), FALSE, FALSE, 0);
+      gtk_widget_set_halign (GTK_WIDGET (hid), GTK_ALIGN_END);
+
+      wordDic->btn_options_show_hide = hid;
+      _btn_options_show_hide_update_ui (TRUE);
+    }
   }
 
+
   wordDic->hbox_options = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-  gtk_box_pack_start (GTK_BOX (vbox_main), wordDic->hbox_options, FALSE, TRUE, 0);
+  {
+    gtk_box_pack_start (GTK_BOX (vbox_main), wordDic->hbox_options, FALSE, TRUE, 0);
 
-  frame_japopt = gtk_frame_new (_("Japanese Search Options: "));
-  gtk_box_pack_start (GTK_BOX (wordDic->hbox_options), frame_japopt, TRUE, TRUE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (frame_japopt), 5);
+    frame_japopt = gtk_frame_new (_("Japanese Search Options: "));
+    gtk_box_pack_start (GTK_BOX (wordDic->hbox_options), frame_japopt, TRUE, TRUE, 0);
+    gtk_container_set_border_width (GTK_CONTAINER (frame_japopt), 5);
 
-  vbox_japopt = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-  gtk_container_add (GTK_CONTAINER (frame_japopt), vbox_japopt);
+    vbox_japopt = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+    gtk_container_add (GTK_CONTAINER (frame_japopt), vbox_japopt);
 
-  wordDic->radiob_jpexact = gtk_radio_button_new_with_mnemonic (vbox_japopt_group, _("E_xact Matches"));
-  vbox_japopt_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (wordDic->radiob_jpexact));
-  gtk_box_pack_start (GTK_BOX (vbox_japopt), wordDic->radiob_jpexact, FALSE, FALSE, 0);
+    wordDic->radiob_jpexact = gtk_radio_button_new_with_mnemonic (vbox_japopt_group, _("E_xact Matches"));
+    vbox_japopt_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (wordDic->radiob_jpexact));
+    gtk_box_pack_start (GTK_BOX (vbox_japopt), wordDic->radiob_jpexact, FALSE, FALSE, 0);
 
-  wordDic->radiob_startw = gtk_radio_button_new_with_mnemonic (vbox_japopt_group, _("_Start With Expression"));
-  vbox_japopt_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (wordDic->radiob_startw));
-  gtk_box_pack_start (GTK_BOX (vbox_japopt), wordDic->radiob_startw, FALSE, FALSE, 0);
+    wordDic->radiob_startw = gtk_radio_button_new_with_mnemonic (vbox_japopt_group, _("_Start With Expression"));
+    vbox_japopt_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (wordDic->radiob_startw));
+    gtk_box_pack_start (GTK_BOX (vbox_japopt), wordDic->radiob_startw, FALSE, FALSE, 0);
 
-  wordDic->radiob_endw = gtk_radio_button_new_with_mnemonic (vbox_japopt_group, _("E_nd With Expression"));
-  vbox_japopt_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (wordDic->radiob_endw));
-  gtk_box_pack_start (GTK_BOX (vbox_japopt), wordDic->radiob_endw, FALSE, FALSE, 0);
+    wordDic->radiob_endw = gtk_radio_button_new_with_mnemonic (vbox_japopt_group, _("E_nd With Expression"));
+    vbox_japopt_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (wordDic->radiob_endw));
+    gtk_box_pack_start (GTK_BOX (vbox_japopt), wordDic->radiob_endw, FALSE, FALSE, 0);
 
-  wordDic->radiob_any = gtk_radio_button_new_with_mnemonic (vbox_japopt_group, _("_Any Matches"));
-  vbox_japopt_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (wordDic->radiob_any));
-  gtk_box_pack_start (GTK_BOX (vbox_japopt), wordDic->radiob_any, FALSE, FALSE, 0);
+    wordDic->radiob_any = gtk_radio_button_new_with_mnemonic (vbox_japopt_group, _("_Any Matches"));
+    vbox_japopt_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (wordDic->radiob_any));
+    gtk_box_pack_start (GTK_BOX (vbox_japopt), wordDic->radiob_any, FALSE, FALSE, 0);
 
-  frame_engopt = gtk_frame_new (_("English Search Options: "));
-  gtk_box_pack_start (GTK_BOX (wordDic->hbox_options), frame_engopt, TRUE, TRUE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (frame_engopt), 5);
+    frame_engopt = gtk_frame_new (_("English Search Options: "));
+    gtk_box_pack_start (GTK_BOX (wordDic->hbox_options), frame_engopt, TRUE, TRUE, 0);
+    gtk_container_set_border_width (GTK_CONTAINER (frame_engopt), 5);
 
-  vbox_engopt = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-  gtk_container_add (GTK_CONTAINER (frame_engopt), vbox_engopt);
+    vbox_engopt = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+    gtk_container_add (GTK_CONTAINER (frame_engopt), vbox_engopt);
 
-  wordDic->radiob_engexact = gtk_radio_button_new_with_mnemonic (vbox_engopt_group, _("Wh_ole Expressions"));
-  vbox_engopt_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (wordDic->radiob_engexact));
-  gtk_box_pack_start (GTK_BOX (vbox_engopt), wordDic->radiob_engexact, FALSE, FALSE, 0);
+    wordDic->radiob_engexact = gtk_radio_button_new_with_mnemonic (vbox_engopt_group, _("Wh_ole Expressions"));
+    vbox_engopt_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (wordDic->radiob_engexact));
+    gtk_box_pack_start (GTK_BOX (vbox_engopt), wordDic->radiob_engexact, FALSE, FALSE, 0);
 
-  wordDic->radiob_words = gtk_radio_button_new_with_mnemonic (vbox_engopt_group, _("_Whole Words"));
-  vbox_engopt_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (wordDic->radiob_words));
-  gtk_box_pack_start (GTK_BOX (vbox_engopt), wordDic->radiob_words, FALSE, FALSE, 0);
+    wordDic->radiob_words = gtk_radio_button_new_with_mnemonic (vbox_engopt_group, _("_Whole Words"));
+    vbox_engopt_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (wordDic->radiob_words));
+    gtk_box_pack_start (GTK_BOX (vbox_engopt), wordDic->radiob_words, FALSE, FALSE, 0);
 
-  wordDic->radiob_partial = gtk_radio_button_new_with_mnemonic (vbox_engopt_group, _("Any _Matches"));
-  vbox_engopt_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (wordDic->radiob_partial));
-  gtk_box_pack_start (GTK_BOX (vbox_engopt), wordDic->radiob_partial, FALSE, FALSE, 0);
+    wordDic->radiob_partial = gtk_radio_button_new_with_mnemonic (vbox_engopt_group, _("Any _Matches"));
+    vbox_engopt_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (wordDic->radiob_partial));
+    gtk_box_pack_start (GTK_BOX (vbox_engopt), wordDic->radiob_partial, FALSE, FALSE, 0);
 
-  frame_gopt = gtk_frame_new (_("General Options: "));
-  gtk_box_pack_start (GTK_BOX (wordDic->hbox_options), frame_gopt, TRUE, TRUE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (frame_gopt), 5);
+    frame_gopt = gtk_frame_new (_("General Options: "));
+    gtk_box_pack_start (GTK_BOX (wordDic->hbox_options), frame_gopt, TRUE, TRUE, 0);
+    gtk_container_set_border_width (GTK_CONTAINER (frame_gopt), 5);
 
-  grid = gtk_grid_new ();
-  gtk_container_add (GTK_CONTAINER (frame_gopt), grid);
+    grid = gtk_grid_new ();
+    gtk_container_add (GTK_CONTAINER (frame_gopt), grid);
 
-  wordDic->radiob_searchdic = gtk_radio_button_new_with_mnemonic (dicssearch_group, _("Search _Dic:"));
-  dicssearch_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (wordDic->radiob_searchdic));
-  gtk_grid_attach (GTK_GRID (grid), wordDic->radiob_searchdic, 0, 0, 1, 1);
+    wordDic->radiob_searchdic = gtk_radio_button_new_with_mnemonic (dicssearch_group, _("Search _Dic:"));
+    dicssearch_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (wordDic->radiob_searchdic));
+    gtk_grid_attach (GTK_GRID (grid), wordDic->radiob_searchdic, 0, 0, 1, 1);
 
-  g_signal_connect_swapped (G_OBJECT (wordDic->radiob_searchdic), "clicked",
-                           G_CALLBACK (shade_worddic_widgets), NULL);
+    g_signal_connect_swapped (G_OBJECT (wordDic->radiob_searchdic), "clicked",
+                            G_CALLBACK (shade_worddic_widgets), NULL);
+  }
+
+
 
   // DICTFILE SELECTION MENU
 

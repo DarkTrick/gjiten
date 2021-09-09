@@ -1148,7 +1148,7 @@ _create_gui(GjKanjidicWindow* self)
   GtkWidget *vbox_maink;
   GtkWidget *hbox_spinb;
   GtkWidget *table_koptions;
-  GtkWidget *toolbar_kanji;
+  GtkContainer *toolbar;
   GtkWidget *frame_koptions;
   GtkAdjustment *spinb_strokenum_adj;
   GtkAdjustment *spinb_plusmin_adj;
@@ -1183,18 +1183,18 @@ _create_gui(GjKanjidicWindow* self)
   gtk_container_add (GTK_CONTAINER (self), vbox_maink);
 
   if (gjitenApp->conf->toolbar) {
-    toolbar_kanji = gtk_toolbar_new ();
+    toolbar = GTK_CONTAINER (gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0));
 
 
-    gtk_container_add (GTK_CONTAINER (vbox_maink), toolbar_kanji);
+    gtk_container_add (GTK_CONTAINER (vbox_maink), GTK_WIDGET (toolbar));
 
     tmpimage = gtk_image_new_from_icon_name ("worddic-symbolic", GTK_ICON_SIZE_INVALID /*ignored*/);
-    gtk_toolbar_append_item (GTK_TOOLBAR (toolbar_kanji), _("WordDic"),
+    gj_container_append_item (GTK_CONTAINER (toolbar), _("WordDic"),
                                              _("Launch WordDic"), "WordDic", tmpimage,
                                              G_CALLBACK (gjiten_start_worddic), GTK_APPLICATION (g_application_get_default ()));
 
     tmpimage = gtk_image_new_from_icon_name ("kanjipad-symbolic", GTK_ICON_SIZE_INVALID /*ignored*/);
-    gtk_toolbar_append_item (GTK_TOOLBAR (toolbar_kanji), _("KanjiPad"),
+    gj_container_append_item (GTK_CONTAINER (toolbar), _("KanjiPad"),
                 _("Launch KanjiPad"), "KanjiPad", tmpimage,
                  G_CALLBACK (gjiten_start_kanjipad), NULL);
   }

@@ -8,13 +8,12 @@
  *  Reimplementation of original function from gtk 2
  **/
 GtkToolButton*
-gtk_toolbar_insert_stock (GtkToolbar *toolbar,
+gj_container_append_stock (GtkContainer *toolbar,
                           const char *icon_name,
                           const char *tooltip_text,
                           const char *tooltip_private_text,
                           GCallback callback_nullable,
-                          gpointer user_data_nullable,
-                          gint position)
+                          gpointer user_data_nullable)
 {
   GtkWidget     *icon;
   GtkToolButton *button;
@@ -23,7 +22,7 @@ gtk_toolbar_insert_stock (GtkToolbar *toolbar,
   button = GTK_TOOL_BUTTON (gtk_tool_button_new (icon, tooltip_private_text));
   gtk_tool_item_set_tooltip_text (GTK_TOOL_ITEM (button), tooltip_text);
 
-  gtk_toolbar_insert (toolbar, GTK_TOOL_ITEM (button), position);
+  gtk_container_add (toolbar, GTK_WIDGET (button));
 
   if (callback_nullable){
     g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (callback_nullable), user_data_nullable);
@@ -38,7 +37,7 @@ gtk_toolbar_insert_stock (GtkToolbar *toolbar,
  *  Reimplementation of original function from gtk 2
  **/
 GtkToolButton*
-gtk_toolbar_append_item(GtkToolbar *toolbar,
+gj_container_append_item(GtkContainer *toolbar,
                         const char *text,
                         const char *tooltip_text,
                         const char *tooltip_private_text,
@@ -51,7 +50,7 @@ gtk_toolbar_append_item(GtkToolbar *toolbar,
   button = GTK_TOOL_BUTTON (gtk_tool_button_new (icon, tooltip_private_text));
   gtk_tool_item_set_tooltip_text (GTK_TOOL_ITEM (button), tooltip_text);
 
-  gtk_toolbar_insert (toolbar, GTK_TOOL_ITEM (button), -1);
+  gtk_container_add (toolbar, GTK_WIDGET (button));
 
   if (callback_nullable){
     g_signal_connect_swapped (G_OBJECT (button), "clicked", G_CALLBACK (callback_nullable), user_data_nullable);
