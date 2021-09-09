@@ -1268,6 +1268,7 @@ _create_gui(GjKanjidicWindow* self)
   gtk_box_pack_start (GTK_BOX (vbox_maink), hseparator, FALSE, FALSE, 7);
 
   frame_kresults = gtk_frame_new (_("Search Results :"));
+  gtk_frame_set_shadow_type (frame_kresults, GTK_SHADOW_NONE);
   gtk_container_set_border_width (GTK_CONTAINER (frame_kresults), 2);
 
   scrolledwin_kresults = gtk_scrolled_window_new (NULL, NULL);
@@ -1298,6 +1299,7 @@ _create_gui(GjKanjidicWindow* self)
   }
 
   frame_kinfo = gtk_frame_new (_("Kanji Info :"));
+  gtk_frame_set_shadow_type (frame_kinfo, GTK_SHADOW_NONE);
   gtk_container_set_border_width (GTK_CONTAINER (frame_kinfo), 2);
   gtk_container_add (GTK_CONTAINER (frame_kinfo), hbox);
 
