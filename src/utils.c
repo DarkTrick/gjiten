@@ -555,10 +555,10 @@ gx_utf8_validate(const gchar *str_nullable,
 }
 
 
-GtkImage *
+GtkWidget *
 gj_toolbutton_image_new_from_icon_name (const char *name)
 {
-  GtkImage * tmp = gtk_image_new_from_icon_name (name, GTK_ICON_SIZE_INVALID /*ignored*/);
-  gtk_image_set_pixel_size (tmp, 28);
+  GtkWidget * tmp = gtk_image_new_from_icon_name (name, GTK_ICON_SIZE_INVALID /*ignored*/);
+  gtk_image_set_pixel_size (GTK_IMAGE (tmp), 28);
   return tmp;
 }
