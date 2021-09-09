@@ -113,7 +113,7 @@ do_kdicline(gchar *kstr)
   int i, pos;
 
   if (kdic_line == NULL) kdic_line = (gchar *)g_malloc (KCFGNUM * KBUFSIZE);
-  if (kdic_line == NULL) gjiten_abort_with_msg ("Couldn't allocate memory\n");
+  if (kdic_line == NULL) error_show_and_quit ("Couldn't allocate memory\n");
 
   for (i = 0; i < KCFGNUM * KBUFSIZE; i++) { //clear it
     kdic_line[i] = 0;
@@ -408,7 +408,7 @@ findk_by_radical(gchar *radstrg)
   radstr_ptr = radstrg;
   rad_info = g_hash_table_lookup (kanjiDic->rad_info_hash, TO_POINTER (g_utf8_get_char (radstr_ptr)));
   if (rad_info == NULL) {
-    gjiten_print_error (_("Invalid radical!\n"));
+    error_show (NULL,_("Invalid radical!\n"));
     return;
   }
 
@@ -425,7 +425,7 @@ findk_by_radical(gchar *radstrg)
       rad_info = g_hash_table_lookup (kanjiDic->rad_info_hash, TO_POINTER (g_utf8_get_char (radstr_ptr)));
       if (rad_info == NULL) {
         tmprad = g_strndup (radstr_ptr, sizeof (gunichar));
-        gjiten_print_error (_("I don't seem to recognize this radical: '%s'.\n"), tmprad);
+        error_show (NULL,_("I don't seem to recognize this radical: '%s'.\n"), tmprad);
         g_free (tmprad);
         return;
       }
@@ -841,10 +841,10 @@ load_radkfile()
     error = TRUE;
   }
   radkfile = (gchar *) mmap (NULL, radkfile_size, PROT_READ, MAP_SHARED, fd, 0);
-  if (radkfile == NULL) gjiten_abort_with_msg ("mmap () failed for radkfile\n");
+  if (radkfile == NULL) error_show_and_quit ("mmap () failed for radkfile\n");
 
   if (error == TRUE) {
-    gjiten_print_error (_("Error opening %s.\n "\
+    error_show (NULL,_("Error opening %s.\n "\
                          "Please check your preferences or read the documentation."),
                        radkfile_name);
     return;
@@ -1136,7 +1136,7 @@ _create_gui(GjKanjidicWindow* self)
   if (kdic_line == NULL)
     kdic_line = (gchar *)g_malloc (KCFGNUM * KBUFSIZE);
   if (kdic_line == NULL)
-    gjiten_abort_with_msg ("Couldn't allocate memory\n");
+    error_show_and_quit ("Couldn't allocate memory\n");
 
   gtk_window_set_title (GTK_WINDOW (self), "Gjiten - KanjiDic");
   gtk_widget_get_can_default (GTK_WIDGET (self));
@@ -1353,7 +1353,7 @@ gj_kanjidic_window_new (GtkApplication * app)
   if (sizeof (gunichar) > sizeof (uintptr_t) ||
       sizeof (gunichar) > sizeof (gpointer))
   {
-    gjiten_show_error (GTK_WINDOW (self), _("Kanjidict is incompatible with your system. It could work, but it could also not work. \n\n Technical Details:\n uintptr_t and void* are smaller than integers."));
+    error_show (GTK_WINDOW (self), _("Kanjidict is incompatible with your system. It could work, but it could also not work. \n\n Technical Details:\n uintptr_t and void* are smaller than integers."));
   }
 
 

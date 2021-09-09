@@ -31,12 +31,8 @@
 #endif
 
 
-int gjiten_show_error(GtkWindow  *parent,
+int error_show(GtkWindow  *parent,
                       const char *format, ... );
-int gjiten_print_error(const char *fmt, ... );
-void gjiten_print_error_and_wait(const char *fmt, ... );
-void gjiten_add_errormsg(gchar *msg);
-void gjiten_flush_errors();
-void gjiten_abort_with_msg(const char *fmt, ... );
+void error_show_and_quit(const char *fmt, ... );
 
 #endif

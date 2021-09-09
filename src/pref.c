@@ -117,7 +117,7 @@ add_dic_response_cb(GtkDialog      *dialog,
       gtk_list_store_set (GTK_LIST_STORE (model), &iter, COL_DICNAME, dicfile.name, -1);
     }
     else {
-      gjiten_show_error (GTK_WINDOW (dialog), error);
+      error_show (GTK_WINDOW (dialog), error);
       return;
     }
   }
@@ -226,7 +226,7 @@ change_dic_response_cb(GtkDialog      *dialog,
       gtk_list_store_set (GTK_LIST_STORE (model), &iter, COL_DICNAME, dicfile.name, -1);
     }
     else {
-      gjiten_show_error (GTK_WINDOW (dialog), error);
+      error_show (GTK_WINDOW (dialog), error);
       return;
     }
   }
@@ -270,7 +270,7 @@ change_dict(GtkWidget *various,
 
   selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview));
   if (gtk_tree_selection_get_selected (selection, &model, &iter) == FALSE) {
-    gjiten_print_error (_("Please select an entry."));
+    error_show (NULL,_("Please select an entry."));
     return;
   }
 

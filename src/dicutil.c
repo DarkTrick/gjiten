@@ -129,7 +129,7 @@ search4string(gint           srchtype,
   if (dicfile->status == DICFILE_NOT_INITIALIZED) {
     const gchar * error = dicfile_init (dicfile);
     if (error != FALSE){
-      gjiten_show_error (NULL, error);
+      error_show (NULL, error);
       return SRCH_FAIL;
     }
   }
@@ -146,7 +146,7 @@ search4string(gint           srchtype,
     //mmap dicfile into memory
     conf.mmaped_dicfile = dicfile;
     dicfile->mem = (gchar *) mmap (NULL, dicfile->size, PROT_READ, MAP_SHARED, dicfile->file, 0);
-    if (dicfile->mem == NULL) gjiten_abort_with_msg ("mmap() failed\n");
+    if (dicfile->mem == NULL) error_show_and_quit ("mmap() failed\n");
     conf.mmaped_dicfile = dicfile;
   }
 

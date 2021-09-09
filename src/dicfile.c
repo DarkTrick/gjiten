@@ -38,6 +38,7 @@
 
 #include "dicfile.h"
 #include "error.h"
+#include "utils.h"
 #include <glib/gi18n.h>
 #include <locale.h>
 
@@ -79,11 +80,11 @@ dicfile_check_all(GSList *dicfile_list)
       dicfile = node->data;
       const gchar * error = dicfile_init (dicfile);
       if (error != FALSE){
-        gjiten_show_error (NULL, error);
+        error_show (NULL, error);
         retval = FALSE;
       }
       if (dicfile_is_utf8 (dicfile) == FALSE) {
-        gjiten_print_error (_("Dictionary file is non-UTF: %s\nPlease convert it to UTF-8. See the docs for more."), dicfile->path);
+        error_show (NULL,_("Dictionary file is non-UTF: %s\nPlease convert it to UTF-8. See the docs for more."), dicfile->path);
         dicfile_close (dicfile);
         retval = FALSE;
       }

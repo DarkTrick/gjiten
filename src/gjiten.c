@@ -186,7 +186,7 @@ gjiten_start_kanjipad()
 
   kanjipad_binary = fopen (gjitenApp->conf->kanjipad, "r");
   if (kanjipad_binary == NULL) {
-    gjiten_print_error (_("Couldn't find the KanjiPad executable!\n"
+    error_show (NULL,_("Couldn't find the KanjiPad executable!\n"
                          "Please make sure you have it installed on your system \n"
                          "and set the correct path to it in the Preferences.\n"
                          "See the Documentation for more details about KanjiPad."));
@@ -228,7 +228,7 @@ gjiten_display_manual(GtkWidget *parent_window_nullable,
     if (err)
       message = err->message;
 
-    gjiten_show_error (GTK_WINDOW (parent_window_nullable),
+    error_show (GTK_WINDOW (parent_window_nullable),
                        _("Could not display help: %s"), message);
 
     if (err)
@@ -487,14 +487,14 @@ _try_open_kanjidic_and_search (GtkApplication *app,
   if (gx_utf8_validate (text, -1, NULL) == FALSE)
   {
     // TODO: try to convert EUC-JP to UTF8 if it's non-utf8
-    gjiten_print_error (_("Cannot look up kanji: \n"
+    error_show (NULL,_("Cannot look up kanji: \n"
                           "Non-UTF8 string received."));
     return;
   }
 
   if (gchar_isKanjiChar (text) == FALSE)
   {
-    gjiten_print_error (_("Non-kanji string received:\n \"%s\"\n"), text);
+    error_show (NULL,_("Non-kanji string received:\n \"%s\"\n"), text);
     return;
   }
 

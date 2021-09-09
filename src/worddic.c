@@ -170,7 +170,7 @@ Verbinit()
   }
   // printf ("SIZE: %d\n", radkfile_size);
   vinfl_start = (gchar *) mmap (NULL, vinfl_size, PROT_READ, MAP_SHARED, fd, 0);
-  if (vinfl_start == MAP_FAILED) gjiten_abort_with_msg ("mmap () failed for "VINFL_FILENAME"\n");
+  if (vinfl_start == MAP_FAILED) error_show_and_quit ("mmap () failed for "VINFL_FILENAME"\n");
 
   //  printf ("STRLEN: %d\n", strlen (radkfile));
 
@@ -775,7 +775,7 @@ on_search_clicked()
   new_entry_text = g_strdup (gtk_combo_box_get_text (wordDic->cbo_search_term));
   if (gx_utf8_validate (new_entry_text, -1, NULL) == FALSE)
 {
-    gjiten_print_error_and_wait (_("Invalid input: non-utf8\n"));
+    error_show (GTK_WINDOW (self), _("Invalid input: non-utf8\n"));
     g_free (new_entry_text);
     return;
   }
@@ -1389,8 +1389,6 @@ _create_gui (GjWorddicWindow* self)
   wordDic->appbar_mainwin = gtk_label_new ("");
   gtk_label_set_xalign (GTK_LABEL (wordDic->appbar_mainwin), 0);
   gtk_box_pack_end (GTK_BOX (vbox_results), wordDic->appbar_mainwin, FALSE, FALSE, 0);
-
-  gjiten_flush_errors ();
 }
 
 
