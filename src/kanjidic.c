@@ -1196,10 +1196,13 @@ _create_gui(GjKanjidicWindow* self)
   }
 
   frame_koptions = gtk_frame_new (_("Kanji Search Options"));
+  gtkx_widget_css_class_add (frame_koptions, "frame_with_space");
   gtk_box_pack_start (GTK_BOX (vbox_maink), frame_koptions, FALSE, FALSE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (frame_koptions), 2);
 
   table_koptions = gtk_grid_new ();
+  gtk_grid_set_row_spacing (GTK_GRID (table_koptions), 6);
+  gtk_grid_set_column_spacing (GTK_GRID (table_koptions), 3);
   gtk_container_add (GTK_CONTAINER (frame_koptions), table_koptions);
 
   kanjiDic->checkb_stroke = gtk_check_button_new_with_mnemonic (_("Search By _Strokes:"));
@@ -1265,7 +1268,7 @@ _create_gui(GjKanjidicWindow* self)
   }
 
   frame_kresults = gtk_frame_new (_("Search Results :"));
-  gtk_frame_set_shadow_type (frame_kresults, GTK_SHADOW_NONE);
+  gtk_frame_set_shadow_type (GTK_FRAME (frame_kresults), GTK_SHADOW_NONE);
   gtk_container_set_border_width (GTK_CONTAINER (frame_kresults), 2);
 
   scrolledwin_kresults = gtk_scrolled_window_new (NULL, NULL);
@@ -1296,7 +1299,7 @@ _create_gui(GjKanjidicWindow* self)
   }
 
   frame_kinfo = gtk_frame_new (_("Kanji Info :"));
-  gtk_frame_set_shadow_type (frame_kinfo, GTK_SHADOW_NONE);
+  gtk_frame_set_shadow_type (GTK_FRAME (frame_kinfo), GTK_SHADOW_NONE);
   gtk_container_set_border_width (GTK_CONTAINER (frame_kinfo), 2);
   gtk_container_add (GTK_CONTAINER (frame_kinfo), hbox);
 
@@ -1319,7 +1322,6 @@ _create_gui(GjKanjidicWindow* self)
   gtk_box_pack_start (GTK_BOX (hbox), kanjiDic->scrolledwin_history, FALSE, TRUE, 0);
 
   vpane = gtk_paned_new (GTK_ORIENTATION_VERTICAL);
-  gj_paned_handle_hide (vpane);
   gtk_paned_add1(GTK_PANED (vpane), frame_kresults);
   gtk_paned_add2(GTK_PANED (vpane), frame_kinfo);
   gtk_box_pack_start (GTK_BOX (vbox_maink), vpane, TRUE, TRUE, 0);

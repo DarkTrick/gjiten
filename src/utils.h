@@ -141,7 +141,11 @@ gx_utf8_validate(const gchar *str_nullable,
 GtkWidget *
 gj_toolbutton_image_new_from_icon_name (const char *name);
 
+
+
 void
-gj_paned_handle_hide (GtkWidget *handle);
+gtkx_widget_css_class_add (GtkWidget  *widget,
+                         const gchar *css_class_name);
+
 
 #endif

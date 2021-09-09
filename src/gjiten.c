@@ -476,8 +476,17 @@ void
 _init_resources()
 {
   g_resources_register (resources_get_resource ());
+
+  // enable icons
   GtkIconTheme * icon_theme = gtk_icon_theme_get_default ();
   gtk_icon_theme_add_resource_path (icon_theme, RESOURCE_PATH "icons/scalable/actions");
+
+  // enable css
+  GtkCssProvider * css = gtk_css_provider_new ();
+  gtk_css_provider_load_from_resource (css,RESOURCE_PATH "css/styles.css");
+  gtk_style_context_add_provider_for_screen(gdk_screen_get_default(),
+                               GTK_STYLE_PROVIDER(css),
+                               GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 }
 
 

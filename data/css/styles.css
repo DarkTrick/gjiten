@@ -1,0 +1,14 @@
+
+/* Add some space between contents and border
+   of a GtkFrame */
+.frame_with_space border{
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-bottom: 10px;
+}
+
+
+/*Hide pane separator*/
+paned separator {
+   background: none;
+}

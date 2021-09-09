@@ -12,5 +12,7 @@
     <file>data/images/gjiten-logo.png</file>
 
     <file>data/uis/gjiten-settings.glade</file>
+
+    <file>data/css/styles.css</file>
   </gresource>
 </gresources>

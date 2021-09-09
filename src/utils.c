@@ -564,19 +564,11 @@ gj_toolbutton_image_new_from_icon_name (const char *name)
 }
 
 
-/**
- *  Hides the line diving two panes.
- **/
+
 void
-gj_paned_handle_hide (GtkWidget *handle)
+gtkx_widget_css_class_add (GtkWidget  *widget,
+                         const gchar *css_class_name)
 {
-  GtkStyleContext * context = gtk_widget_get_style_context(handle);
-
-  GtkCssProvider * css = gtk_css_provider_new();
-  gtk_css_provider_load_from_data(css, "paned separator {"
-                                       "   background: none;"
-                                       "}",-1,NULL);
-
-  gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(css),
-                                  GTK_STYLE_PROVIDER_PRIORITY_USER);
+  GtkStyleContext * context = gtk_widget_get_style_context (widget);
+  gtk_style_context_add_class (context, css_class_name);
 }
