@@ -481,3 +481,59 @@ gj_enable_quick_lookup_mode(GtkWindow *window)
   g_signal_connect (G_OBJECT (window), "key-press-event",
                   G_CALLBACK (gj_gtk_window_close_on_escape), NULL);
 }
+
+
+
+void
+g_menu_item_copy_clicked(GSimpleAction *action,
+                          GVariant      *parameter,
+                          gpointer       gtk_window)
+{
+  GtkWindow * window = GTK_WINDOW (gtk_window);
+  if (NULL == window)
+    return;
+
+  GtkWidget * focus = gtk_window_get_focus (window);
+  if (NULL == focus)
+    return;
+
+  if (GTK_IS_EDITABLE (focus) || GTK_IS_TEXT_VIEW (focus))
+  {
+    g_signal_emit_by_name (focus, "copy-clipboard", NULL);
+  }
+}
+
+
+
+void
+g_menu_item_paste_clicked(GSimpleAction *action,
+                          GVariant      *parameter,
+                          gpointer       gtk_window)
+{
+  GtkWindow * window = GTK_WINDOW (gtk_window);
+  if (NULL == window)
+    return;
+
+  GtkWidget * focus = gtk_window_get_focus (window);
+  if (NULL == focus)
+    return;
+
+  if (GTK_IS_EDITABLE (focus) || GTK_IS_TEXT_VIEW (focus))
+  {
+    g_signal_emit_by_name (focus, "paste-clipboard", NULL);
+  }
+}
+
+
+void
+g_menu_setup_default_actions_copy_paste(GtkWindow *window)
+{
+  GActionEntry actions[] = {
+    {.name="copy",  .activate=g_menu_item_copy_clicked, NULL, NULL, NULL },
+    {.name="paste",  .activate=g_menu_item_paste_clicked, NULL, NULL, NULL },
+  };
+
+  GSimpleActionGroup *action_group = g_simple_action_group_new ();
+  g_action_map_add_action_entries (G_ACTION_MAP (action_group), actions, G_N_ELEMENTS (actions), window);
+  gtk_widget_insert_action_group (GTK_WIDGET (window), "window", G_ACTION_GROUP (action_group));
+}

@@ -1427,7 +1427,7 @@ gj_worddic_window_init(GjWorddicWindow* self)
 
 
 static void
-menu_item_copy_clicked(GSimpleAction *action,
+_menu_item_copy_clicked(GSimpleAction *action,
                        GVariant      *parameter,
                        gpointer       gtk_application)
 {
@@ -1437,7 +1437,7 @@ menu_item_copy_clicked(GSimpleAction *action,
 
 
 static void
-menu_item_paste_clicked(GSimpleAction *action,
+_menu_item_paste_clicked(GSimpleAction *action,
                         GVariant      *parameter,
                         gpointer       gtk_application)
 {
@@ -1447,11 +1447,11 @@ menu_item_paste_clicked(GSimpleAction *action,
 
 
 static void
-_setup_actions(GjWorddicWindow *self)
+_menu_setup_actions(GjWorddicWindow *self)
 {
   GActionEntry actions[] = {
-    {.name="copy",  .activate=menu_item_copy_clicked, NULL, NULL, NULL },
-    {.name="paste",  .activate=menu_item_paste_clicked, NULL, NULL, NULL },
+    {.name="copy",  .activate=_menu_item_copy_clicked, NULL, NULL, NULL },
+    {.name="paste",  .activate=_menu_item_paste_clicked, NULL, NULL, NULL },
   };
 
   GSimpleActionGroup *action_group = g_simple_action_group_new ();
@@ -1467,7 +1467,7 @@ gj_worddic_window_new(GtkApplication * app)
   // for now we must make it Singleton here in ctor, because
   //  calls within _create_gui expect it to be.
   self = GJ_WORDDIC_WINDOW ((g_object_new (gj_worddic_window_get_type (), "application", app, NULL)));
-  _setup_actions (self);
+  _menu_setup_actions (self);
 
   wordDic = gj_worddic_window_get_instance_private (self);
   _create_gui (GJ_WORDDIC_WINDOW (self));

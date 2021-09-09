@@ -106,7 +106,6 @@ extern GjitenApp *gjitenApp;
 
 /* ************************************************************ */
 
-
 void
 do_kdicline(gchar *kstr)
 {
@@ -1311,6 +1310,8 @@ _create_gui(GjKanjidicWindow* self)
   gtk_text_buffer_create_tag (kanjiDic->text_kanjinfo_buffer, "blue_foreground", "foreground", "blue", NULL);
 
   kanjidic_apply_fonts ();
+
+  g_menu_setup_default_actions_copy_paste (GTK_WINDOW (self));
 
   gtk_widget_show_all (GTK_WIDGET (self));
 }

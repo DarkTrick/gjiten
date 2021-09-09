@@ -121,4 +121,16 @@ gj_gtk_window_close_on_escape(GtkWidget   *window,
 void
 gj_enable_quick_lookup_mode(GtkWindow * window);
 
+void
+g_menu_item_paste_clicked(GSimpleAction *action,
+                          GVariant      *parameter,
+                          gpointer       gtk_application);
+
+void
+g_menu_item_copy_clicked(GSimpleAction *action,
+                        GVariant      *parameter,
+                        gpointer       gtk_application);
+void
+g_menu_setup_default_actions_copy_paste(GtkWindow *window);
+
 #endif
