@@ -6,6 +6,8 @@
 #define DEFMAXWORDMATCHES 100
 #define MAXDICFILES 100
 
+#define APPLICATION_NAME "GJiten"
+
 #define RESOURCE_PATH "/org/gjiten/data/"
 
 #define VINFL_FILENAME GJITEN_DATADIR"/vconj.utf8"

@@ -27,6 +27,7 @@
 #include <stdlib.h>
 
 #include "error.h"
+#include "constants.h"
 
 static gchar *gjiten_errors;
 
@@ -48,13 +49,20 @@ _show_error(GtkWindow  *parent_nullable,
   {
     GtkDialogFlags destroy_style = GTK_DIALOG_DESTROY_WITH_PARENT;
     if (NULL == parent_nullable)
-      destroy_style = 0;
+      destroy_style = GTK_DIALOG_MODAL;
 
     dialog = gtk_message_dialog_new (parent_nullable,
                                      destroy_style,
                                      GTK_MESSAGE_ERROR,
                                      GTK_BUTTONS_OK,
                                      "%s", pstr );
+
+    // Keep the application alive as long as the message is shown
+    if (NULL == parent_nullable)
+      gtk_window_set_application (GTK_WINDOW (dialog),
+                          g_application_get_default ());
+
+    gtk_window_set_title (GTK_WINDOW (dialog), APPLICATION_NAME);
 
     g_signal_connect_swapped (G_OBJECT (dialog), "response",
                              G_CALLBACK (gtk_widget_destroy),
