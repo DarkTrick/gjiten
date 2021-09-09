@@ -484,7 +484,7 @@ _try_open_kanjidic_and_search (GtkApplication *app,
 
 
   // validate
-  if (g_utf8_validate (text, -1, NULL) == FALSE)
+  if (gx_utf8_validate (text, -1, NULL) == FALSE)
   {
     // TODO: try to convert EUC-JP to UTF8 if it's non-utf8
     gjiten_print_error (_("Cannot look up kanji: \n"

@@ -537,3 +537,18 @@ g_menu_setup_default_actions_copy_paste(GtkWindow *window)
   g_action_map_add_action_entries (G_ACTION_MAP (action_group), actions, G_N_ELEMENTS (actions), window);
   gtk_widget_insert_action_group (GTK_WIDGET (window), "window", G_ACTION_GROUP (action_group));
 }
+
+
+/**
+ * like g_utf8_validate, but it
+ * also checks, if str is NULL
+ **/
+gboolean
+gx_utf8_validate(const gchar *str_nullable,
+                 gssize max_len,
+                 const gchar **end)
+{
+  if (NULL == str_nullable) return FALSE;
+
+  return g_utf8_validate (str_nullable, max_len, end);
+}

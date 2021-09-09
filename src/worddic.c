@@ -773,7 +773,7 @@ on_search_clicked()
   wordDic->is_cursor_regular = TRUE;
 
   new_entry_text = g_strdup (gtk_combo_box_get_text (wordDic->cbo_search_term));
-  if (g_utf8_validate (new_entry_text, -1, NULL) == FALSE)
+  if (gx_utf8_validate (new_entry_text, -1, NULL) == FALSE)
 {
     gjiten_print_error_and_wait (_("Invalid input: non-utf8\n"));
     g_free (new_entry_text);
@@ -905,7 +905,7 @@ worddic_init_history(GtkListStore *history)
   for (i = 0; i <= HISTORY_MAX_WORDS; i++)
   {
     if (gjitenApp->conf->history[i] == NULL) break;
-    if (g_utf8_validate (gjitenApp->conf->history[i], -1, NULL) == TRUE)
+    if (gx_utf8_validate (gjitenApp->conf->history[i], -1, NULL) == TRUE)
       gtk_list_store_string_append (history, g_strdup (gjitenApp->conf->history[i]));
     //   printf ("Read: %s: %s\n", historystr, tmpptr);
   }

@@ -133,4 +133,9 @@ g_menu_item_copy_clicked(GSimpleAction *action,
 void
 g_menu_setup_default_actions_copy_paste(GtkWindow *window);
 
+gboolean
+gx_utf8_validate(const gchar *str_nullable,
+                 gssize max_len,
+                 const gchar **end);
+
 #endif

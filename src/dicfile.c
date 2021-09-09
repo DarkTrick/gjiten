@@ -54,7 +54,7 @@ dicfile_is_utf8(GjitenDicfile *dicfile)
     bytesread = read (dicfile->file, testbuffer, 3000); // read a chunk into buffer
     pos = bytesread - 1;
     while (testbuffer[pos] != '\n') pos--;
-    if (g_utf8_validate (testbuffer, pos, NULL) == FALSE) {
+    if (gx_utf8_validate (testbuffer, pos, NULL) == FALSE) {
       return FALSE;
     }
     g_free (testbuffer);
