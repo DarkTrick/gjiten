@@ -75,6 +75,7 @@ struct _GjitenConfig {
   gboolean verb_deinflection;
 
   gboolean searchlimit_enabled;
+  gboolean worddic_options_show;
   gboolean autoadjust_enabled;
 
   gboolean unicode_radicals;

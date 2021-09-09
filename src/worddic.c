@@ -951,18 +951,27 @@ _btn_options_show_hide_update_ui(gboolean status)
 
 
 static void
-worddic_show_hide_options()
+_search_options_show(gboolean show)
 {
-  GJITEN_DEBUG ("worddic_show_hide_options ()\n");
-  if (gtk_widget_get_visible (wordDic->hbox_options) == TRUE)
-  {
-    gtk_widget_hide (wordDic->hbox_options);
-  }
-  else
+  if (TRUE == show)
   {
     gtk_widget_show (wordDic->hbox_options);
   }
-  _btn_options_show_hide_update_ui (gtk_widget_get_visible (wordDic->hbox_options));
+  else
+  {
+    gtk_widget_hide (wordDic->hbox_options);
+  }
+  _btn_options_show_hide_update_ui (show);
+  gjitenApp->conf->worddic_options_show = show;
+}
+
+
+static void
+_search_options_show_toggle()
+{
+  GJITEN_DEBUG ("_search_options_show_toggle ()\n");
+  gboolean cur_visible_state = gtk_widget_get_visible (wordDic->hbox_options);
+  _search_options_show (! cur_visible_state);
 }
 
 
@@ -1234,7 +1243,7 @@ _create_gui (GjWorddicWindow* self)
     {
       GtkToolButton * hid = GTK_TOOL_BUTTON (gtk_tool_button_new (NULL, ""));
 
-      g_signal_connect (hid, "clicked", G_CALLBACK (worddic_show_hide_options), NULL);
+      g_signal_connect (hid, "clicked", G_CALLBACK (_search_options_show_toggle), NULL);
       gtk_box_pack_end (GTK_BOX (toolbar), GTK_WIDGET (hid), FALSE, FALSE, 0);
       gtk_widget_set_halign (GTK_WIDGET (hid), GTK_ALIGN_END);
 
@@ -1425,6 +1434,12 @@ _create_gui (GjWorddicWindow* self)
   wordDic->appbar_mainwin = gtk_label_new ("");
   gtk_label_set_xalign (GTK_LABEL (wordDic->appbar_mainwin), 0);
   gtk_box_pack_end (GTK_BOX (vbox_results), wordDic->appbar_mainwin, FALSE, FALSE, 0);
+
+  gtk_widget_show_all (GTK_WIDGET (self));
+
+  // after everything is realized
+
+  _search_options_show (gjitenApp->conf->worddic_options_show);
 }
 
 

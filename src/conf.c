@@ -130,6 +130,7 @@ gjitenconfig_new_and_init()
 
 
   conf->version = store_get_string ("version");
+  conf->worddic_options_show = store_get_boolean ("worddic_options_show");
   conf->autoadjust_enabled = store_get_boolean ("autoadjust_enabled");
 
   conf->bigwords = store_get_boolean ("bigwords");
@@ -387,7 +388,7 @@ void
 gjitenconfig_save_options(GjitenConfig *conf)
 {
     DataStore *store = conf->data_store;
-
+    data_store_set_boolean (store, SECTION_GENERAL, "worddic_options_show", conf->worddic_options_show);
     data_store_set_boolean (store, SECTION_GENERAL, "autoadjust_enabled", conf->autoadjust_enabled);
     data_store_set_boolean (store, SECTION_GENERAL, "searchlimit_enabled", conf->searchlimit_enabled);
     data_store_set_int (store, SECTION_GENERAL, "maxwordmatches", conf->maxwordmatches);

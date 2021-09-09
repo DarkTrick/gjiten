@@ -148,6 +148,7 @@ data_store_get_boolean(DataStore   *self,
   // return defaults
 
   // gjiten
+  MATCH ("worddic_options_show", TRUE);
   MATCH ("autoadjust_enabled", TRUE);
   MATCH ("bigkanji", FALSE);
   MATCH ("bigwords", FALSE);

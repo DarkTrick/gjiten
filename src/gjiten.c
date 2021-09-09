@@ -399,8 +399,6 @@ _gjiten_create_menu(GtkApplication *app)
 void
 _start_window (GtkWindow *window)
 {
-  gtk_widget_show_all (GTK_WIDGET (window));
-
   if (gjitenApp->conf->cli_option_quick_lookup_mode)
     gj_enable_quick_lookup_mode (GTK_WINDOW (window));
 }
