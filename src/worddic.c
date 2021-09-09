@@ -1444,9 +1444,17 @@ _create_gui (GjWorddicWindow* self)
 
   gtk_widget_show_all (GTK_WIDGET (self));
 
-  // after everything is realized
+  // -- after everything is realized --
 
-  _search_options_show (gjitenApp->conf->worddic_options_show);
+
+  // init search option visibility
+  {
+    gtk_revealer_set_transition_type (GTK_REVEALER (wordDic->bin_search_options),
+                                      GTK_REVEALER_TRANSITION_TYPE_NONE);
+    _search_options_show (gjitenApp->conf->worddic_options_show);
+    gtk_revealer_set_transition_type (GTK_REVEALER (wordDic->bin_search_options),
+                                      GTK_REVEALER_TRANSITION_TYPE_SLIDE_DOWN);
+  }
 }
 
 
