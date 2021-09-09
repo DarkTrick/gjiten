@@ -1183,7 +1183,7 @@ _create_gui(GjKanjidicWindow* self)
   gtk_container_add (GTK_CONTAINER (self), vbox_maink);
 
   if (gjitenApp->conf->toolbar) {
-    toolbar = GTK_CONTAINER (gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0));
+    toolbar = GTK_CONTAINER (gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 10));
 
 
     gtk_container_add (GTK_CONTAINER (vbox_maink), GTK_WIDGET (toolbar));
