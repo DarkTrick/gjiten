@@ -1264,9 +1264,6 @@ _create_gui(GjKanjidicWindow* self)
     gtk_widget_set_tooltip_text (GTK_WIDGET (kanjiDic->combo_entry_key), TOOLTIP_SEARCH_BY_KEY);
   }
 
-  hseparator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
-  gtk_box_pack_start (GTK_BOX (vbox_maink), hseparator, FALSE, FALSE, 7);
-
   frame_kresults = gtk_frame_new (_("Search Results :"));
   gtk_frame_set_shadow_type (frame_kresults, GTK_SHADOW_NONE);
   gtk_container_set_border_width (GTK_CONTAINER (frame_kresults), 2);
@@ -1322,6 +1319,7 @@ _create_gui(GjKanjidicWindow* self)
   gtk_box_pack_start (GTK_BOX (hbox), kanjiDic->scrolledwin_history, FALSE, TRUE, 0);
 
   vpane = gtk_paned_new (GTK_ORIENTATION_VERTICAL);
+  gj_paned_handle_hide (vpane);
   gtk_paned_add1(GTK_PANED (vpane), frame_kresults);
   gtk_paned_add2(GTK_PANED (vpane), frame_kinfo);
   gtk_box_pack_start (GTK_BOX (vbox_maink), vpane, TRUE, TRUE, 0);
