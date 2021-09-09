@@ -74,8 +74,6 @@ struct _GjKanjidicWindowPrivate
   GtkWidget  *checkb_radical;
   GtkWidget  *checkb_stroke;
   GtkWidget  *button_radtable;
-  GtkWidget  *button_clearrad;
-  GtkWidget  *button_cleark;
   GtkWidget  *vbox_history;
   GtkWidget  *scrolledwin_history;
   GSList     *kanji_history_list;
@@ -1041,12 +1039,10 @@ shade_kanjidic_widgets()
   gtk_widget_set_sensitive (GTK_WIDGET (kanjiDic->label_plusmin), active);
 
   active = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (kanjiDic->checkb_radical));
-  gtk_widget_set_sensitive (GTK_WIDGET (kanjiDic->button_clearrad), active);
   gtk_widget_set_sensitive (GTK_WIDGET (kanjiDic->button_radtable), active);
   gtk_widget_set_sensitive (GTK_WIDGET (kanjiDic->combo_entry_radical), active);
 
   active = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (kanjiDic->checkb_ksearch));
-  gtk_widget_set_sensitive (GTK_WIDGET (kanjiDic->button_cleark), active);
   gtk_widget_set_sensitive (GTK_WIDGET (kanjiDic->combo_entry_key), active);
 }
 
@@ -1239,7 +1235,7 @@ _create_gui(GjKanjidicWindow* self)
 
   kanjiDic->button_radtable = gtk_button_new_with_mnemonic (_("Radica_ls"));
   {
-    gtk_grid_attach (GTK_GRID (table_koptions), kanjiDic->button_radtable, 3, 1, 1, 1);
+    gtk_grid_attach (GTK_GRID (table_koptions), kanjiDic->button_radtable, 2, 1, 1, 1);
     g_signal_connect (G_OBJECT (kanjiDic->button_radtable), "clicked",
             G_CALLBACK (create_window_radicals), NULL);
   }
@@ -1267,23 +1263,6 @@ _create_gui(GjKanjidicWindow* self)
             "activate", G_CALLBACK (on_kanji_search), NULL);
     gtk_widget_set_tooltip_text (GTK_WIDGET (kanjiDic->combo_entry_key), TOOLTIP_SEARCH_BY_KEY);
   }
-
-  kanjiDic->button_clearrad = gtk_button_new_with_label (_("Clear"));
-  {
-    gtk_grid_attach (GTK_GRID (table_koptions), kanjiDic->button_clearrad, 2, 1, 1, 1);
-    g_signal_connect_swapped (G_OBJECT (kanjiDic->button_clearrad), "clicked",
-                            G_CALLBACK (clear_radical_entry_box),
-                            G_OBJECT (gtk_bin_get_child (GTK_BIN (kanjiDic->combo_entry_radical))));
-  }
-
-  kanjiDic->button_cleark = gtk_button_new_with_label (_("Clear"));
-  {
-    gtk_grid_attach (GTK_GRID (table_koptions), kanjiDic->button_cleark, 2, 2, 1, 1);
-    g_signal_connect_swapped (G_OBJECT (kanjiDic->button_cleark), "clicked",
-                            G_CALLBACK (gtk_entry_clear_callback),
-                            G_OBJECT (GTK_ENTRY (gtk_bin_get_child (GTK_BIN (kanjiDic->combo_entry_key)))));
-  }
-
 
   hseparator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
   gtk_box_pack_start (GTK_BOX (vbox_maink), hseparator, FALSE, FALSE, 7);

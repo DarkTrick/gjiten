@@ -1355,7 +1355,7 @@ _create_gui (GjWorddicWindow* self)
   gtk_box_pack_start (GTK_BOX (vbox_main), hbox_entry, FALSE, TRUE, 14);
   gtk_container_set_border_width (GTK_CONTAINER (hbox_entry), 3);
 
-  label_enter = gtk_label_new (_("Enter expression :"));
+  label_enter = gtk_label_new (_("Search:"));
   gtk_box_pack_start (GTK_BOX (hbox_entry), label_enter, FALSE, TRUE, 7);
   gtk_label_set_justify (GTK_LABEL (label_enter), GTK_JUSTIFY_RIGHT);
   gtk_label_set_xalign (GTK_LABEL (label_enter), 1);
@@ -1390,12 +1390,6 @@ _create_gui (GjWorddicWindow* self)
   button_search = gtk_button_new_with_label (_("Search"));
   gtk_box_pack_start (GTK_BOX (hbox_entry), button_search, FALSE, FALSE, 7);
   g_signal_connect (G_OBJECT (button_search), "clicked", G_CALLBACK (on_search_clicked), NULL);
-
-  button_clear = gtk_button_new_with_mnemonic (_("_Clear"));
-  gtk_box_pack_start (GTK_BOX (hbox_entry), button_clear, FALSE, FALSE, 0);
-  g_signal_connect_swapped (G_OBJECT (button_clear), "clicked",
-                           G_CALLBACK (gtk_entry_clear_callback),
-                           G_OBJECT (gtk_bin_get_child (GTK_BIN (wordDic->cbo_search_term))));
 
   frame_results = gtk_frame_new (_("Search results :"));
   gtk_box_pack_start (GTK_BOX (vbox_main), frame_results, TRUE, TRUE, 0);
