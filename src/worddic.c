@@ -50,7 +50,7 @@
 typedef struct _GjWorddicWindowPrivate GjWorddicWindowPrivate;
 struct _GjWorddicWindowPrivate
 {
-  GtkWidget       *hbox_options;
+  GtkWidget       *bin_search_options;
   GtkComboBox     *cbo_search_term;
   GtkWidget       *text_results_view;
   GtkTextBuffer   *text_results_buffer;
@@ -953,14 +953,8 @@ _btn_options_show_hide_update_ui(gboolean status)
 static void
 _search_options_show(gboolean show)
 {
-  if (TRUE == show)
-  {
-    gtk_widget_show (wordDic->hbox_options);
-  }
-  else
-  {
-    gtk_widget_hide (wordDic->hbox_options);
-  }
+  gtk_revealer_set_reveal_child (GTK_REVEALER (wordDic->bin_search_options), show);
+
   _btn_options_show_hide_update_ui (show);
   gjitenApp->conf->worddic_options_show = show;
 }
@@ -970,8 +964,8 @@ static void
 _search_options_show_toggle()
 {
   GJITEN_DEBUG ("_search_options_show_toggle ()\n");
-  gboolean cur_visible_state = gtk_widget_get_visible (wordDic->hbox_options);
-  _search_options_show (! cur_visible_state);
+  gboolean cur_visible_state = gtk_revealer_get_reveal_child (GTK_REVEALER (wordDic->bin_search_options));
+  _search_options_show (!cur_visible_state);
 }
 
 
@@ -1250,15 +1244,17 @@ _create_gui (GjWorddicWindow* self)
       wordDic->btn_options_show_hide = hid;
       _btn_options_show_hide_update_ui (TRUE);
     }
+
   }
 
-
-  wordDic->hbox_options = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+  wordDic->bin_search_options = gtk_revealer_new ();
+  gtk_box_pack_start (GTK_BOX (vbox_main), wordDic->bin_search_options, FALSE, TRUE, 0);
   {
-    gtk_box_pack_start (GTK_BOX (vbox_main), wordDic->hbox_options, FALSE, TRUE, 0);
+    GtkWidget * hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+    gtk_container_add (GTK_CONTAINER (wordDic->bin_search_options), hbox);
 
     frame_japopt = gtk_frame_new (_("Japanese Search Options: "));
-    gtk_box_pack_start (GTK_BOX (wordDic->hbox_options), frame_japopt, TRUE, TRUE, 0);
+    gtk_box_pack_start (GTK_BOX (hbox), frame_japopt, TRUE, TRUE, 0);
     gtk_container_set_border_width (GTK_CONTAINER (frame_japopt), 5);
 
     vbox_japopt = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
@@ -1281,7 +1277,7 @@ _create_gui (GjWorddicWindow* self)
     gtk_box_pack_start (GTK_BOX (vbox_japopt), wordDic->radiob_any, FALSE, FALSE, 0);
 
     frame_engopt = gtk_frame_new (_("English Search Options: "));
-    gtk_box_pack_start (GTK_BOX (wordDic->hbox_options), frame_engopt, TRUE, TRUE, 0);
+    gtk_box_pack_start (GTK_BOX (hbox), frame_engopt, TRUE, TRUE, 0);
     gtk_container_set_border_width (GTK_CONTAINER (frame_engopt), 5);
 
     vbox_engopt = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
@@ -1300,7 +1296,7 @@ _create_gui (GjWorddicWindow* self)
     gtk_box_pack_start (GTK_BOX (vbox_engopt), wordDic->radiob_partial, FALSE, FALSE, 0);
 
     frame_gopt = gtk_frame_new (_("General Options: "));
-    gtk_box_pack_start (GTK_BOX (wordDic->hbox_options), frame_gopt, TRUE, TRUE, 0);
+    gtk_box_pack_start (GTK_BOX (hbox), frame_gopt, TRUE, TRUE, 0);
     gtk_container_set_border_width (GTK_CONTAINER (frame_gopt), 5);
 
     grid = gtk_grid_new ();
