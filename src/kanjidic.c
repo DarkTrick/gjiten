@@ -103,6 +103,15 @@ static GjKanjidicWindowPrivate *kanjiDic = NULL;
 extern gchar *strginfo[];
 extern GjitenApp *gjitenApp;
 
+#define TOOLTIP_SEARCH_BY_KEY _( \
+"Search by anything that the Kanjidic file contains:\n" \
+"- The kanji itself\n"                                  \
+"- The reading (in kana)\n"                             \
+"- English meaning\n"                                   \
+"- Kanjidic code\n"                                     \
+"- ...\n"                                               \
+"(see help for more information )")
+
 
 /* ************************************************************ */
 
@@ -1211,6 +1220,7 @@ _create_gui(GjKanjidicWindow* self)
   gtk_grid_attach (GTK_GRID (table_koptions), kanjiDic->checkb_ksearch, 0, 2, 1, 1);
   g_signal_connect (G_OBJECT (kanjiDic->checkb_ksearch), "toggled",
           G_CALLBACK (shade_kanjidic_widgets), NULL);
+  gtk_widget_set_tooltip_text (GTK_WIDGET (kanjiDic->checkb_ksearch), TOOLTIP_SEARCH_BY_KEY);
 
   hbox_spinb = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
   gtk_grid_attach (GTK_GRID (table_koptions), hbox_spinb, 1, 0, 1, 1);
@@ -1255,6 +1265,7 @@ _create_gui(GjKanjidicWindow* self)
                     1, 2, 1, 1);
     g_signal_connect (G_OBJECT ( (gtk_bin_get_child (GTK_BIN (kanjiDic->combo_entry_key)))),
             "activate", G_CALLBACK (on_kanji_search), NULL);
+    gtk_widget_set_tooltip_text (GTK_WIDGET (kanjiDic->combo_entry_key), TOOLTIP_SEARCH_BY_KEY);
   }
 
   kanjiDic->button_clearrad = gtk_button_new_with_label (_("Clear"));
