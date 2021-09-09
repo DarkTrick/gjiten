@@ -438,8 +438,7 @@ preferences_response_cb(GtkDialog *dialog,
   gjitenconfig_save (gjitenApp->conf);
 
   worddic_update_dic_menu ();
-  worddic_apply_fonts ();
-  kanjidic_apply_fonts ();
+  gjiten_apply_fonts (gjitenApp);
 
   if (response == GTK_RESPONSE_OK) preferences_exit ();
 }

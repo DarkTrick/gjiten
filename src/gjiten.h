@@ -43,6 +43,8 @@ void gjiten_start_worddic();
 void gjiten_start_kanjidic();
 void gjiten_start_kanjidic_with_search(gunichar kanji);
 
+void gjiten_apply_fonts(GjitenApp * gjitenApp);
+
 void gjiten_display_manual(GtkWidget *parent_window_nullable,
                            void      *data);
 
