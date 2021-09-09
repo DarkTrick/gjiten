@@ -7,6 +7,7 @@ Name[ja]=Gjiten 日本語辞典
 Comment=Japanese dictionary
 Comment[de]=Japanisches Wörterbuch
 Comment[de_CH]=Japanisches Wörterbuch
+Comment[es]=Diccionario japonés
 Comment[ja]=日本語辞典です
 Exec=gjiten
 Icon=jiten.png
