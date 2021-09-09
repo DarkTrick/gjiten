@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gjiten 2.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-08 14:42+0900\n"
+"POT-Creation-Date: 2021-09-09 16:20+0900\n"
 "PO-Revision-Date: 2006-04-01 18:57+0900\n"
 "Last-Translator: Botond Botyanszki <boti@rocketmail.com>\n"
 "Language-Team: Japanese <boti@rocketmail.com>\n"
@@ -66,7 +66,7 @@ msgid "Options"
 msgstr "他のオプション"
 
 #. ignored
-#: ../data/uis/gjiten-settings.glade.h:12 ../src/kanjidic.c:1161
+#: ../data/uis/gjiten-settings.glade.h:12 ../src/kanjidic.c:1192
 msgid "WordDic"
 msgstr "単語辞典"
 
@@ -293,15 +293,20 @@ msgstr "情報(_A)"
 msgid "_Help"
 msgstr "ヘルプ(_H)"
 
-#: ../src/gjiten.c:509 ../src/gjiten.c:536
-msgid "Unable to look up kanji: NON-UTF8 string received from clipboard!\n"
+#. TODO: try to convert EUC-JP to UTF8 if it's non-utf8
+#: ../src/gjiten.c:497
+msgid ""
+"Cannot look up kanji: \n"
+"Non-UTF8 string received."
 msgstr ""
-"漢字を検索出来ません: クリップボードから受取ったデータは UTF-8 ではありませ"
-"ん！\n"
+"漢字を検索出来ません: \n"
+"クリップボードから受取ったデータは UTF-8 ではありません。"
 
-#: ../src/gjiten.c:513 ../src/gjiten.c:540
+#: ../src/gjiten.c:504
 #, c-format
-msgid "Non-kanji string received from clipboard: %s\n"
+msgid ""
+"Non-kanji string received:\n"
+" \"%s\"\n"
 msgstr "クリップボードから受取った文字は漢字ではありません: %s\n"
 
 #. FIXME: change this to EnumPair
@@ -309,7 +314,7 @@ msgstr "クリップボードから受取った文字は漢字ではありませ
 msgid "Kanji"
 msgstr "漢字"
 
-#: ../src/pref.c:58 ../src/kanjidic.c:937
+#: ../src/pref.c:58 ../src/kanjidic.c:968
 msgid "Radicals"
 msgstr "部首"
 
@@ -429,57 +434,75 @@ msgstr "辞典ファイル名"
 msgid "Dictionary file path"
 msgstr "辞典ファイルのパス"
 
-#: ../src/kanjidic.c:150 ../src/kanjidic.c:153
+#: ../src/kanjidic.c:107
+msgid ""
+"Search by anything that the Kanjidic file contains:\n"
+"- The kanji itself\n"
+"- The reading (in kana)\n"
+"- English meaning\n"
+"- Kanjidic code\n"
+"- ...\n"
+"(see help for more information)"
+msgstr ""
+"「何でも検索」です。\n"
+"- 漢字入力OK\n"
+"- カナの読み方OK\n"
+"- 英語の意味OK\n"
+"- KanjidicコードOK\n"
+"- ...\n"
+"(詳細は、ヘルプを参照)"
+
+#: ../src/kanjidic.c:158 ../src/kanjidic.c:161
 msgid "Name readings:"
 msgstr "人名読み:"
 
-#: ../src/kanjidic.c:164
+#: ../src/kanjidic.c:172
 msgid "Radical name:"
 msgstr "部首名:"
 
-#: ../src/kanjidic.c:220
+#: ../src/kanjidic.c:228
 msgid ", Common miscount: "
 msgstr ", 通常誤画数: "
 
-#: ../src/kanjidic.c:412
+#: ../src/kanjidic.c:420
 msgid "Invalid radical!\n"
-msgstr "部首が不適切です！\n"
+msgstr "部首が不適切です。\n"
 
-#: ../src/kanjidic.c:429
+#: ../src/kanjidic.c:437
 #, c-format
 msgid "I don't seem to recognize this radical: '%s'.\n"
-msgstr "この部首は認識できないようです: '%s' ！！！\n"
+msgstr "この部首は認識できないようです: '%s'。\n"
 
-#: ../src/kanjidic.c:487 ../src/worddic.c:795
+#: ../src/kanjidic.c:495 ../src/worddic.c:795
 msgid "Searching..."
 msgstr "検索しています..."
 
-#: ../src/kanjidic.c:537
+#: ../src/kanjidic.c:545
 msgid "No such kanji with this radical combination."
 msgstr "この部首の組み合わせは存在しません。"
 
-#: ../src/kanjidic.c:545
+#: ../src/kanjidic.c:553
 msgid "Invalid stroke count :-P "
 msgstr "画数が不適切です (^_^) "
 
-#: ../src/kanjidic.c:551
+#: ../src/kanjidic.c:559
 msgid "Stroke search didn't find any match :-O "
 msgstr "該当する画数はありません (>_<) "
 
-#: ../src/kanjidic.c:561
+#: ../src/kanjidic.c:569
 msgid "No such kanji with this stroke/radical combination."
 msgstr "この部首でこの画数の漢字はありません。"
 
-#: ../src/kanjidic.c:575
+#: ../src/kanjidic.c:583
 msgid "No Matches found."
 msgstr "該当する漢字はありません。"
 
-#: ../src/kanjidic.c:581
+#: ../src/kanjidic.c:589
 #, c-format
 msgid "Kanji found: %d"
 msgstr "%d 件の漢字が該当します"
 
-#: ../src/kanjidic.c:848
+#: ../src/kanjidic.c:856
 #, c-format
 msgid ""
 "Error opening %s.\n"
@@ -488,52 +511,52 @@ msgstr ""
 "%s を開けませんでした。\n"
 "設定を確認するか文書を御覧下さい。"
 
-#: ../src/kanjidic.c:1162
+#: ../src/kanjidic.c:1193
 msgid "Launch WordDic"
 msgstr "単語辞典を実行します"
 
 #. ignored
-#: ../src/kanjidic.c:1166 ../src/worddic.c:1206
+#: ../src/kanjidic.c:1197 ../src/worddic.c:1206
 msgid "KanjiPad"
 msgstr "漢字パッド"
 
-#: ../src/kanjidic.c:1167 ../src/worddic.c:1207
+#: ../src/kanjidic.c:1198 ../src/worddic.c:1207
 msgid "Launch KanjiPad"
 msgstr "漢字パッドを実行します"
 
-#: ../src/kanjidic.c:1171
+#: ../src/kanjidic.c:1202
 msgid "Kanji Search Options"
 msgstr "漢字検索オプション"
 
-#: ../src/kanjidic.c:1178
+#: ../src/kanjidic.c:1209
 msgid "Search By _Strokes:"
 msgstr "画数による検索(_S):"
 
-#: ../src/kanjidic.c:1183
+#: ../src/kanjidic.c:1214
 msgid "Search By _Radical:"
 msgstr "部首による検索(_R):"
 
-#: ../src/kanjidic.c:1188
+#: ../src/kanjidic.c:1219
 msgid "Search By _Key:"
 msgstr "キーによる検索(_K):"
 
-#: ../src/kanjidic.c:1208
+#: ../src/kanjidic.c:1240
 msgid "Radica_ls"
 msgstr "部首"
 
-#: ../src/kanjidic.c:1232 ../src/kanjidic.c:1238
+#: ../src/kanjidic.c:1271 ../src/kanjidic.c:1279
 msgid "Clear"
 msgstr "消去"
 
-#: ../src/kanjidic.c:1248
+#: ../src/kanjidic.c:1291
 msgid "Search Results :"
 msgstr "検索の結果 :"
 
-#: ../src/kanjidic.c:1274
+#: ../src/kanjidic.c:1321
 msgid "Kanji Info :"
 msgstr "漢字情報 :"
 
-#: ../src/kanjidic.c:1355
+#: ../src/kanjidic.c:1404
 msgid ""
 "Kanjidict is incompatible with your system. It could work, but it could also "
 "not work. \n"
@@ -547,7 +570,7 @@ msgstr ""
 " 詳細:\n"
 " uintptr_t型 と void*型 は int型より小さいです。"
 
-#: ../src/dicfile.c:86
+#: ../src/dicfile.c:87
 #, c-format
 msgid ""
 "Dictionary file is non-UTF: %s\n"
@@ -556,19 +579,19 @@ msgstr ""
 "この辞典ファイルは UTF-8 ではありません: %s\n"
 "UTF-8 に変換して下さい。詳しくはドキュメントを御覧下さい。"
 
-#: ../src/dicfile.c:114 ../src/dicfile.c:120
+#: ../src/dicfile.c:115 ../src/dicfile.c:121
 msgid "Sorry, I could not load your dictionary."
 msgstr "辞書ファイルを開くことができませんでした。"
 
-#: ../src/dicfile.c:157
+#: ../src/dicfile.c:158
 msgid "Please select a dictionary file."
 msgstr "辞典ファイルを選択して下さい"
 
-#: ../src/dicfile.c:160
+#: ../src/dicfile.c:161
 msgid "Dictionary file not found. "
-msgstr "辞典ファイルが見つかりません！"
+msgstr "辞典ファイルが見つかりません。"
 
-#: ../src/dicfile.c:169
+#: ../src/dicfile.c:170
 msgid ""
 "Dictionary file is not in UTF-8 format. \n"
 "Please convert it to UTF-8 format. See the docs for more information."
@@ -592,7 +615,7 @@ msgstr "結果が切捨てられました"
 #: ../src/worddic.c:676
 #, c-format
 msgid "No dicfiles specified! Set your preferences first."
-msgstr "辞典ファイルが指定されていません！ まず設定をして下さい。"
+msgstr "辞典ファイルが指定されていません。 まず設定をして下さい。"
 
 #: ../src/worddic.c:722
 #, c-format
@@ -756,7 +779,7 @@ msgstr "検索の結果 :"
 #~ "Check your preferences!"
 #~ msgstr ""
 #~ "辞典ファイル %s を開けませんでした。\n"
-#~ "設定を確認して下さい！"
+#~ "設定を確認して下さい。"
 
 #~ msgid "Display the Gjiten Manual"
 #~ msgstr "Gjiten のマニュアルを表示します"
@@ -780,4 +803,4 @@ msgstr "検索の結果 :"
 #~ msgstr ""
 #~ "辞典ファイルのリストです。形式は:\n"
 #~ "[/path/to/dicfile1/dictionary_name1,/path/to/dicfile2/dictionary_name2]\n"
-#~ "カンマの後にスペースを入れないで下さい！"
+#~ "カンマの後にスペースを入れないで下さい。"

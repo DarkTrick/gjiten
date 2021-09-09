@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-08 14:42+0900\n"
+"POT-Creation-Date: 2021-09-09 16:20+0900\n"
 "PO-Revision-Date: 2005-06-05 19:55+0200\n"
 "Last-Translator: DarkTrick <https://github.com/DarkTrick/>\n"
 "Language-Team: Deutsch <seto-kun@freesurf.ch>\n"
@@ -62,7 +62,7 @@ msgid "Options"
 msgstr "Optionen"
 
 #. ignored
-#: ../data/uis/gjiten-settings.glade.h:12 ../src/kanjidic.c:1161
+#: ../data/uis/gjiten-settings.glade.h:12 ../src/kanjidic.c:1192
 msgid "WordDic"
 msgstr "Wörterbuch"
 
@@ -201,8 +201,8 @@ msgstr "Wort aus der Zwischenablage suchen"
 msgid ""
 "Start in quick-lookup-mode: Terminate on Escape or clicking somewhere else."
 msgstr ""
-"Starte GJiten im 'schnellen Nachschlagemodus': GJiten beendet sich, sobald Sie "
-"Escape drücken oder woanders hinklicken."
+"Starte GJiten im 'schnellen Nachschlagemodus': GJiten beendet sich, sobald "
+"Sie Escape drücken oder woanders hinklicken."
 
 #: ../src/gjiten.c:189
 msgid ""
@@ -211,7 +211,7 @@ msgid ""
 "and set the correct path to it in the Preferences.\n"
 "See the Documentation for more details about KanjiPad."
 msgstr ""
-"Kann das KanjiPad-Programm nicht finden!\n"
+"Kann das KanjiPad-Programm nicht finden.\n"
 "Bitte überprüfen Sie, ob es installiert ist\n"
 "und stellen Sie den korrekten Pfad ein.\n"
 "Schauen Sie in der Dokumentation nach für weitere Infos."
@@ -228,8 +228,7 @@ msgstr "Kann Hilfe nicht lesen: %s"
 #: ../src/gjiten.c:245
 msgid "TRANSLATORS! PUT YOUR NAME HERE"
 msgstr ""
-"Gregor Riepl <seto-kun@freesurf.ch> "
-"DarkTrick <https://github.com/DarkTrick/>"
+"Gregor Riepl <seto-kun@freesurf.ch> DarkTrick <https://github.com/DarkTrick/>"
 
 #: ../src/gjiten.c:261
 msgid "Gjiten is a Japanese dictionary."
@@ -287,21 +286,30 @@ msgstr "_Über GJiten"
 msgid "_Help"
 msgstr "_Hilfe"
 
-#: ../src/gjiten.c:509 ../src/gjiten.c:536
-msgid "Unable to look up kanji: NON-UTF8 string received from clipboard!\n"
-msgstr "Kann Kanji nicht suchen: Nicht-UTF8-String in der Zwischenablage!\n"
+#. TODO: try to convert EUC-JP to UTF8 if it's non-utf8
+#: ../src/gjiten.c:497
+msgid ""
+"Cannot look up kanji: \n"
+"Non-UTF8 string received."
+msgstr ""
+"Kann Kanji nicht suchen: \n"
+"Nicht-UTF8-String in der Zwischenablage."
 
-#: ../src/gjiten.c:513 ../src/gjiten.c:540
+#: ../src/gjiten.c:504
 #, c-format
-msgid "Non-kanji string received from clipboard: %s\n"
-msgstr "Nicht-Japanisches Zeichen in der Zwischenablage: %s\n"
+msgid ""
+"Non-kanji string received:\n"
+" \"%s\"\n"
+msgstr ""
+"Nicht-Japanisches Zeichen in der Zwischenablage:\n"
+"%s\n"
 
 #. FIXME: change this to EnumPair
 #: ../src/pref.c:57
 msgid "Kanji"
 msgstr "Kanji"
 
-#: ../src/pref.c:58 ../src/kanjidic.c:937
+#: ../src/pref.c:58 ../src/kanjidic.c:968
 msgid "Radicals"
 msgstr "Radikale"
 
@@ -421,58 +429,76 @@ msgstr "Wörterbuchname"
 msgid "Dictionary file path"
 msgstr "Wörterbuchdateipfad"
 
+#: ../src/kanjidic.c:107
+msgid ""
+"Search by anything that the Kanjidic file contains:\n"
+"- The kanji itself\n"
+"- The reading (in kana)\n"
+"- English meaning\n"
+"- Kanjidic code\n"
+"- ...\n"
+"(see help for more information)"
+msgstr ""
+"Suche nach irgendetwas in der Kanjidic Datei:\n"
+"- Das Kanji selbst\n"
+"- Die Lesung (in Kana)\n"
+"- Englische Bedeutung\n"
+"- Kanjidic Code\n"
+"- ...\n"
+"(Siehe Hilfe für weitere Informationen.)"
+
 # msgid "Name readings:"
-#: ../src/kanjidic.c:150 ../src/kanjidic.c:153
+#: ../src/kanjidic.c:158 ../src/kanjidic.c:161
 msgid "Name readings:"
 msgstr "Namenslesungen:"
 
-#: ../src/kanjidic.c:164
+#: ../src/kanjidic.c:172
 msgid "Radical name:"
 msgstr "Radikalname:"
 
-#: ../src/kanjidic.c:220
+#: ../src/kanjidic.c:228
 msgid ", Common miscount: "
 msgstr ", Häufige Falschzählung: "
 
-#: ../src/kanjidic.c:412
+#: ../src/kanjidic.c:420
 msgid "Invalid radical!\n"
-msgstr "Ungültiges Radikal!\n"
+msgstr "Ungültiges Radikal\n"
 
-#: ../src/kanjidic.c:429
+#: ../src/kanjidic.c:437
 #, c-format
 msgid "I don't seem to recognize this radical: '%s'.\n"
-msgstr "Dieses Radikal gibt für mich keinen Sinn: '%s' !!!\n"
+msgstr "Dieses Radikal gibt für mich keinen Sinn: '%s' \n"
 
-#: ../src/kanjidic.c:487 ../src/worddic.c:795
+#: ../src/kanjidic.c:495 ../src/worddic.c:795
 msgid "Searching..."
 msgstr "Suche läuft..."
 
-#: ../src/kanjidic.c:537
+#: ../src/kanjidic.c:545
 msgid "No such kanji with this radical combination."
 msgstr "Kein Kanji mit dieser Radikalkombination."
 
-#: ../src/kanjidic.c:545
+#: ../src/kanjidic.c:553
 msgid "Invalid stroke count :-P "
 msgstr "Ungültige Strichanzahl :-P "
 
-#: ../src/kanjidic.c:551
+#: ../src/kanjidic.c:559
 msgid "Stroke search didn't find any match :-O "
 msgstr "Strichanzahlsuche lieferte keine Treffer :-O "
 
-#: ../src/kanjidic.c:561
+#: ../src/kanjidic.c:569
 msgid "No such kanji with this stroke/radical combination."
 msgstr "Kein Kanji mit dieser Strichanzahl/Radikal-Kombination vorhanden."
 
-#: ../src/kanjidic.c:575
+#: ../src/kanjidic.c:583
 msgid "No Matches found."
 msgstr "Keine Treffer gefunden"
 
-#: ../src/kanjidic.c:581
+#: ../src/kanjidic.c:589
 #, c-format
 msgid "Kanji found: %d"
 msgstr "Kanji gefunden: %d"
 
-#: ../src/kanjidic.c:848
+#: ../src/kanjidic.c:856
 #, c-format
 msgid ""
 "Error opening %s.\n"
@@ -481,52 +507,52 @@ msgstr ""
 "Fehler beim Öffnen von %s.\n"
 " Überprüfen Sie bitte Ihre Einstellungen oder lesen Sie die Dokumentation."
 
-#: ../src/kanjidic.c:1162
+#: ../src/kanjidic.c:1193
 msgid "Launch WordDic"
 msgstr "Wörterbuch starten"
 
 #. ignored
-#: ../src/kanjidic.c:1166 ../src/worddic.c:1206
+#: ../src/kanjidic.c:1197 ../src/worddic.c:1206
 msgid "KanjiPad"
 msgstr "Kanji-Pad"
 
-#: ../src/kanjidic.c:1167 ../src/worddic.c:1207
+#: ../src/kanjidic.c:1198 ../src/worddic.c:1207
 msgid "Launch KanjiPad"
 msgstr "Kanji-Pad starten"
 
-#: ../src/kanjidic.c:1171
+#: ../src/kanjidic.c:1202
 msgid "Kanji Search Options"
 msgstr "Kanji-Suchoptionen"
 
-#: ../src/kanjidic.c:1178
+#: ../src/kanjidic.c:1209
 msgid "Search By _Strokes:"
 msgstr "Nach _Strichanzahl suchen:"
 
-#: ../src/kanjidic.c:1183
+#: ../src/kanjidic.c:1214
 msgid "Search By _Radical:"
 msgstr "Nach _Radikal suchen:"
 
-#: ../src/kanjidic.c:1188
+#: ../src/kanjidic.c:1219
 msgid "Search By _Key:"
 msgstr "Nach S_chlüssel suchen:"
 
-#: ../src/kanjidic.c:1208
+#: ../src/kanjidic.c:1240
 msgid "Radica_ls"
 msgstr "Radikale"
 
-#: ../src/kanjidic.c:1232 ../src/kanjidic.c:1238
+#: ../src/kanjidic.c:1271 ../src/kanjidic.c:1279
 msgid "Clear"
 msgstr "Löschen"
 
-#: ../src/kanjidic.c:1248
+#: ../src/kanjidic.c:1291
 msgid "Search Results :"
 msgstr "Suchergebnisse :"
 
-#: ../src/kanjidic.c:1274
+#: ../src/kanjidic.c:1321
 msgid "Kanji Info :"
 msgstr "Kanji-Info :"
 
-#: ../src/kanjidic.c:1355
+#: ../src/kanjidic.c:1404
 msgid ""
 "Kanjidict is incompatible with your system. It could work, but it could also "
 "not work. \n"
@@ -540,7 +566,7 @@ msgstr ""
 " Technische Details:\n"
 " uintptr_t und void* sind kleiner als int."
 
-#: ../src/dicfile.c:86
+#: ../src/dicfile.c:87
 #, c-format
 msgid ""
 "Dictionary file is non-UTF: %s\n"
@@ -550,19 +576,19 @@ msgstr ""
 "Bitte konvertieren Sie sie in UTF-8.\n"
 "In der Dokumentation finden Sie weitere Informationen."
 
-#: ../src/dicfile.c:114 ../src/dicfile.c:120
+#: ../src/dicfile.c:115 ../src/dicfile.c:121
 msgid "Sorry, I could not load your dictionary."
 msgstr "Das Wörterbuch konnte nicht geladen werden."
 
-#: ../src/dicfile.c:157
+#: ../src/dicfile.c:158
 msgid "Please select a dictionary file."
 msgstr "Wörterbuchdatei auswählen"
 
-#: ../src/dicfile.c:160
+#: ../src/dicfile.c:161
 msgid "Dictionary file not found. "
 msgstr "Wörterbuchdatei nicht gefunden."
 
-#: ../src/dicfile.c:169
+#: ../src/dicfile.c:170
 msgid ""
 "Dictionary file is not in UTF-8 format. \n"
 "Please convert it to UTF-8 format. See the docs for more information."
@@ -709,4 +735,3 @@ msgstr "Lö_schen"
 #: ../src/worddic.c:1355
 msgid "Search results :"
 msgstr "Suchergebnisse :"
-

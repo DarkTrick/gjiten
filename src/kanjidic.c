@@ -110,7 +110,7 @@ extern GjitenApp *gjitenApp;
 "- English meaning\n"                                   \
 "- Kanjidic code\n"                                     \
 "- ...\n"                                               \
-"(see help for more information )")
+"(see help for more information)")
 
 
 /* ************************************************************ */
