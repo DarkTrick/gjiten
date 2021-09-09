@@ -438,8 +438,15 @@ gjiten_start_kanjidic(GtkApplication *app)
 void
 gjiten_start_kanjidic_with_search(gunichar kanji)
 {
+  GError * error = NULL;
+  gchar * str_kanji = g_ucs4_to_utf8 (&kanji,1, NULL, NULL, &error);
+
+  if (error)
+    return;
+
   gjiten_start_kanjidic (NULL);
-  kanji_selected (kanji);
+  kanjidic_lookup (str_kanji);
+  g_free (str_kanji);
 }
 
 
@@ -499,7 +506,7 @@ _try_open_kanjidic_and_search (GtkApplication *app,
   }
 
   gjiten_start_kanjidic (app);
-  show_kanjiinfo (g_utf8_get_char (text));
+  kanjidic_lookup (text);
 }
 
 
