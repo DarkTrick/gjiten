@@ -1038,7 +1038,7 @@ result_view_motion(GtkWidget      *text_view,
   kanji = gtk_text_iter_get_char (&mouse_iter);
 
   // Change the cursor if necessary
-  if ((isKanjiChar (kanji) == TRUE))
+  if ((unichar_isKanjiChar (kanji) == TRUE))
   {
     gdk_window_set_cursor (gtk_text_view_get_window (GTK_TEXT_VIEW (text_view), GTK_TEXT_WINDOW_TEXT), wordDic->selection_cursor);
     wordDic->is_cursor_regular = FALSE;
@@ -1078,7 +1078,7 @@ kanji_clicked(GtkWidget       *text_view,
 
   gtk_text_view_get_iter_at_position (GTK_TEXT_VIEW (text_view), &mouse_iter, &trailing, x, y);
   kanji = gtk_text_iter_get_char (&mouse_iter);
-  if ((kanji != 0xFFFC) && (kanji != 0) && (isKanjiChar (kanji) == TRUE))
+  if ((kanji != 0xFFFC) && (kanji != 0) && (unichar_isKanjiChar (kanji) == TRUE))
   {
     gjiten_start_kanjidic_with_search (kanji);
   }

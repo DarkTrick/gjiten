@@ -30,7 +30,8 @@ gchar *full2half(gchar *instr);
 gboolean isKanaChar(gunichar c);
 gboolean isKatakanaChar(gunichar c);
 gboolean isHiraganaChar(gunichar c);
-gboolean isKanjiChar(gunichar c);
+gboolean gchar_isKanjiChar(const char *c);
+gboolean unichar_isKanjiChar(gunichar c);
 gboolean isJPChar(gunichar c);
 gboolean isOtherChar(gunichar c);
 gint search4string(gint type, GjitenDicfile *dicfile, gchar *srchstrg,

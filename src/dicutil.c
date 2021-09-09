@@ -90,7 +90,7 @@ is_kanji_only(gchar *line)
 
   while (g_unichar_isspace (*currentchar) == FALSE) { // find first space
     if (currentchar == line_end) break;
-    if (isKanjiChar (g_utf8_get_char (currentchar)) == FALSE) return FALSE;
+    if (gchar_isKanjiChar (currentchar) == FALSE) return FALSE;
    currentchar = g_utf8_next_char (currentchar);
   }
 
@@ -160,7 +160,7 @@ search4string(gint           srchtype,
     linestart = linsrchptr;
     while ((*linestart != '\n') && (linestart != dicfile->mem)) linestart--; // find beginning of line
     if (linestart == dicfile->mem) {
-      if ((isKanjiChar (g_utf8_get_char (linestart)) == FALSE) && (isKanaChar (g_utf8_get_char (linestart)) == FALSE)) {
+      if ((gchar_isKanjiChar (linestart) == FALSE) && (isKanaChar (g_utf8_get_char (linestart)) == FALSE)) {
         linsrchptr++;
         goto bad_hit;
       }
@@ -258,7 +258,7 @@ gboolean
 isJPChar(gunichar c)
 {
   if (isKanaChar (c) == TRUE) return TRUE;
-  if (isKanjiChar (c) == TRUE) return TRUE;
+  if (unichar_isKanjiChar (c) == TRUE) return TRUE;
   if (isOtherChar (c) == TRUE) return TRUE;
   return FALSE;
 }
@@ -293,9 +293,14 @@ isHiraganaChar(gunichar c)
 }
 
 
+gboolean
+gchar_isKanjiChar(const gchar * c)
+{
+  return unichar_isKanjiChar (g_utf8_get_char_validated (c,4));
+}
 
 gboolean
-isKanjiChar(gunichar c)
+unichar_isKanjiChar(gunichar c)
 {
   if ((c >= 0x3300) && (c <= 0x33FF)) return TRUE; //cjk compatibility
   if ((c >= 0x3400) && (c <= 0x4DBF)) return TRUE; //cjk ext A

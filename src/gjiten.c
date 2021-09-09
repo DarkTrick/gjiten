@@ -492,7 +492,7 @@ _try_open_kanjidic_and_search (GtkApplication *app,
     return;
   }
 
-  if (isKanjiChar (g_utf8_get_char (text)) == FALSE)
+  if (gchar_isKanjiChar (text) == FALSE)
   {
     gjiten_print_error (_("Non-kanji string received:\n \"%s\"\n"), text);
     return;
