@@ -477,85 +477,89 @@ _init_resources()
 
 
 
+void
+_try_open_kanjidic_and_search (GtkApplication *app,
+                               const char *text)
+{
+
+
+  // validate
+  if (g_utf8_validate (text, -1, NULL) == FALSE)
+  {
+    // TODO: try to convert EUC-JP to UTF8 if it's non-utf8
+    gjiten_print_error (_("Cannot look up kanji: \n"
+                          "Non-UTF8 string received."));
+    return;
+  }
+
+  if (isKanjiChar (g_utf8_get_char (text)) == FALSE)
+  {
+    gjiten_print_error (_("Non-kanji string received:\n \"%s\"\n"), text);
+    return;
+  }
+
+  gjiten_start_kanjidic (app);
+  show_kanjiinfo (g_utf8_get_char (text));
+}
+
+
+
 
 void
 gjiten_activate(GtkApplication *app,
                 gpointer        user_data)
 {
-  _init_resources();
-
   if (TRUE == gjitenApp->conf->cli_option_show_version)
   {
     g_print (PACKAGE_STRING "\n");
     return;
   }
-  _gjiten_create_menu (GTK_APPLICATION (app));
 
+  _init_resources();
+  _gjiten_create_menu (GTK_APPLICATION (app));
   gjiten_apply_fonts (gjitenApp);
 
   // the following is for clipboard lookup.
-  if ((gjitenApp->conf->cli_option_clip_kanji_lookup == TRUE) || (gjitenApp->conf->cli_option_clip_word_lookup == TRUE)) {
-    if (gjitenApp->conf->cli_option_clip_word_lookup) {
-      gjiten_start_worddic (app);
-      worddic_paste ();
-      on_search_clicked ();
-    }
-    else {
-      if (gjitenApp->conf->cli_option_clip_kanji_lookup){
-        clipboard_text = gtk_clipboard_wait_for_text (gtk_clipboard_get (GDK_SELECTION_PRIMARY));
-        // validate
-        // FIXME: try to convert EUC-JP to UTF8 if it's non-utf8
-        if (g_utf8_validate (clipboard_text, -1, NULL) == FALSE) {
-          gjiten_print_error (_("Unable to look up kanji: NON-UTF8 string received from clipboard!\n"));
-          exit (0);
-        }
-        else if (isKanjiChar (g_utf8_get_char (clipboard_text)) == FALSE) {
-          gjiten_print_error (_("Non-kanji string received from clipboard: %s\n"), clipboard_text);
-          exit (0);
-        }
-        else {
-          if (gjitenApp->kanjidic == NULL) gjiten_start_kanjidic (app);
-          print_kanjinfo (g_utf8_get_char (clipboard_text));
-        }
-      }
-    }
-  }
-
-
-  {
-    if (gjitenApp->conf->cli_option_startkanjidic) {
-      gjiten_start_kanjidic (app);
-    }
-    else
-      if (gjitenApp->conf->cli_option_word_to_lookup) {
-        gjiten_start_worddic (app);
-        worddic_lookup_word (gjitenApp->conf->cli_option_word_to_lookup);
-      }
-      else if (gjitenApp->conf->cli_option_kanji_to_lookup != NULL) {
-        if (g_utf8_validate (gjitenApp->conf->cli_option_kanji_to_lookup, -1, NULL) == FALSE) {
-          gjiten_print_error (_("Unable to look up kanji: NON-UTF8 string received from clipboard!\n"));
-          exit (0); // FIXME
-        }
-        else if (isKanjiChar (g_utf8_get_char (gjitenApp->conf->cli_option_kanji_to_lookup)) == FALSE) {
-          gjiten_print_error (_("Non-kanji string received from clipboard: %s\n"), gjitenApp->conf->cli_option_kanji_to_lookup);
-          exit (0); // FIXME
-        }
-        else {
-          if (gjitenApp->kanjidic == NULL) gjiten_start_kanjidic (app);
-          print_kanjinfo (g_utf8_get_char (gjitenApp->conf->cli_option_kanji_to_lookup));
-        }
-      }
-      else if (!gjitenApp->conf->cli_option_clip_kanji_lookup && !gjitenApp->conf->cli_option_clip_word_lookup)
-        gjiten_start_worddic (app);
-  }
-
-  // if nothing was started so far (= no cmd params given)
-  if (!gjitenApp->worddic && !gjitenApp->kanjidic)
+  if (TRUE == gjitenApp->conf->cli_option_clip_word_lookup)
   {
     gjiten_start_worddic (app);
+    worddic_paste ();
+    on_search_clicked ();
+    return;
   }
 
-  gjiten_flush_errors ();
+  if (TRUE == gjitenApp->conf->cli_option_clip_kanji_lookup)
+  {
+    clipboard_text = gtk_clipboard_wait_for_text (gtk_clipboard_get (GDK_SELECTION_PRIMARY));
+    _try_open_kanjidic_and_search (app, clipboard_text);
+    return;
+  }
+
+  if (gjitenApp->conf->cli_option_startkanjidic)
+  {
+    gjiten_start_kanjidic (app);
+    return;
+  }
+
+  if (gjitenApp->conf->cli_option_word_to_lookup)
+  {
+    gjiten_start_worddic (app);
+    worddic_lookup_word (gjitenApp->conf->cli_option_word_to_lookup);
+    return;
+  }
+
+
+  if (gjitenApp->conf->cli_option_kanji_to_lookup != NULL)
+  {
+    const char * kanji = gjitenApp->conf->cli_option_kanji_to_lookup;
+    _try_open_kanjidic_and_search (app, kanji);
+    return;
+  }
+
+
+
+  gjiten_start_worddic (app);
+  return;
 }
 
 

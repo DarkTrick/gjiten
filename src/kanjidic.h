@@ -59,7 +59,7 @@ struct _GjKanjidicWindowClass
 GjKanjidicWindow *kanjidic_create();
 void              kanjidic_close();
 GtkWidget*        gj_kanjidic_window_new (GtkApplication * app);
-void              print_kanjinfo(gunichar kanji);
+void              show_kanjiinfo(gunichar kanji);
 void              kanjidic_apply_fonts();
 void              kanji_selected(gunichar kanji);
 

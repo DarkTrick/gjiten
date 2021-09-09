@@ -275,7 +275,7 @@ do_kdicline(gchar *kstr)
 
 
 void
-print_kanjinfo(gunichar kanji)
+show_kanjiinfo(gunichar kanji)
 {
   gint roff, rlen;
   gchar repstr[1024];
@@ -580,7 +580,7 @@ on_kanji_search()
   snprintf (kappbarmsg, 100, _("Kanji found: %d"), result_num);
   gtk_label_set_text (GTK_LABEL (kanjiDic->appbar_kanji), kappbarmsg);
 
-  if (result_num == 1) print_kanjinfo (POINTER_TO_UNICHAR (klinklist->data));
+  if (result_num == 1) show_kanjiinfo (POINTER_TO_UNICHAR (klinklist->data));
 
 
   // PRINT OUT KANJI FOUND
@@ -734,7 +734,7 @@ void history_add(gunichar unicharkanji)
 void
 kanji_selected(gunichar kanji)
 {
-  print_kanjinfo (kanji);
+  show_kanjiinfo (kanji);
   history_add (kanji);
   GJITEN_DEBUG ("KANJI_SELECTED\n");
 }
