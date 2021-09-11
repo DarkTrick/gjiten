@@ -1303,22 +1303,19 @@ _create_gui(GjKanjidicWindow* self)
   gtk_container_set_border_width (GTK_CONTAINER (frame_kinfo), 2);
   gtk_container_add (GTK_CONTAINER (frame_kinfo), hbox);
 
-  scrolledwin_kinfo = gtk_scrolled_window_new (NULL, NULL);
+  scrolledwin_kinfo = gtk_scrolled_window_new (NULL,NULL);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwin_kinfo),
-         GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+                                  GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
   gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwin_kinfo), GTK_SHADOW_IN);
   gtk_box_pack_start (GTK_BOX (hbox), scrolledwin_kinfo, TRUE, TRUE, 0);
   gtk_container_add (GTK_CONTAINER (scrolledwin_kinfo), kanjiDic->text_kanjinfo_view);
 
-  kanjiDic->scrolledwin_history = gtk_scrolled_window_new (NULL, NULL);
-  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (kanjiDic->scrolledwin_history),
-                                 GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-
   kanjiDic->vbox_history = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+
   history_init ();
 
-  gtk_container_add (GTK_CONTAINER (kanjiDic->scrolledwin_history),
-                     kanjiDic->vbox_history);
+  kanjiDic->scrolledwin_history = gtkx_scrollable_window_vertical_new (kanjiDic->vbox_history,NULL);
+  gtkx_widget_css_class_add (kanjiDic->scrolledwin_history, "minislider");
   gtk_box_pack_start (GTK_BOX (hbox), kanjiDic->scrolledwin_history, FALSE, TRUE, 0);
 
   vpane = gtk_paned_new (GTK_ORIENTATION_VERTICAL);

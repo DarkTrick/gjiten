@@ -12,3 +12,8 @@
 paned separator {
    background: none;
 }
+
+.minislider slider{
+   min-width:0px;
+   border-width: 1px;
+}

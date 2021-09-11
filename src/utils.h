@@ -147,5 +147,8 @@ void
 gtkx_widget_css_class_add (GtkWidget  *widget,
                          const gchar *css_class_name);
 
+GtkWidget *
+gtkx_scrollable_window_vertical_new (GtkWidget     *widget,
+                                     GtkAdjustment *adjustment_nullable);
 
 #endif
