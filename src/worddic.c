@@ -453,7 +453,7 @@ search_in_dictfile_and_print(GjitenDicfile *dicfile,
 {
   gint srchresp, roff, rlen;
   gchar repstr[1024];
-  guint32 respos, oldrespos;
+  guint32 respos = 0, oldrespos;
   gint printit;
   gint match_criteria = EXACT_MATCH;
   gchar *currchar;
