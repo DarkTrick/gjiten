@@ -461,6 +461,8 @@ gj_gtk_window_close_on_focus_out(GtkWidget *window,
   //  Fix these problems, if there is an answer here:
   //  https://discourse.gnome.org/t/how-to-detect-if-the-user-left-the-application/7492
   //   ( How to detect, if the user left the application? )
+  //  or maybe here someday:
+  //    https://gitlab.gnome.org/GNOME/gtk/-/issues/4252
   gtk_widget_destroy (window);
   return TRUE;
 }
@@ -595,6 +597,11 @@ adj_page_sizechanged (GtkAdjustment *adjustment,
  *  overlay (hide) the content of `widget`.
  *  The default behaviour in GTK is overlaying (and possibly hiding)
  *  the content.
+ *
+ *  TODO:
+ *  There is still a problem with this way of doing things (gtk bug?).
+ *  Look here for more details.
+ *  https://stackoverflow.com/questions/69147830/gtk-hide-and-show-a-widget-in-a-gtkbox-shows-the-widget-underneath-the-gtkbox
  *
  **/
 GtkWidget *
