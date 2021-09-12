@@ -818,23 +818,19 @@ jis_radical_to_unicode(gchar *radical)
   return g_utf8_get_char (radical);
 }
 
+
+
 // Load the radical data from the file
 void
-load_radkfile()
+load_radkfile_if_necessary()
 {
   int error = FALSE;
   struct stat radk_stat;
-  gint rad_cnt = 0;
   gchar *radkfile_name = RADKFILE_NAME;
-  gchar *radkfile_ptr;
-  gchar *radkfile_end;
   int fd = 0;
-  RadInfo *rad_info = NULL;
-  KanjiInfo *kanji_info;
-  gunichar kanji;
 
   if (radkfile != NULL) {
-    //printf ("radkfile already initialized.\n");
+    GJITEN_DEBUG ("radkfile already initialized.\n");
     return;
   }
   if (stat (radkfile_name, &radk_stat) != 0) {
@@ -857,22 +853,47 @@ load_radkfile()
     return;
   }
 
+}
+
+
+
+static void
+radical_hashtables_init()
+{
+  int error = FALSE;
+  struct stat radk_stat;
+  gint rad_cnt = 0;
+  gchar *radkfile_name = RADKFILE_NAME;
+  gchar *radkfile_ptr;
+  gchar *radkfile_end;
+  int fd = 0;
+  RadInfo *rad_info = NULL;
+  KanjiInfo *kanji_info;
+  gunichar kanji;
+
+  load_radkfile_if_necessary ();
+
   radkfile_end = radkfile + strlen (radkfile); //FIXME: lseek
   radkfile_ptr = radkfile;
 
-  if (kanjiDic->kanji_info_hash == NULL) {
-    kanjiDic->kanji_info_hash = g_hash_table_new (NULL, NULL);
-  }
-  if (kanjiDic->rad_info_hash == NULL) {
-    kanjiDic->rad_info_hash = g_hash_table_new (NULL, NULL);
-  }
+  if (kanjiDic->kanji_info_hash != NULL ||
+      kanjiDic->rad_info_hash   != NULL)
+    return;
 
-  while ((radkfile_ptr < radkfile_end) && (radkfile_ptr != NULL)) {
-    if (*radkfile_ptr == '#') {  //find $ as first char on the line
+  kanjiDic->kanji_info_hash = g_hash_table_new (NULL, NULL);
+  kanjiDic->rad_info_hash = g_hash_table_new (NULL, NULL);
+
+
+  while ((radkfile_ptr < radkfile_end) && (radkfile_ptr != NULL))
+  {
+    if (*radkfile_ptr == '#') //find $ as first char on the line
+    {
       radkfile_ptr = get_eof_line (radkfile_ptr, radkfile_end); //Goto next line
       continue;
     }
-    if (*radkfile_ptr == '$') {  //Radical info line
+
+    //Radical info line ?
+    if (*radkfile_ptr == '$') {
       rad_cnt++;          //Increase number of radicals found
       radkfile_ptr = g_utf8_next_char (radkfile_ptr);
       while (g_unichar_iswide (g_utf8_get_char (radkfile_ptr)) == FALSE) { //Find radical
@@ -891,15 +912,20 @@ load_radkfile()
       g_hash_table_insert (kanjiDic->rad_info_hash, TO_POINTER(rad_info->radical), rad_info);
       radkfile_ptr = get_eof_line (radkfile_ptr, radkfile_end); //Goto next line
     }
-    else {   //Kanji
-      while ((*radkfile_ptr != '$') && (radkfile_ptr < radkfile_end)) {
-        if (*radkfile_ptr == '\n') {
+    //Kanji info line ?
+    else
+    {
+      while ((*radkfile_ptr != '$') && (radkfile_ptr < radkfile_end))
+      {
+        if (*radkfile_ptr == '\n')
+        {
           radkfile_ptr++;
           continue;
         }
         kanji = g_utf8_get_char (radkfile_ptr);
         kanji_info = g_hash_table_lookup (kanjiDic->kanji_info_hash, TO_CONST_POINTER (kanji));
-        if (kanji_info == NULL) {
+        if (kanji_info == NULL)
+        {
           kanji_info = g_new0(KanjiInfo, 1);
           kanji_info->kanji = kanji;
           g_hash_table_insert (kanjiDic->kanji_info_hash, TO_POINTER (kanji), TO_POINTER (kanji_info));
@@ -948,7 +974,7 @@ create_window_radicals()
   RadInfo *rad_info = NULL;
   GList *rad_info_list;
 
-  load_radkfile ();
+  radical_hashtables_init ();
 
   if (kanjiDic->window_radicals != NULL) {
     gtk_widget_hide (kanjiDic->window_radicals);
@@ -1159,7 +1185,7 @@ _create_gui(GjKanjidicWindow* self)
 
   GjKanjidicWindowPrivate * kanjiDic = gj_kanjidic_window_get_instance_private (self);
 
-  load_radkfile ();
+  radical_hashtables_init ();
 
   if (kdic_line == NULL)
     kdic_line = (gchar *)g_malloc (KCFGNUM * KBUFSIZE);
