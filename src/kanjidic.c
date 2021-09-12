@@ -1037,6 +1037,29 @@ create_window_radicals()
 }
 
 
+
+void
+kanjidic_destruct()
+{
+  // Avoid recursion
+  g_object_ref_sink (self);
+  gtk_widget_destroy (GTK_WIDGET (self));
+
+  g_slist_free_full (kanjiDic->kanji_history_list, free);
+
+  // don't free elements: contain information of rad_info
+  if (kanjiDic->rad_button_hash)
+    g_hash_table_destroy (kanjiDic->rad_button_hash);
+  if (kanjiDic->kanji_info_hash)
+    g_hash_table_destroy (kanjiDic->kanji_info_hash);
+  if (kanjiDic->rad_info_hash)
+    g_hash_table_destroy (kanjiDic->rad_info_hash);
+
+  g_list_free_full (kanjiDic->rad_info_list, free);
+}
+
+
+
 void
 kanjidic_close()
 {
@@ -1045,8 +1068,7 @@ kanjidic_close()
   {
     radical_window_close ();
 
-    /* Avoid recursion */
-    g_object_ref_sink (self);
+    kanjidic_destruct ();
     kanjiDic = NULL;
     self = NULL;
     gjitenApp->kanjidic = NULL;
