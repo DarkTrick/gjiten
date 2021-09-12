@@ -916,7 +916,7 @@
                     <property name="orientation">vertical</property>
                     <property name="spacing">4</property>
                     <child>
-                      <!-- n-columns=2 n-rows=2 -->
+                      <!-- n-columns=2 n-rows=4 -->
                       <object class="GtkGrid" id="table_fonts_grid">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
@@ -977,51 +977,46 @@
                             <property name="top-attach">1</property>
                           </packing>
                         </child>
+                        <child>
+                          <object class="GtkCheckButton" id="checkbutton_largefont_worddic">
+                            <property name="label" translatable="yes">In _WordDic (for Kanji)</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">False</property>
+                            <property name="use-underline">True</property>
+                            <property name="draw-indicator">True</property>
+                          </object>
+                          <packing>
+                            <property name="left-attach">1</property>
+                            <property name="top-attach">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkCheckButton" id="checkbutton_largefont_kanjidic">
+                            <property name="label" translatable="yes">In _KanjiDic (for Kanji results)</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">False</property>
+                            <property name="use-underline">True</property>
+                            <property name="draw-indicator">True</property>
+                          </object>
+                          <packing>
+                            <property name="left-attach">1</property>
+                            <property name="top-attach">3</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
                         <property name="position">0</property>
                       </packing>
-                    </child>
-                    <child>
-                      <object class="GtkCheckButton" id="checkbutton_largefont_worddic">
-                        <property name="label" translatable="yes">Use large font for Japanese in _WordDic search results</property>
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="receives-default">False</property>
-                        <property name="use-underline">True</property>
-                        <property name="draw-indicator">True</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkCheckButton" id="checkbutton_largefont_kanjidic">
-                        <property name="label" translatable="yes">_Use large font for kanji results in KanjiDic</property>
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="receives-default">False</property>
-                        <property name="use-underline">True</property>
-                        <property name="draw-indicator">True</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
                     </child>
                     <child>
                       <placeholder/>
