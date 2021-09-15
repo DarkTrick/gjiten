@@ -896,7 +896,7 @@ radical_hashtables_init()
 
   load_radkfile_if_necessary ();
 
-  radkfile_end = radkfile + strlen (radkfile); //FIXME: lseek
+  radkfile_end = radkfile + radkfile_size;
   radkfile_ptr = radkfile;
 
   if (kanjiDic->kanji_info_hash != NULL ||
