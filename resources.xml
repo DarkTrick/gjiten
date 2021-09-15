@@ -14,5 +14,8 @@
     <file>data/uis/gjiten-settings.glade</file>
 
     <file>data/css/styles.css</file>
+
+    <file>data/vconj.utf8</file>
+    <file>data/radkfile.utf8</file>
   </gresource>
 </gresources>

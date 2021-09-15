@@ -63,11 +63,11 @@ strg_end_compare(gchar *strg1,
 
 
 
-gchar *
-get_eof_line(gchar *ptr,
-             gchar *end_ptr)
+const gchar *
+get_eof_line(const gchar *ptr,
+             const gchar *end_ptr)
 {
-  static gchar *tmpptr; //FIXME: this is called from kanjidic and worddic!!!
+  static const gchar *tmpptr; //FIXME: this is called from kanjidic and worddic!!!
   tmpptr = ptr;
   while (*tmpptr != '\n') {
     if (end_ptr == tmpptr) return NULL;

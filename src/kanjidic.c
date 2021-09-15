@@ -799,7 +799,7 @@ get_rad_of_kanji(gunichar kanji)
 }
 
 static gunichar
-jis_radical_to_unicode(gchar *radical)
+jis_radical_to_unicode(const gchar *radical)
 {
   gint i;
 
@@ -863,8 +863,7 @@ radical_hashtables_init()
   int error = FALSE;
   struct stat radk_stat;
   gint rad_cnt = 0;
-  gchar *radkfile_name = RADKFILE_NAME;
-  gchar *radkfile_ptr;
+  const gchar *radkfile_ptr;
   gchar *radkfile_end;
   int fd = 0;
   RadInfo *rad_info = NULL;

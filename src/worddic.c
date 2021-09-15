@@ -137,48 +137,20 @@ worddic_paste()
 }
 
 
-
-// Load & initialize verb inflection details
 static void
-Verbinit()
+_verb_init (const gchar *vinfl_start_nullable,
+            const gchar *vinfl_end)
 {
-  static int verbinit_done = FALSE;
-  gchar *tmp_ptr;
-  int vinfl_size = 0;
-  struct stat vinfl_stat;
-  gchar *vinfl_start, *vinfl_ptr, *vinfl_end;
-  int fd = 0;
-  int vinfl_part = 1;
-  int conj_type = 40;
+  const gchar *tmp_ptr;
   struct vinfl_struct *tmp_vinfl_struct;
   GSList *tmp_list_ptr = NULL;
 
-  if (verbinit_done == TRUE)
-  {
-    //printf ("Verbinit already done!\n");
-    return;
-  }
 
-  if (stat (VINFL_FILENAME, &vinfl_stat) != 0)
-  {
-    printf ("**ERROR** %s: stat () \n", VINFL_FILENAME);
-  }
-  vinfl_size = vinfl_stat.st_size;
-  fd = open (VINFL_FILENAME, O_RDONLY);
-  if (fd == -1)
-  {
-    printf ("**ERROR** %s: open ()\n", VINFL_FILENAME);
-  }
-  // printf ("SIZE: %d\n", radkfile_size);
-  vinfl_start = (gchar *) mmap (NULL, vinfl_size, PROT_READ, MAP_SHARED, fd, 0);
-  if (vinfl_start == MAP_FAILED) error_show_and_quit ("mmap () failed for "VINFL_FILENAME"\n");
+  const gchar *vinfl_ptr = vinfl_start_nullable;
+  int conj_type  = 40;
+  int vinfl_part = 1;
 
-  //  printf ("STRLEN: %d\n", strlen (radkfile));
 
-  vinfl_end = vinfl_start + strlen (vinfl_start);
-  vinfl_ptr = vinfl_start;
-
-  vinfl_part = 1;
   while ((vinfl_ptr < vinfl_end) && (vinfl_ptr != NULL))
   {
     if (*vinfl_ptr == '#') //find $ as first char on the line
@@ -234,6 +206,66 @@ Verbinit()
       break;
     }
   }
+}
+
+
+static GBytes *
+_verbinit_init_mem_from_file ()
+{
+  GError * error = NULL;
+  GMappedFile *mapped_file = g_mapped_file_new (VINFL_FILENAME, FALSE, &error);
+
+  if (NULL != error)
+  {
+    printf ("**ERROR** with file %s: %s\n", VINFL_FILENAME, error->message);
+    g_error_free (error);
+    return NULL;
+  }
+
+  gsize vinfl_size = g_mapped_file_get_length (mapped_file);
+  GBytes * bytes = g_bytes_ref (g_mapped_file_get_bytes (mapped_file));
+  g_mapped_file_unref (mapped_file);
+
+  return bytes;
+}
+
+
+
+// Load & initialize verb inflection details
+static void
+Verbinit()
+{
+  static int verbinit_done = FALSE;
+  if (verbinit_done == TRUE)
+    return;
+
+  GBytes * bytes = NULL;
+
+  // load data into memory
+  {
+    // init from file - or as fallback: from resources
+    gboolean init_from_file = g_file_test (VINFL_FILENAME, G_FILE_TEST_EXISTS);
+
+    // first, try to init from file
+    if (init_from_file)
+      bytes = _verbinit_init_mem_from_file ();
+
+    // fallback: init from resources
+    if (!init_from_file || NULL == bytes)
+      bytes = g_resources_lookup_data (VINFL_RESOURCE, 0, NULL);
+  }
+
+  // init verb inflection data from bytes
+  {
+    const gchar *vinfl_start = NULL;
+    gsize vinfl_size = 0;
+
+    vinfl_start = g_bytes_get_data (bytes, &vinfl_size);
+    _verb_init (vinfl_start, vinfl_start + vinfl_size);
+    g_bytes_unref (bytes);
+  }
+
+
   verbinit_done = TRUE;
 }
 

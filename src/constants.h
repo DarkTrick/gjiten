@@ -10,7 +10,9 @@
 
 #define RESOURCE_PATH "/org/gjiten/data/"
 
-#define VINFL_FILENAME GJITEN_DATADIR"/vconj.utf8"
+#define FILE_VCONJ "vconj.utf8"
+#define VINFL_FILENAME GJITEN_DATADIR"/"FILE_VCONJ
+#define VINFL_RESOURCE RESOURCE_PATH FILE_VCONJ
 #define RADKFILE_NAME GJITEN_DATADIR"/radkfile.utf8"
 #define GJITEN_DICDIR GJITEN_DATADIR"/dics"
 
