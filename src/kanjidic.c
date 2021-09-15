@@ -89,8 +89,8 @@ G_DEFINE_TYPE_WITH_PRIVATE (GjKanjidicWindow, gj_kanjidic_window,  GTK_TYPE_APPL
 /* VARIABLES ************************/
 gchar *kdic_line = NULL;  /*size = KCFGNUM * KBUFSIZE */
 gchar kanjiselected[2];
-gchar *radkfile = NULL;
-guint32 radkfile_size;
+const gchar *radkfile = NULL;
+gsize radkfile_size;
 extern guint32 srchpos;
 
 GList *klinklist = NULL, *tmpklinklist = NULL;
@@ -818,41 +818,65 @@ jis_radical_to_unicode(const gchar *radical)
   return g_utf8_get_char (radical);
 }
 
-
-
-// Load the radical data from the file
-void
-load_radkfile_if_necessary()
+gboolean
+_load_radkfile_from_file()
 {
   int error = FALSE;
   struct stat radk_stat;
   gchar *radkfile_name = RADKFILE_NAME;
   int fd = 0;
 
-  if (radkfile != NULL) {
-    GJITEN_DEBUG ("radkfile already initialized.\n");
-    return;
-  }
   if (stat (radkfile_name, &radk_stat) != 0) {
-    g_error ("**ERROR** radkfile: stat () \n");
-    error = TRUE;
+    return FALSE;
   }
   radkfile_size = radk_stat.st_size;
   fd = open (radkfile_name, O_RDONLY);
   if (fd == -1) {
-    g_error ("**ERROR** radkfile: open ()\n");
-    error = TRUE;
+    return FALSE;
   }
   radkfile = (gchar *) mmap (NULL, radkfile_size, PROT_READ, MAP_SHARED, fd, 0);
-  if (radkfile == NULL) error_show_and_quit ("mmap () failed for radkfile\n");
-
-  if (error == TRUE) {
-    error_show (NULL,_("Error opening %s.\n "\
-                         "Please check your preferences or read the documentation."),
-                       radkfile_name);
-    return;
+  if (radkfile == NULL){
+    g_print ("Could not load radical file from %s\n", RADKFILE_NAME);
+    return FALSE;
   }
 
+  return TRUE;
+}
+
+
+
+static void
+_load_radkfile_from_resource()
+{
+  GBytes * bytes = g_resources_lookup_data (RADKFILE_RESOURCE, 0, NULL);
+  radkfile = g_bytes_get_data (bytes, &radkfile_size);
+}
+
+
+
+
+/**
+ *  Load the radical data from the file
+ * Returns:
+ *  TRUE, if radkfile was loaded or is already loaded
+ *  FALSE, error
+ **/
+gboolean
+load_radkfile_if_necessary()
+{
+  if (radkfile != NULL) {
+    GJITEN_DEBUG ("radkfile already initialized.\n");
+    return TRUE;
+  }
+
+  gboolean initialized = FALSE;
+  initialized = _load_radkfile_from_file ();
+
+  if (!initialized)
+  {
+    _load_radkfile_from_resource ();
+  }
+  return TRUE;
 }
 
 
@@ -864,7 +888,7 @@ radical_hashtables_init()
   struct stat radk_stat;
   gint rad_cnt = 0;
   const gchar *radkfile_ptr;
-  gchar *radkfile_end;
+  const gchar *radkfile_end;
   int fd = 0;
   RadInfo *rad_info = NULL;
   KanjiInfo *kanji_info;
