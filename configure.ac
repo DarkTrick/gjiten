@@ -53,10 +53,10 @@ AC_SUBST(PACKAGE_LOCALE_DIR)
 
 AC_ARG_ENABLE(debug,
 		[  --enable-debug  Print debugging information. This is a feature which should not be usually enabled.],
-                [debugging=yes; DEBUG_FLAGS="-ggdb -DDEBUG_GJITEN"],
-                [debugging=no]
+    [debugging=yes; DEBUG_FLAGS="-ggdb -DDEBUG_GJITEN -O0"],
+    [debugging=no]
 	      )
-	      AC_SUBST(DEBUG_FLAGS)
+AC_SUBST(DEBUG_FLAGS)
 #DEBUG_FLAGS="-DGNOME_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED -DG_DISABLE_DEPRECATED -ggdb -std=c89 -pedantic"],
 
 
