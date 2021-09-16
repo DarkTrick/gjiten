@@ -225,6 +225,7 @@ _verb_init (const gchar *vinfl_start_nullable,
 }
 
 
+
 static GBytes *
 _verbinit_init_mem_from_file ()
 {
@@ -1247,7 +1248,7 @@ _create_gui (GjWorddicWindow* self)
 
   // setup window
   {
-    gtk_window_set_title (GTK_WINDOW (self), _("Gjiten - WordDic"));
+    gtk_window_set_title (GTK_WINDOW (self), _(APPLICATION_NAME " - WordDic"));
     gtk_widget_get_can_default (GTK_WIDGET (self));
     g_signal_connect (G_OBJECT (self), "destroy", G_CALLBACK (worddic_close), NULL);
     gtk_window_set_default_size (GTK_WINDOW (self), 500, 500);

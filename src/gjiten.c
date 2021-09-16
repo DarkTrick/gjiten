@@ -240,7 +240,7 @@ gjiten_display_manual(GtkWidget *parent_window_nullable,
 
 
 void
-gjiten_create_whats_new()
+gjiten_show_whatsnew()
 {
   GtkTextBuffer *textbuffer = gtk_text_buffer_new (NULL);
 
@@ -264,20 +264,32 @@ gjiten_create_whats_new()
   "\n"
   ,-1);
 
-
-
   GtkWidget * window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_window_set_default_size (GTK_WINDOW (window), 500, 300);
+  setWindowIcon (GTK_WINDOW (window), GJITEN_WINDOW_ICON);
+  gtk_window_set_title (GTK_WINDOW (window), APPLICATION_NAME " - What's New?");
+  gtk_window_set_default_size (GTK_WINDOW (window), 500, 400);
 
+  GtkWidget * box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 5);
+  gtk_container_add (GTK_CONTAINER (window), box);
 
   GtkWidget * scrolled = gtk_scrolled_window_new (NULL, NULL);
-  gtk_container_add (GTK_CONTAINER (window), scrolled);
+  gtk_box_pack_start (GTK_BOX (box), scrolled, TRUE, TRUE, 0);
 
   GtkWidget * view = gtk_text_view_new_with_buffer (textbuffer);
   gtk_text_view_set_editable (GTK_TEXT_VIEW (view), FALSE);
   gtk_container_add (GTK_CONTAINER (scrolled), view);
 
+  /*// close button
+  {
+    GtkWidget * hbox = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL);
+    gtk_button_box_set_layout (GTK_BUTTON_BOX (hbox), GTK_BUTTONBOX_END);
 
+    gtk_box_pack_end (GTK_BOX (box), hbox, FALSE, FALSE, 0);
+
+    GtkWidget * btnClose = gtk_button_new_with_label ("Close");
+    g_signal_connect_swapped (btnClose, "clicked", G_CALLBACK (gtk_widget_destroy), window);
+    gtk_box_pack_end (GTK_BOX (hbox), btnClose, FALSE, FALSE, 0);
+  }*/
 
 
   gtk_widget_show_all (window);
@@ -437,7 +449,7 @@ _gjiten_create_menu(GtkApplication *app)
         {.name="quit",          .activate=gjiten_quit },
         {.name="preferences",   .activate=create_dialog_preferences },
         {.name="startKanjipad", .activate=gjiten_start_kanjipad },
-        {.name="showWhatsNew",     .activate=gjiten_create_whats_new },
+        {.name="showWhatsNew",     .activate=gjiten_show_whatsnew },
         {.name="showAbout",     .activate=gjiten_create_about },
       };
 

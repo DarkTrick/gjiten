@@ -1028,7 +1028,7 @@ _create_gui(GjKanjidicWindow* self)
 
   GjKanjidicWindowPrivate * kanjiDic = gj_kanjidic_window_get_instance_private (self);
 
-  gtk_window_set_title (GTK_WINDOW (self), "Gjiten - KanjiDic");
+  gtk_window_set_title (GTK_WINDOW (self), APPLICATION_NAME " - KanjiDic");
   gtk_widget_get_can_default (GTK_WIDGET (self));
   g_signal_connect (G_OBJECT (self), "destroy", G_CALLBACK (kanjidic_close), NULL);
   gtk_window_set_default_size (GTK_WINDOW (self), 500, 500);
