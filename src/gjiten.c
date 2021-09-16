@@ -247,7 +247,7 @@ gjiten_show_whatsnew()
   GtkTextIter iter;
   gtk_text_buffer_get_start_iter (textbuffer,&iter);
   gtk_text_buffer_insert_markup (textbuffer,&iter,
-  "\n<span size='x-large'><b>What's New?</b></span>"
+  _("\n<span size='x-large'><b>What's New?</b></span>"
   "\n"
   "\n<span size='large'><u><i>Version 3.1</i></u></span>"
   "\n- New command line option `quick-lookup`. "
@@ -261,7 +261,7 @@ gjiten_show_whatsnew()
   "\n- Technical: Settings are now stored under ~/.config/gjiten/gjiten.conf"
   "\n- Technical: Migration to GTK 3"
   "\n"
-  "\n"
+  "\n")
   ,-1);
 
   GtkWidget * window = gtk_window_new (GTK_WINDOW_TOPLEVEL);

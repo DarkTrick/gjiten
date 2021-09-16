@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gjiten 2.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-09 16:20+0900\n"
+"POT-Creation-Date: 2021-09-16 21:59+0900\n"
 "PO-Revision-Date: 2006-04-01 18:57+0900\n"
 "Last-Translator: Botond Botyanszki <boti@rocketmail.com>\n"
 "Language-Team: Japanese <boti@rocketmail.com>\n"
@@ -65,8 +65,7 @@ msgstr "動詞は終止形にする"
 msgid "Options"
 msgstr "他のオプション"
 
-#. ignored
-#: ../data/uis/gjiten-settings.glade.h:12 ../src/kanjidic.c:1192
+#: ../data/uis/gjiten-settings.glade.h:12 ../src/kanjidic.c:1050
 msgid "WordDic"
 msgstr "単語辞典"
 
@@ -90,8 +89,7 @@ msgstr "辞典ファイル"
 msgid "Kanji info"
 msgstr "漢字情報"
 
-#. ignored
-#: ../data/uis/gjiten-settings.glade.h:18 ../src/worddic.c:1201
+#: ../data/uis/gjiten-settings.glade.h:18 ../src/worddic.c:1277
 msgid "KanjiDic"
 msgstr "漢英字典"
 
@@ -116,12 +114,12 @@ msgid "Large font:"
 msgstr "大きなフォント:"
 
 #: ../data/uis/gjiten-settings.glade.h:24
-msgid "Use large font for Japanese in _WordDic search results"
-msgstr "単語辞典での検索結果の日本語に大きなフォントを使用する(_W)"
+msgid "In _WordDic (for Kanji)"
+msgstr "単語辞典"
 
 #: ../data/uis/gjiten-settings.glade.h:25
-msgid "_Use large font for kanji results in KanjiDic"
-msgstr "漢英字典での検索結果の漢字に大きなフォントを使用する(_U)"
+msgid "In _KanjiDic (for Kanji results)"
+msgstr "漢字辞典"
 
 #: ../data/uis/gjiten-settings.glade.h:26
 msgid "Fonts"
@@ -228,7 +226,40 @@ msgstr "(不明)"
 msgid "Could not display help: %s"
 msgstr "ヘルプを表示できませんでした: %s"
 
-#: ../src/gjiten.c:245
+#: ../src/gjiten.c:250
+msgid ""
+"\n"
+"<span size='x-large'><b>What's New?</b></span>\n"
+"\n"
+"<span size='large'><u><i>Version 3.1</i></u></span>\n"
+"- New command line option `quick-lookup`. \n"
+"  With this option GJiten will close as soon as ESC is pressed\n"
+"  or the window focus is lost. It's designed for popup-like \n"
+"   dictionary lookups.\n"
+"- New Icons\n"
+"- bug fixes\n"
+"\n"
+"<span size='large'><u><i>Version 3.0</i></u></span>\n"
+"- Technical: Settings are now stored under ~/.config/gjiten/gjiten.conf\n"
+"- Technical: Migration to GTK 3\n"
+"\n"
+msgstr ""
+"\n"
+"<span size='x-large'><b>更新履歴</b></span>\n"
+"\n"
+"<span size='large'><u><i>バージョン 3.1</i></u></span>\n"
+"- 新しいコマンドライン オプション `quick-lookup`. \n"
+"  これでGJitenをポップアップ辞典として使うことができます。ESCを押したり、\n"
+"  画面の他の所をクリックしたりすると終了します。\n"
+"- 新しいアイコン\n"
+"- バグ修正\n"
+"\n"
+"<span size='large'><u><i>バージョン 3.0</i></u></span>\n"
+"- 内蔵: 設定は、~/.config/gjiten/gjiten.conf に保管されます。\n"
+"- 内蔵: GTK 3への移動します。\n"
+"\n"
+
+#: ../src/gjiten.c:306
 msgid "TRANSLATORS! PUT YOUR NAME HERE"
 msgstr ""
 "Botond Botyanszki <boti@rocketmail.com>\n"
@@ -237,64 +268,68 @@ msgstr ""
 "Daichi Kawahata <daichik@users.sourceforge.net>DarkTrick <https://github.com/"
 "DarkTrick/>"
 
-#: ../src/gjiten.c:261
+#: ../src/gjiten.c:322
 msgid "Gjiten is a Japanese dictionary."
 msgstr "Gjiten は GNOME 用の日本語辞典です"
 
-#: ../src/gjiten.c:330
+#: ../src/gjiten.c:391
 msgid "_Quit"
 msgstr "終了(_Q)"
 
-#: ../src/gjiten.c:331
+#: ../src/gjiten.c:392
 msgid "_File"
 msgstr "ファイル(_F)"
 
-#: ../src/gjiten.c:342
+#: ../src/gjiten.c:403
 msgid "_Copy"
 msgstr "コピー(_C)"
 
-#: ../src/gjiten.c:343
+#: ../src/gjiten.c:404
 msgid "_Paste"
 msgstr "貼り付け(_P)"
 
-#: ../src/gjiten.c:344
+#: ../src/gjiten.c:405
 msgid "_Preferences"
 msgstr "設定(_P)"
 
-#: ../src/gjiten.c:349
+#: ../src/gjiten.c:410
 msgid "_Edit"
 msgstr "編集(_E)"
 
-#: ../src/gjiten.c:358
+#: ../src/gjiten.c:419
 msgid "_Word Dictionary"
 msgstr "辞典ファイル"
 
-#: ../src/gjiten.c:359
+#: ../src/gjiten.c:420
 msgid "_Kanji Dictionary"
 msgstr "KanjiDic の漢英字典ファイル"
 
-#: ../src/gjiten.c:360
+#: ../src/gjiten.c:421
 msgid "Kanji _Pad"
 msgstr "漢字パッド"
 
-#: ../src/gjiten.c:361
+#: ../src/gjiten.c:422
 msgid "_Tools"
 msgstr "ツール(_T)"
 
-#: ../src/gjiten.c:366
+#: ../src/gjiten.c:431
 msgid "_Manual"
 msgstr "マニュアル(_M)"
 
-#: ../src/gjiten.c:367
+#: ../src/gjiten.c:432
+msgid "What's _New?"
+msgstr "更新履歴(_N)"
+
+#: ../src/gjiten.c:433
 msgid "_About"
 msgstr "情報(_A)"
 
-#: ../src/gjiten.c:368
+#: ../src/gjiten.c:438
 msgid "_Help"
 msgstr "ヘルプ(_H)"
 
 #. TODO: try to convert EUC-JP to UTF8 if it's non-utf8
-#: ../src/gjiten.c:497
+#: ../src/gjiten.c:575
 msgid ""
 "Cannot look up kanji: \n"
 "Non-UTF8 string received."
@@ -302,7 +337,7 @@ msgstr ""
 "漢字を検索出来ません: \n"
 "クリップボードから受取ったデータは UTF-8 ではありません。"
 
-#: ../src/gjiten.c:504
+#: ../src/gjiten.c:582
 #, c-format
 msgid ""
 "Non-kanji string received:\n"
@@ -314,7 +349,7 @@ msgstr "クリップボードから受取った文字は漢字ではありませ
 msgid "Kanji"
 msgstr "漢字"
 
-#: ../src/pref.c:58 ../src/kanjidic.c:968
+#: ../src/pref.c:58
 msgid "Radicals"
 msgstr "部首"
 
@@ -426,15 +461,15 @@ msgstr "アスキーJISコード"
 msgid "Please select an entry."
 msgstr "項目を選択して下さい。"
 
-#: ../src/pref.c:491
+#: ../src/pref.c:490
 msgid "Dictionary name"
 msgstr "辞典ファイル名"
 
-#: ../src/pref.c:498
+#: ../src/pref.c:497
 msgid "Dictionary file path"
 msgstr "辞典ファイルのパス"
 
-#: ../src/kanjidic.c:107
+#: ../src/kanjidic.c:98
 msgid ""
 "Search by anything that the Kanjidic file contains:\n"
 "- The kanji itself\n"
@@ -452,111 +487,97 @@ msgstr ""
 "- ...\n"
 "(詳細は、ヘルプを参照)"
 
-#: ../src/kanjidic.c:158 ../src/kanjidic.c:161
+#: ../src/kanjidic.c:170 ../src/kanjidic.c:173
 msgid "Name readings:"
 msgstr "人名読み:"
 
-#: ../src/kanjidic.c:172
+#: ../src/kanjidic.c:184
 msgid "Radical name:"
 msgstr "部首名:"
 
-#: ../src/kanjidic.c:228
+#: ../src/kanjidic.c:240
 msgid ", Common miscount: "
 msgstr ", 通常誤画数: "
 
-#: ../src/kanjidic.c:420
+#: ../src/kanjidic.c:435
 msgid "Invalid radical!\n"
 msgstr "部首が不適切です。\n"
 
-#: ../src/kanjidic.c:437
+#: ../src/kanjidic.c:452
 #, c-format
 msgid "I don't seem to recognize this radical: '%s'.\n"
 msgstr "この部首は認識できないようです: '%s'。\n"
 
-#: ../src/kanjidic.c:495 ../src/worddic.c:795
+#: ../src/kanjidic.c:511 ../src/worddic.c:845
 msgid "Searching..."
 msgstr "検索しています..."
 
-#: ../src/kanjidic.c:545
+#: ../src/kanjidic.c:561
 msgid "No such kanji with this radical combination."
 msgstr "この部首の組み合わせは存在しません。"
 
-#: ../src/kanjidic.c:553
+#: ../src/kanjidic.c:569
 msgid "Invalid stroke count :-P "
 msgstr "画数が不適切です (^_^) "
 
-#: ../src/kanjidic.c:559
+#: ../src/kanjidic.c:575
 msgid "Stroke search didn't find any match :-O "
 msgstr "該当する画数はありません (>_<) "
 
-#: ../src/kanjidic.c:569
+#: ../src/kanjidic.c:585
 msgid "No such kanji with this stroke/radical combination."
 msgstr "この部首でこの画数の漢字はありません。"
 
-#: ../src/kanjidic.c:583
+#: ../src/kanjidic.c:599
 msgid "No Matches found."
 msgstr "該当する漢字はありません。"
 
-#: ../src/kanjidic.c:589
+#: ../src/kanjidic.c:605
 #, c-format
 msgid "Kanji found: %d"
 msgstr "%d 件の漢字が該当します"
 
-#: ../src/kanjidic.c:856
-#, c-format
-msgid ""
-"Error opening %s.\n"
-" Please check your preferences or read the documentation."
-msgstr ""
-"%s を開けませんでした。\n"
-"設定を確認するか文書を御覧下さい。"
-
-#: ../src/kanjidic.c:1193
+#: ../src/kanjidic.c:1051
 msgid "Launch WordDic"
 msgstr "単語辞典を実行します"
 
-#. ignored
-#: ../src/kanjidic.c:1197 ../src/worddic.c:1206
+#: ../src/kanjidic.c:1055 ../src/worddic.c:1282
 msgid "KanjiPad"
 msgstr "漢字パッド"
 
-#: ../src/kanjidic.c:1198 ../src/worddic.c:1207
+#: ../src/kanjidic.c:1056 ../src/worddic.c:1283
 msgid "Launch KanjiPad"
 msgstr "漢字パッドを実行します"
 
-#: ../src/kanjidic.c:1202
+#: ../src/kanjidic.c:1060
 msgid "Kanji Search Options"
 msgstr "漢字検索オプション"
 
-#: ../src/kanjidic.c:1209
+#: ../src/kanjidic.c:1070
 msgid "Search By _Strokes:"
 msgstr "画数による検索(_S):"
 
-#: ../src/kanjidic.c:1214
+#: ../src/kanjidic.c:1075
 msgid "Search By _Radical:"
 msgstr "部首による検索(_R):"
 
-#: ../src/kanjidic.c:1219
+#: ../src/kanjidic.c:1080
 msgid "Search By _Key:"
 msgstr "キーによる検索(_K):"
 
-#: ../src/kanjidic.c:1240
+#: ../src/kanjidic.c:1101
 msgid "Radica_ls"
 msgstr "部首"
 
-#: ../src/kanjidic.c:1271 ../src/kanjidic.c:1279
-msgid "Clear"
-msgstr "消去"
-
-#: ../src/kanjidic.c:1291
+#: ../src/kanjidic.c:1132
 msgid "Search Results :"
 msgstr "検索の結果 :"
 
-#: ../src/kanjidic.c:1321
+#: ../src/kanjidic.c:1163
 msgid "Kanji Info :"
 msgstr "漢字情報 :"
 
-#: ../src/kanjidic.c:1404
+#: ../src/kanjidic.c:1244
 msgid ""
 "Kanjidict is incompatible with your system. It could work, but it could also "
 "not work. \n"
@@ -599,141 +620,166 @@ msgstr ""
 "この辞典ファイルは UTF-8 ではありません: %s\n"
 "UTF-8 に変換して下さい。詳しくはドキュメントを御覧下さい。"
 
-#: ../src/worddic.c:251
+#: ../src/worddic.c:301
 #, c-format
 msgid "Matches in %s:\n"
 msgstr "%sでの検索結果:\n"
 
-#: ../src/worddic.c:331
+#: ../src/worddic.c:381
 msgid "Possible inflected verb or adjective: "
 msgstr "動詞活用形または形容詞の候補： "
 
-#: ../src/worddic.c:583
+#: ../src/worddic.c:633
 msgid "Results truncated"
 msgstr "結果が切捨てられました"
 
-#: ../src/worddic.c:676
+#: ../src/worddic.c:726
 #, c-format
 msgid "No dicfiles specified! Set your preferences first."
 msgstr "辞典ファイルが指定されていません。 まず設定をして下さい。"
 
-#: ../src/worddic.c:722
+#: ../src/worddic.c:772
 #, c-format
 msgid "Matches found (truncated): %d"
 msgstr "(切捨てられて) %d 件が該当します"
 
-#: ../src/worddic.c:723
+#: ../src/worddic.c:773
 #, c-format
 msgid "Matches found: %d"
 msgstr "%d 件が該当します"
 
-#: ../src/worddic.c:726
+#: ../src/worddic.c:776
 msgid "No match found."
 msgstr "該当する語句はありません。"
 
-#: ../src/worddic.c:778
+#: ../src/worddic.c:828
 msgid "Invalid input: non-utf8\n"
 msgstr "入力が不適切です: UTF-8 ではありません\n"
 
-#: ../src/worddic.c:1175
-msgid "Gjiten - WordDic"
-msgstr "Gjiten - 単語辞典"
+#: ../src/worddic.c:989
+msgid "Hide options"
+msgstr "オプションを隠します"
 
-#: ../src/worddic.c:1191
+#: ../src/worddic.c:995
+msgid "Show options"
+msgstr "オプションを表示します"
+
+#: ../src/worddic.c:1251
+msgid " - WordDic"
+msgstr " - 単語辞典"
+
+#: ../src/worddic.c:1267
 msgid "Previous search result"
 msgstr "前の結果を表示します"
 
-#: ../src/worddic.c:1196
+#: ../src/worddic.c:1272
 msgid "Next search result"
 msgstr "次の結果を表示します"
 
-#: ../src/worddic.c:1202
+#: ../src/worddic.c:1278
 msgid "Launch KanjiDic"
 msgstr "漢英字典を実行します"
 
-#: ../src/worddic.c:1210
-msgid ""
-"Show/Hide\n"
-"options"
-msgstr ""
-"オプションを\n"
-"表示する/隠す"
-
-#: ../src/worddic.c:1211
-msgid "Show/Hide options"
-msgstr "オプションを表示/隠します"
-
-#: ../src/worddic.c:1218
+#: ../src/worddic.c:1306
 msgid "Japanese Search Options: "
 msgstr "日本語検索オプション: "
 
-#: ../src/worddic.c:1225
+#: ../src/worddic.c:1315
 msgid "E_xact Matches"
 msgstr "厳密に該当する(_x)"
 
-#: ../src/worddic.c:1229
+#: ../src/worddic.c:1319
 msgid "_Start With Expression"
 msgstr "入力した語句から始まる(_S)"
 
-#: ../src/worddic.c:1233
+#: ../src/worddic.c:1323
 msgid "E_nd With Expression"
 msgstr "入力した語句で終わる(_N)"
 
-#: ../src/worddic.c:1237
+#: ../src/worddic.c:1327
 msgid "_Any Matches"
 msgstr "いずれかに該当する(_A)"
 
-#: ../src/worddic.c:1241
+#: ../src/worddic.c:1334
 msgid "English Search Options: "
 msgstr "英語検索オプション: "
 
-#: ../src/worddic.c:1248
+#: ../src/worddic.c:1343
 msgid "Wh_ole Expressions"
 msgstr "語句全体(_O)"
 
-#: ../src/worddic.c:1252
+#: ../src/worddic.c:1347
 msgid "_Whole Words"
 msgstr "単語全体(_W)"
 
-#: ../src/worddic.c:1256
+#: ../src/worddic.c:1351
 msgid "Any _Matches"
 msgstr "いずれかに該当する(_M)"
 
-#: ../src/worddic.c:1260
+#: ../src/worddic.c:1358
 msgid "General Options: "
 msgstr "一般オプション: "
 
-#: ../src/worddic.c:1267
+#: ../src/worddic.c:1367
 msgid "Search _Dic:"
 msgstr "辞典ファイルを検索(_D):"
 
-#: ../src/worddic.c:1282
+#: ../src/worddic.c:1382
 msgid "Sea_rch All Dictionaries"
 msgstr "全ての辞典ファイルを検索(_R)"
 
-#: ../src/worddic.c:1287
+#: ../src/worddic.c:1387
 msgid "A_uto Adjust Options"
 msgstr "検索オプションを自動選択(_U)"
 
-#: ../src/worddic.c:1296
+#: ../src/worddic.c:1396
 msgid "_Limit Results:"
 msgstr "該当数を制限(_L):"
 
-#: ../src/worddic.c:1313
-msgid "Enter expression :"
-msgstr "語句を入力して下さい :"
+#: ../src/worddic.c:1420
+msgid "Search:"
+msgstr "検索"
 
-#: ../src/worddic.c:1345
+#: ../src/worddic.c:1452
 msgid "Search"
 msgstr "検索"
 
-#: ../src/worddic.c:1349
-msgid "_Clear"
-msgstr "消去(_C)"
-
-#: ../src/worddic.c:1355
+#: ../src/worddic.c:1456
 msgid "Search results :"
 msgstr "検索の結果 :"
+
+#~ msgid "Use large font for Japanese in _WordDic search results"
+#~ msgstr "単語辞典での検索結果の日本語に大きなフォントを使用する(_W)"
+
+#~ msgid "_Use large font for kanji results in KanjiDic"
+#~ msgstr "漢英字典での検索結果の漢字に大きなフォントを使用する(_U)"
+
+#, c-format
+#~ msgid ""
+#~ "Error opening %s.\n"
+#~ " Please check your preferences or read the documentation."
+#~ msgstr ""
+#~ "%s を開けませんでした。\n"
+#~ "設定を確認するか文書を御覧下さい。"
+
+#~ msgid "Clear"
+#~ msgstr "消去"
+
+#~ msgid "Gjiten - WordDic"
+#~ msgstr "Gjiten - 単語辞典"
+
+#~ msgid ""
+#~ "Show/Hide\n"
+#~ "options"
+#~ msgstr ""
+#~ "オプションを\n"
+#~ "表示する/隠す"
+
+#~ msgid "Enter expression :"
+#~ msgstr "語句を入力して下さい :"
+
+#~ msgid "_Clear"
+#~ msgstr "消去(_C)"
 
 #~ msgid "General"
 #~ msgstr "一般オプション"
