@@ -225,7 +225,7 @@ _data_store_initialize_storage_file(DataStore *self)
   GKeyFile * storage = g_key_file_new ();
 
   // run
-  g_key_file_set_string (storage, SECTION_GENERAL, "version", "3.0");
+  g_key_file_set_string (storage, SECTION_GENERAL, "version", PACKAGE_VERSION);
   succ = keyfile_save (storage, self->config_dir, self->config_file);
 
   // cleanup
@@ -355,7 +355,7 @@ data_store_get_string (DataStore   *self,
   MATCH ("kanjipad", g_strdup (GJITEN_BINDIR "/kanjipad"))
   MATCH ("largefont", g_strdup ("Sans 14"))
   MATCH ("normalfont", g_strdup ("Sans 22"))
-  MATCH ("version", g_strdup ("3.0"))
+  MATCH ("version", g_strdup (PACKAGE_VERSION))
 
   MATCH ("kanjidicfile", g_strdup (GJITEN_DATADIR "/dics/kanjidic"));
 

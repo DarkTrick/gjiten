@@ -1,11 +1,11 @@
 Summary: Japanese dictionary for GNOME.
 Name: gjiten
-Version: 3.0
+Version: 3.1
 Release: 1
 License: GPL
 Group: Productivity/Office/Dictionary
 Group: X11/Applications
-Source: gjiten-3.0.tar.gz
+Source: gjiten-3.1.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 Packager: Botond Botyanszki <b0ti@users.sourceforge.net>
 URL: http://gjiten.sourceforge.net
