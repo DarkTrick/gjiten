@@ -124,16 +124,32 @@ worddic_copy()
 void
 worddic_paste()
 {
-  gchar *selection = NULL;
+  gchar *clipboard_text = NULL;
 
-  // First try the current selection
-  selection = gtk_clipboard_wait_for_text (gtk_clipboard_get (GDK_SELECTION_PRIMARY));
-  if (selection != NULL) gtk_combo_box_set_text (wordDic->cbo_search_term, selection);
-  else {
-    // if we didn't get anything, try the default clipboard
-    selection = gtk_clipboard_wait_for_text (gtk_clipboard_get (GDK_SELECTION_CLIPBOARD));
-      if (selection != NULL) gtk_combo_box_set_text (wordDic->cbo_search_term, selection);
+  // if user selected something, use default paste behavior
+  GtkWidget * focussed = gtk_window_get_focus (GTK_WINDOW (self));
+  if (GTK_IS_EDITABLE (focussed)){
+    gboolean selection_there = gtk_editable_get_selection_bounds (GTK_EDITABLE (focussed), NULL, NULL);
+    if (selection_there)
+    {
+      gtk_editable_paste_clipboard (GTK_EDITABLE (focussed));
+      return;
+    }
   }
+
+  // First try the current clipboard_text
+  clipboard_text = gtk_clipboard_wait_for_text (gtk_clipboard_get (GDK_SELECTION_PRIMARY));
+  if (NULL == clipboard_text)
+  {
+    // if we didn't get anything, try the default clipboard
+    clipboard_text = gtk_clipboard_wait_for_text (gtk_clipboard_get (GDK_SELECTION_CLIPBOARD));
+    if (clipboard_text != NULL)
+      gtk_combo_box_set_text (wordDic->cbo_search_term, clipboard_text);
+    return;
+  }
+
+
+  gtk_combo_box_set_text (wordDic->cbo_search_term, clipboard_text);
 }
 
 
