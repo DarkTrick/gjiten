@@ -584,7 +584,7 @@ create_dialog_preferences()
   tmpwidget = GETWIDGET ("file_chooser_kanjipad_exe_path");
   file_chooser_kanjipad = tmpwidget;
   if (gjitenApp->conf->kanjipad != NULL) {
-    gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (tmpwidget), gjitenApp->conf->kanjidic->path);
+    gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (tmpwidget), gjitenApp->conf->kanjipad);
   }
 
   g_signal_connect (G_OBJECT (dialog_preferences), "response", G_CALLBACK (preferences_response_cb), NULL);
