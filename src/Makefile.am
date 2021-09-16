@@ -14,6 +14,8 @@ gjiten_SOURCES = 	      \
 	dicfile.c dicfile.h	  \
 	worddic.c worddic.h	  \
 	dicutil.c dicutil.h	  \
+	radicals.c radicals.h	  \
+	radicals_ui.c radicals_ui.h	  \
 	radical-convtable.h	  \
 	kanjidicconsts.h      \
 	gconf_reader.c gconf_reader.h \
