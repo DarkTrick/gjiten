@@ -265,7 +265,7 @@ gjiten_show_whatsnew()
   ,-1);
 
   GtkWidget * window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  setWindowIcon (GTK_WINDOW (window), GJITEN_WINDOW_ICON);
+  gj_window_set_icon_default (GTK_WINDOW (window));
   gtk_window_set_title (GTK_WINDOW (window), APPLICATION_NAME " - What's New?");
   gtk_window_set_default_size (GTK_WINDOW (window), 500, 400);
 

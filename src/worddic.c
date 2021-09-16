@@ -1584,7 +1584,7 @@ gj_worddic_window_new(GtkApplication * app)
 
   wordDic = gj_worddic_window_get_instance_private (self);
   _create_gui (GJ_WORDDIC_WINDOW (self));
-  setWindowIcon (GTK_WINDOW (self), GJITEN_WINDOW_ICON);
+  gj_window_set_icon_default (GTK_WINDOW (self));
 
   return GTK_WIDGET (self);
 }

@@ -1,4 +1,6 @@
 #include "utils.h"
+#include "config.h"
+
 #include <string.h>
 #include <gtk/gtk.h>
 
@@ -90,7 +92,7 @@ gtk_combo_box_text_add_entries(GtkComboBoxText *self,
 
 
 void
-setWindowIcon(GtkWindow *window,
+gj_window_set_icon(GtkWindow *window,
               char      *icon_path)
 {
   if (! g_file_test (icon_path, G_FILE_TEST_EXISTS)) {
@@ -99,6 +101,13 @@ setWindowIcon(GtkWindow *window,
   else {
     gtk_window_set_icon_from_file (window, icon_path, NULL);
   }
+}
+
+
+void
+gj_window_set_icon_default(GtkWindow *window)
+{
+  gj_window_set_icon (window, GJITEN_WINDOW_ICON);
 }
 
 

@@ -1233,7 +1233,7 @@ gj_kanjidic_window_new (GtkApplication * app)
 
   kanjiDic = gj_kanjidic_window_get_instance_private (self);
   _create_gui (GJ_KANJIDIC_WINDOW (self));
-  setWindowIcon (GTK_WINDOW (self), GJITEN_WINDOW_ICON);
+  gj_window_set_icon_default (GTK_WINDOW (self));
 
   // Kanjidic uses int <-> uintptr_t <-> void* conversions.
   // In case a system would not be able to handle it, let
