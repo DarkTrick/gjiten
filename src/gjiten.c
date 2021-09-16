@@ -412,9 +412,17 @@ _gjiten_create_menu(GtkApplication *app)
 
   {
     GMenu * content = g_menu_new ();
-    g_menu_append (content, _("_Manual"),     "app.showManual" );
-    g_menu_append (content, _("What's _New?"), "app.showWhatsNew" );
-    g_menu_append (content, _("_About"),      "app.showAbout" );
+
+    GMenu * section1 = g_menu_new ();
+    GMenu * section2 = g_menu_new ();
+
+    g_menu_append (section1, _("_Manual"),     "app.showManual" );
+    g_menu_append (section1, _("What's _New?"), "app.showWhatsNew" );
+    g_menu_append (section2, _("_About"),      "app.showAbout" );
+
+    g_menu_append_section (content, NULL, G_MENU_MODEL (section1));
+    g_menu_append_section (content, NULL, G_MENU_MODEL (section2));
+
     _create_submenu (_("_Help"), content, menubar);
   }
 
