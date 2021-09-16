@@ -237,6 +237,55 @@ gjiten_display_manual(GtkWidget *parent_window_nullable,
 }
 
 
+
+
+void
+gjiten_create_whats_new()
+{
+  GtkTextBuffer *textbuffer = gtk_text_buffer_new (NULL);
+
+  GtkTextIter iter;
+  gtk_text_buffer_get_start_iter (textbuffer,&iter);
+  gtk_text_buffer_insert_markup (textbuffer,&iter,
+  "\n<span size='x-large'><b>What's New?</b></span>"
+  "\n"
+  "\n<span size='large'><u><i>Version 3.1</i></u></span>"
+  "\n- New command line option `quick-lookup`. "
+  "\n  With this option GJiten will close as soon as ESC is pressed"
+  "\n  or the window focus is lost. It's designed for popup-like "
+  "\n   dictionary lookups."
+  "\n- New Icons"
+  "\n- bug fixes"
+  "\n"
+  "\n<span size='large'><u><i>Version 3.0</i></u></span>"
+  "\n- Technical: Settings are now stored under ~/.config/gjiten/gjiten.conf"
+  "\n- Technical: Migration to GTK 3"
+  "\n"
+  "\n"
+  ,-1);
+
+
+
+  GtkWidget * window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_default_size (GTK_WINDOW (window), 500, 300);
+
+
+  GtkWidget * scrolled = gtk_scrolled_window_new (NULL, NULL);
+  gtk_container_add (GTK_CONTAINER (window), scrolled);
+
+  GtkWidget * view = gtk_text_view_new_with_buffer (textbuffer);
+  gtk_text_view_set_editable (GTK_TEXT_VIEW (view), FALSE);
+  gtk_container_add (GTK_CONTAINER (scrolled), view);
+
+
+
+
+  gtk_widget_show_all (window);
+}
+
+
+
+
 void
 gjiten_create_about()
 {
@@ -363,8 +412,9 @@ _gjiten_create_menu(GtkApplication *app)
 
   {
     GMenu * content = g_menu_new ();
-    g_menu_append (content, _("_Manual"), "app.showManual" );
-    g_menu_append (content, _("_About"),  "app.showAbout" );
+    g_menu_append (content, _("_Manual"),     "app.showManual" );
+    g_menu_append (content, _("What's _New?"), "app.showWhatsNew" );
+    g_menu_append (content, _("_About"),      "app.showAbout" );
     _create_submenu (_("_Help"), content, menubar);
   }
 
@@ -379,6 +429,7 @@ _gjiten_create_menu(GtkApplication *app)
         {.name="quit",          .activate=gjiten_quit },
         {.name="preferences",   .activate=create_dialog_preferences },
         {.name="startKanjipad", .activate=gjiten_start_kanjipad },
+        {.name="showWhatsNew",     .activate=gjiten_create_whats_new },
         {.name="showAbout",     .activate=gjiten_create_about },
       };
 
@@ -515,7 +566,6 @@ _try_open_kanjidic_and_search (GtkApplication *app,
   gjiten_start_kanjidic (app);
   kanjidic_lookup (text);
 }
-
 
 
 
