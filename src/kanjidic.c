@@ -45,7 +45,7 @@
 #include "radical-convtable.h"
 #include "kanjidicconsts.h"
 #include "utils.h"
-
+#include "radicals.h"
 
 /*====== Prototypes========================================================*/
 void get_rad_of_kanji (gunichar kanji);
@@ -89,8 +89,7 @@ G_DEFINE_TYPE_WITH_PRIVATE (GjKanjidicWindow, gj_kanjidic_window,  GTK_TYPE_APPL
 /* VARIABLES ************************/
 gchar *kdic_line = NULL;  /*size = KCFGNUM * KBUFSIZE */
 gchar kanjiselected[2];
-const gchar *radkfile = NULL;
-gsize radkfile_size;
+Radicals * radicals = NULL;
 extern guint32 srchpos;
 
 GList *klinklist = NULL, *tmpklinklist = NULL;
@@ -818,64 +817,23 @@ jis_radical_to_unicode(const gchar *radical)
   return g_utf8_get_char (radical);
 }
 
-gboolean
-_load_radkfile_from_file()
-{
-  int error = FALSE;
-  struct stat radk_stat;
-  gchar *radkfile_name = RADKFILE_NAME;
-  int fd = 0;
-
-  if (stat (radkfile_name, &radk_stat) != 0) {
-    return FALSE;
-  }
-  radkfile_size = radk_stat.st_size;
-  fd = open (radkfile_name, O_RDONLY);
-  if (fd == -1) {
-    return FALSE;
-  }
-  radkfile = (gchar *) mmap (NULL, radkfile_size, PROT_READ, MAP_SHARED, fd, 0);
-  if (radkfile == NULL){
-    g_print ("Could not load radical file from %s\n", RADKFILE_NAME);
-    return FALSE;
-  }
-
-  return TRUE;
-}
-
-
-
-static void
-_load_radkfile_from_resource()
-{
-  GBytes * bytes = g_resources_lookup_data (RADKFILE_RESOURCE, 0, NULL);
-  radkfile = g_bytes_get_data (bytes, &radkfile_size);
-}
-
-
 
 
 /**
  *  Load the radical data from the file
  * Returns:
- *  TRUE, if radkfile was loaded or is already loaded
+ *  TRUE, if radicals were loaded or are already loaded
  *  FALSE, error
  **/
 gboolean
-load_radkfile_if_necessary()
+load_radicals_if_necessary()
 {
-  if (radkfile != NULL) {
-    GJITEN_DEBUG ("radkfile already initialized.\n");
+  if (radicals != NULL) {
+    GJITEN_DEBUG ("radicals already initialized.\n");
     return TRUE;
   }
 
-  gboolean initialized = FALSE;
-  initialized = _load_radkfile_from_file ();
-
-  if (!initialized)
-  {
-    _load_radkfile_from_resource ();
-  }
+  radicals = radicals_new();
   return TRUE;
 }
 
@@ -894,10 +852,10 @@ radical_hashtables_init()
   KanjiInfo *kanji_info;
   gunichar kanji;
 
-  load_radkfile_if_necessary ();
+  load_radicals_if_necessary ();
 
-  radkfile_end = radkfile + radkfile_size;
-  radkfile_ptr = radkfile;
+  radkfile_end = radicals->radkfile + radicals->radkfile_size;
+  radkfile_ptr = radicals->radkfile;
 
   if (kanjiDic->kanji_info_hash != NULL ||
       kanjiDic->rad_info_hash   != NULL)
