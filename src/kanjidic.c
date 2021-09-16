@@ -59,10 +59,8 @@ struct _GjKanjidicWindowPrivate
   GtkComboBox   *combo_entry_radical;
   GtkTextBuffer *text_kanjinfo_buffer;
   GtkWidget     *text_kanjinfo_view;
-  GtkTextIter    kinfo_iter;
   GtkWidget     *kanji_results_view;
   GtkTextBuffer *kanji_results_buffer;
-  GtkTextIter    kanji_results_iter;
   GtkWidget     *appbar_kanji;
   GtkListStore  *combo_entry_key_list;
   GtkListStore  *combo_entry_radical_list;
@@ -83,9 +81,8 @@ G_DEFINE_TYPE_WITH_PRIVATE (GjKanjidicWindow, gj_kanjidic_window,  GTK_TYPE_APPL
 
 
 /* VARIABLES ************************/
-gchar *kdic_line = NULL;  /*size = KCFGNUM * KBUFSIZE */
-gchar kanjiselected[2];
 
+gchar kanjiselected[2];
 extern guint32 srchpos;
 
 GList *klinklist = NULL, *tmpklinklist = NULL;
@@ -125,9 +122,13 @@ radicals_the_instance()
 
 
 
-void
+/**
+ * Return value does not need to be freed
+ **/
+gchar *
 do_kdicline(gchar *kstr)
 {
+  static gchar *kdic_line = NULL;  /*size = KCFGNUM * KBUFSIZE */
   char tmpstr[KBUFSIZE];
   int i, pos;
 
@@ -290,12 +291,15 @@ do_kdicline(gchar *kstr)
           break;
     }
   }
+
+  return kdic_line;
 }
 
 
 void
 show_kanjiinfo(gunichar kanji)
 {
+  GtkTextIter kinfo_iter;
   gint roff, rlen;
   gchar repstr[1024];
   guint32 respos;
@@ -305,35 +309,35 @@ show_kanjiinfo(gunichar kanji)
   g_unichar_to_utf8(kanji, kanjistr);
 
   gtk_text_buffer_set_text (GTK_TEXT_BUFFER (kanjiDic->text_kanjinfo_buffer), "", 0);
-  gtk_text_buffer_get_start_iter (kanjiDic->text_kanjinfo_buffer, &kanjiDic->kinfo_iter);
+  gtk_text_buffer_get_start_iter (kanjiDic->text_kanjinfo_buffer, &kinfo_iter);
 
   srchpos = 0;
   search4string(SRCH_START, gjitenApp->conf->kanjidic, kanjistr, &respos, &roff, &rlen, repstr);
-  do_kdicline (repstr);
+  gchar * kdictline = do_kdicline (repstr);
 
 
   for (gint i = 0; i < KCFGNUM; i++)
     if (gjitenApp->conf->kdiccfg[i] == TRUE) {
       gtk_text_buffer_insert_with_tags_by_name (GTK_TEXT_BUFFER (kanjiDic->text_kanjinfo_buffer),
-                                               &kanjiDic->kinfo_iter, _(strginfo[i]), -1, "blue_foreground", NULL);
-      gtk_text_buffer_insert_with_tags_by_name (GTK_TEXT_BUFFER (kanjiDic->text_kanjinfo_buffer), &kanjiDic->kinfo_iter,
+                                               &kinfo_iter, _(strginfo[i]), -1, "blue_foreground", NULL);
+      gtk_text_buffer_insert_with_tags_by_name (GTK_TEXT_BUFFER (kanjiDic->text_kanjinfo_buffer), &kinfo_iter,
                                                ": ", -1, "blue_foreground", NULL);
       if (i == KANJI)
       {
         if (gjitenApp->conf->bigkanji == FALSE)
         {
-          gtk_text_buffer_insert (GTK_TEXT_BUFFER (kanjiDic->text_kanjinfo_buffer), &kanjiDic->kinfo_iter, kdic_line + i * KBUFSIZE, -1);
+          gtk_text_buffer_insert (GTK_TEXT_BUFFER (kanjiDic->text_kanjinfo_buffer), &kinfo_iter, kdictline + i * KBUFSIZE, -1);
         }
         else
         {
           gtk_text_buffer_insert_with_tags_by_name (GTK_TEXT_BUFFER (kanjiDic->text_kanjinfo_buffer),
-                                                   &kanjiDic->kinfo_iter, kdic_line + i * KBUFSIZE, -1, "largefont", NULL);
+                                                   &kinfo_iter, kdictline + i * KBUFSIZE, -1, "largefont", NULL);
         }
       }
       else {
-        gtk_text_buffer_insert (GTK_TEXT_BUFFER (kanjiDic->text_kanjinfo_buffer), &kanjiDic->kinfo_iter, kdic_line + i * KBUFSIZE, -1);
+        gtk_text_buffer_insert (GTK_TEXT_BUFFER (kanjiDic->text_kanjinfo_buffer), &kinfo_iter, kdictline + i * KBUFSIZE, -1);
       }
-      gtk_text_buffer_insert (GTK_TEXT_BUFFER (kanjiDic->text_kanjinfo_buffer), &kanjiDic->kinfo_iter, "\n", -1);
+      gtk_text_buffer_insert (GTK_TEXT_BUFFER (kanjiDic->text_kanjinfo_buffer), &kinfo_iter, "\n", -1);
     }
 }
 
@@ -501,12 +505,13 @@ on_kanji_search()
   GList *kanji_list_ptr = NULL;
   GHashTable *rad_info_hash = NULL;
   KanjiInfo *kanji_info;
+  GtkTextIter    kanji_results_iter;
 
   gtk_label_set_text (GTK_LABEL (kanjiDic->appbar_kanji), _("Searching..."));
   kappbarmsg[0] = 0;
 
   gtk_text_buffer_set_text (GTK_TEXT_BUFFER (kanjiDic->kanji_results_buffer), "", 0);
-  gtk_text_buffer_get_start_iter (kanjiDic->kanji_results_buffer, &kanjiDic->kanji_results_iter);
+  gtk_text_buffer_get_start_iter (kanjiDic->kanji_results_buffer, &kanji_results_iter);
 
   push = TRUE;
   if (kentry != NULL) { //Check if we need to save the key entry in the history
@@ -610,7 +615,7 @@ on_kanji_search()
     g_unichar_to_utf8(POINTER_TO_UNICHAR (node_ptr->data), kanji_result_str);
     //printf ("%s\n", kanji_result_str);
     g_snprintf (kanji_result_labelstr, 100, "<span size=\"xx-large\">%s</span>", kanji_result_str);
-    kanji_results_anchor = gtk_text_buffer_create_child_anchor (kanjiDic->kanji_results_buffer, &kanjiDic->kanji_results_iter);
+    kanji_results_anchor = gtk_text_buffer_create_child_anchor (kanjiDic->kanji_results_buffer, &kanji_results_iter);
 
     if (gjitenApp->conf->bigkanji == TRUE) {
       kanji_result_label = gtk_label_new (NULL);
@@ -1072,11 +1077,6 @@ _create_gui(GjKanjidicWindow* self)
   GtkWidget *vpane;
 
   GjKanjidicWindowPrivate * kanjiDic = gj_kanjidic_window_get_instance_private (self);
-
-  if (kdic_line == NULL)
-    kdic_line = (gchar *)g_malloc (KCFGNUM * KBUFSIZE);
-  if (kdic_line == NULL)
-    error_show_and_quit ("Couldn't allocate memory\n");
 
   gtk_window_set_title (GTK_WINDOW (self), "Gjiten - KanjiDic");
   gtk_widget_get_can_default (GTK_WIDGET (self));
