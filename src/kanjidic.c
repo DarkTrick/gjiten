@@ -844,8 +844,7 @@ static GtkWidget *
 show_window_radicals()
 {
   if (kanjiDic->window_radicals != NULL) {
-    gtk_widget_hide (kanjiDic->window_radicals);
-    gtk_widget_show (kanjiDic->window_radicals);
+    gtk_window_present (GTK_WINDOW (kanjiDic->window_radicals));
     return kanjiDic->window_radicals;
   }
 
