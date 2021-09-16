@@ -350,7 +350,7 @@ _gjiten_create_menu(GtkApplication *app)
 
     // set shortcuts
     gtk_application_set_accel_for_action (app, "window.copy", "<Ctrl>C");
-    gtk_application_set_accel_for_action (app, "window.paste", "<Ctrl>P");
+    gtk_application_set_accel_for_action (app, "window.paste", "<Ctrl>V");
   }
 
   {
