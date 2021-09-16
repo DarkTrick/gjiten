@@ -45,6 +45,7 @@
 #include "kanjidicconsts.h"
 #include "utils.h"
 #include "radicals.h"
+#include "radicals_ui.h"
 
 /*====== Prototypes========================================================*/
 void get_rad_of_kanji (gunichar kanji, gchar *kanjidic_line);
@@ -667,7 +668,7 @@ on_kanji_search()
 
 
 int
-radical_selected(gunichar radical)
+kanjidic_radical_selected(gunichar radical)
 {
   int i, j;
   gchar radical_selected[6];
@@ -763,14 +764,6 @@ kanji_selected(gunichar kanji)
   GJITEN_DEBUG ("KANJI_SELECTED\n");
 }
 
-static void
-radical_window_close()
-{
-  if (GTK_IS_WIDGET (kanjiDic->window_radicals) == TRUE) {
-    gtk_widget_destroy (kanjiDic->window_radicals);
-    kanjiDic->window_radicals = NULL;
-  }
-}
 
 
 GtkComboBox *
@@ -837,78 +830,30 @@ kanjidic_lookup (const gchar*  kanji)
 }
 
 
+static void
+radicals_window_close()
+{
+  kanjiDic->window_radicals = NULL;
+}
+
+
+
 
 static GtkWidget *
-create_window_radicals()
+show_window_radicals()
 {
-  int i = 0, j = 0;
-  int curr_strokecount = 0;
-  GtkWidget *radtable;
-  GtkWidget *tmpwidget = NULL;
-  GtkWidget *radical_label;
-  gchar *strokenum_label;
-  gchar radical[6];
-  RadInfo *rad_info = NULL;
-  GList *rad_info_list;
-
-
   if (kanjiDic->window_radicals != NULL) {
     gtk_widget_hide (kanjiDic->window_radicals);
     gtk_widget_show (kanjiDic->window_radicals);
     return kanjiDic->window_radicals;
   }
-  if (kanjiDic->rad_button_hash != NULL)  {
-    g_hash_table_destroy (kanjiDic->rad_button_hash);
-    kanjiDic->rad_button_hash = NULL;
-  }
 
-  kanjiDic->rad_button_hash = g_hash_table_new_full (NULL, NULL, NULL, NULL);
+  kanjiDic->window_radicals =
+  radicals_window_new (radicals_the_instance (),
+                      &(kanjiDic->rad_button_hash));
 
-  kanjiDic->window_radicals = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_window_set_title (GTK_WINDOW (kanjiDic->window_radicals), _("Radicals"));
-  g_signal_connect (G_OBJECT (kanjiDic->window_radicals), "destroy", G_CALLBACK (radical_window_close), NULL);
+  g_signal_connect (kanjiDic->window_radicals, "destroy", G_CALLBACK (radicals_window_close), NULL);
 
-  radtable = gtk_grid_new ();
-  gtk_container_add (GTK_CONTAINER (kanjiDic->window_radicals), radtable);
-  gtk_widget_show (radtable);
-
-  for (rad_info_list = radicals_the_instance ()->rad_info_list; rad_info_list != NULL; rad_info_list = g_list_next (rad_info_list)) {
-    if (i == RADLISTLEN) {
-      i = 0;
-      j++;
-    }
-    rad_info = (RadInfo *) rad_info_list->data;
-    if (curr_strokecount != rad_info->strokes) {
-      if (i == RADLISTLEN - 1) {
-        i = 0;
-        j++;
-      }
-      curr_strokecount = rad_info->strokes;
-      strokenum_label = g_strdup_printf ("<b>%d</b>", curr_strokecount); //Make a label with the strokenumber
-      tmpwidget = gtk_label_new (""); //radical stroke number label
-      gtk_label_set_markup (GTK_LABEL (tmpwidget), strokenum_label);
-      g_free (strokenum_label);
-
-      gtk_grid_attach (GTK_GRID (radtable), tmpwidget, i, j, 1, 1);
-      gtk_widget_show (tmpwidget);
-      i++;
-    }
-    memset (radical, 0, sizeof (radical));
-    g_unichar_to_utf8(rad_info->radical, radical);
-    radical_label = gtk_label_new (radical);
-    gtk_widget_style_add_class (radical_label, "normalfont");
-    gtk_widget_show (radical_label);
-    tmpwidget = gtk_button_new ();
-    gtk_container_add (GTK_CONTAINER (tmpwidget), radical_label);
-    g_signal_connect_swapped (G_OBJECT (tmpwidget), "clicked", G_CALLBACK (radical_selected),
-                             TO_POINTER (rad_info->radical));
-
-    gtk_grid_attach (GTK_GRID (radtable), tmpwidget, i, j, 1, 1);
-    gtk_widget_show (tmpwidget);
-    g_hash_table_insert (kanjiDic->rad_button_hash, TO_POINTER (rad_info->radical), tmpwidget);
-    i++;
-  }
-  gtk_widget_show (kanjiDic->window_radicals);
   return kanjiDic->window_radicals;
 }
 
@@ -937,8 +882,6 @@ kanjidic_close()
   GJITEN_DEBUG ("KANJIDIC_CLOSE\n");
   if (kanjiDic != NULL)
   {
-    radical_window_close ();
-
     kanjidic_destruct ();
     kanjiDic = NULL;
     self = NULL;
@@ -1152,7 +1095,7 @@ _create_gui(GjKanjidicWindow* self)
   {
     gtk_grid_attach (GTK_GRID (table_koptions), kanjiDic->button_radtable, 2, 1, 1, 1);
     g_signal_connect (G_OBJECT (kanjiDic->button_radtable), "clicked",
-            G_CALLBACK (create_window_radicals), NULL);
+            G_CALLBACK (show_window_radicals), NULL);
   }
 
   kanjiDic->combo_entry_radical = createStringComboBox ();

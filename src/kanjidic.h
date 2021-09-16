@@ -62,7 +62,7 @@ GtkWidget*        gj_kanjidic_window_new (GtkApplication * app);
 gint              kanjidic_lookup(const gchar* kanji);
 void              kanjidic_apply_fonts();
 void              kanji_selected(gunichar kanji);
-
+int               kanjidic_radical_selected(gunichar radical);
 
 G_END_DECLS
 
