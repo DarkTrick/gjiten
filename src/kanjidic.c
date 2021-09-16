@@ -42,13 +42,12 @@
 #include "pref.h"
 #include "gjiten.h"
 #include "error.h"
-#include "radical-convtable.h"
 #include "kanjidicconsts.h"
 #include "utils.h"
 #include "radicals.h"
 
 /*====== Prototypes========================================================*/
-void get_rad_of_kanji (gunichar kanji);
+void get_rad_of_kanji (gunichar kanji, gchar *kanjidic_line);
 
 
 typedef struct _GjKanjidicWindowPrivate GjKanjidicWindowPrivate;
@@ -79,9 +78,6 @@ struct _GjKanjidicWindowPrivate
   GSList     *kanji_history_list;
   GtkTextTag *tag_large_font;
   GHashTable *rad_button_hash;
-  GHashTable *kanji_info_hash;
-  GHashTable *rad_info_hash;
-  GList      *rad_info_list;
 };
 G_DEFINE_TYPE_WITH_PRIVATE (GjKanjidicWindow, gj_kanjidic_window,  GTK_TYPE_APPLICATION_WINDOW)
 
@@ -89,7 +85,7 @@ G_DEFINE_TYPE_WITH_PRIVATE (GjKanjidicWindow, gj_kanjidic_window,  GTK_TYPE_APPL
 /* VARIABLES ************************/
 gchar *kdic_line = NULL;  /*size = KCFGNUM * KBUFSIZE */
 gchar kanjiselected[2];
-Radicals * radicals = NULL;
+
 extern guint32 srchpos;
 
 GList *klinklist = NULL, *tmpklinklist = NULL;
@@ -112,6 +108,23 @@ extern GjitenApp *gjitenApp;
 
 /* ************************************************************ */
 
+
+/**
+ *  Load radical data
+ **/
+Radicals *
+radicals_the_instance()
+{
+  static Radicals * radicals = NULL;
+  if (NULL == radicals) {
+    radicals = radicals_new(gjitenApp->conf->unicode_radicals);
+  }
+
+  return radicals;
+}
+
+
+
 void
 do_kdicline(gchar *kstr)
 {
@@ -126,7 +139,7 @@ do_kdicline(gchar *kstr)
   }
 
   g_unichar_to_utf8(g_utf8_get_char (kstr), &kdic_line[KANJI * KBUFSIZE] ); //KANJI
-  get_rad_of_kanji (g_utf8_get_char (kdic_line + KANJI * KBUFSIZE)); //RADICAL
+  get_rad_of_kanji (g_utf8_get_char (kdic_line + KANJI * KBUFSIZE), kdic_line); //RADICAL
 
   get_word (kdic_line + JIS * KBUFSIZE, kstr, KBUFSIZE, 3);
   pos = 7;
@@ -412,7 +425,7 @@ findk_by_radical(gchar *radstrg)
   if (g_utf8_strlen (radstrg, -1) == 0) return;
 
   radstr_ptr = radstrg;
-  rad_info = g_hash_table_lookup (kanjiDic->rad_info_hash, TO_POINTER (g_utf8_get_char (radstr_ptr)));
+  rad_info = g_hash_table_lookup (radicals_the_instance ()->rad_info_hash, TO_POINTER (g_utf8_get_char (radstr_ptr)));
   if (rad_info == NULL) {
     error_show (NULL,_("Invalid radical!\n"));
     return;
@@ -428,7 +441,7 @@ findk_by_radical(gchar *radstrg)
   radnum = g_utf8_strlen (radstrg, -1);
   if (radnum > 1) {
     for (i = 1; i <= radnum; i++) {
-      rad_info = g_hash_table_lookup (kanjiDic->rad_info_hash, TO_POINTER (g_utf8_get_char (radstr_ptr)));
+      rad_info = g_hash_table_lookup (radicals_the_instance ()->rad_info_hash, TO_POINTER (g_utf8_get_char (radstr_ptr)));
       if (rad_info == NULL) {
         tmprad = g_strndup (radstr_ptr, sizeof (gunichar));
         error_show (NULL,_("I don't seem to recognize this radical: '%s'.\n"), tmprad);
@@ -628,7 +641,7 @@ on_kanji_search()
       for (kanji_list_ptr = kanji_list;
            kanji_list_ptr != NULL;
            kanji_list_ptr = g_list_next (kanji_list_ptr)) {
-        kanji_info = g_hash_table_lookup (kanjiDic->kanji_info_hash, kanji_list_ptr->data);
+        kanji_info = g_hash_table_lookup (radicals_the_instance ()->kanji_info_hash, kanji_list_ptr->data);
         for (rad_info_list = kanji_info->rad_info_list;
              rad_info_list != NULL;
              rad_info_list = g_list_next (rad_info_list)) {
@@ -774,147 +787,25 @@ createStringComboBox()
 
 //get all radicals that the kanji has
 void
-get_rad_of_kanji(gunichar kanji)
+get_rad_of_kanji(gunichar kanji, gchar *_kanjidic_line)
 {
   gchar *kdicline_ptr;
   KanjiInfo *kanji_info;
   GList *rad_info_list;
 
-  kdicline_ptr = kdic_line + RADICAL * KBUFSIZE;
+  kdicline_ptr = _kanjidic_line + RADICAL * KBUFSIZE;
 
-  kanji_info = g_hash_table_lookup (kanjiDic->kanji_info_hash, TO_CONST_POINTER (kanji));
+  kanji_info = g_hash_table_lookup (radicals_the_instance ()->kanji_info_hash, TO_CONST_POINTER (kanji));
   if (kanji_info != NULL) {
     for (rad_info_list = kanji_info->rad_info_list;
          rad_info_list != NULL;
          rad_info_list = g_list_next (rad_info_list)) {
       memset (kdicline_ptr, 0, 6);
-      if (kdicline_ptr >= kdic_line + RADICAL * KBUFSIZE + KBUFSIZE - 7) return;
+      if (kdicline_ptr >= _kanjidic_line + RADICAL * KBUFSIZE + KBUFSIZE - 7) return;
       g_unichar_to_utf8(((RadInfo *) rad_info_list->data)->radical, kdicline_ptr);
       kdicline_ptr = g_utf8_next_char (kdicline_ptr);
       g_unichar_to_utf8(' ', kdicline_ptr);
       kdicline_ptr = g_utf8_next_char (kdicline_ptr);
-    }
-  }
-}
-
-static gunichar
-jis_radical_to_unicode(const gchar *radical)
-{
-  gint i;
-
-  gchar jisutf8[6];
-
-  if (gjitenApp->conf->unicode_radicals == TRUE) {
-    g_unichar_to_utf8(g_utf8_get_char (radical), jisutf8);
-
-    for (i = 0; i < sizeof (radicaltable) / sizeof (radpair); i++) {
-      if (strcmp (radicaltable[i].jis, jisutf8) == 0) {
-        return g_utf8_get_char (radicaltable[i].uni);
-      }
-    }
-  }
-
-  return g_utf8_get_char (radical);
-}
-
-
-
-/**
- *  Load the radical data from the file
- * Returns:
- *  TRUE, if radicals were loaded or are already loaded
- *  FALSE, error
- **/
-gboolean
-load_radicals_if_necessary()
-{
-  if (radicals != NULL) {
-    GJITEN_DEBUG ("radicals already initialized.\n");
-    return TRUE;
-  }
-
-  radicals = radicals_new();
-  return TRUE;
-}
-
-
-
-static void
-radical_hashtables_init()
-{
-  int error = FALSE;
-  struct stat radk_stat;
-  gint rad_cnt = 0;
-  const gchar *radkfile_ptr;
-  const gchar *radkfile_end;
-  int fd = 0;
-  RadInfo *rad_info = NULL;
-  KanjiInfo *kanji_info;
-  gunichar kanji;
-
-  load_radicals_if_necessary ();
-
-  radkfile_end = radicals->radkfile + radicals->radkfile_size;
-  radkfile_ptr = radicals->radkfile;
-
-  if (kanjiDic->kanji_info_hash != NULL ||
-      kanjiDic->rad_info_hash   != NULL)
-    return;
-
-  kanjiDic->kanji_info_hash = g_hash_table_new (NULL, NULL);
-  kanjiDic->rad_info_hash = g_hash_table_new (NULL, NULL);
-
-
-  while ((radkfile_ptr < radkfile_end) && (radkfile_ptr != NULL))
-  {
-    if (*radkfile_ptr == '#') //find $ as first char on the line
-    {
-      radkfile_ptr = get_eof_line (radkfile_ptr, radkfile_end); //Goto next line
-      continue;
-    }
-
-    //Radical info line ?
-    if (*radkfile_ptr == '$') {
-      rad_cnt++;          //Increase number of radicals found
-      radkfile_ptr = g_utf8_next_char (radkfile_ptr);
-      while (g_unichar_iswide (g_utf8_get_char (radkfile_ptr)) == FALSE) { //Find radical
-        radkfile_ptr = g_utf8_next_char (radkfile_ptr);
-      }
-
-      rad_info = g_new0(RadInfo, 1);
-      rad_info->radical = jis_radical_to_unicode (radkfile_ptr); //store radical
-
-      while (g_ascii_isdigit (*radkfile_ptr) == FALSE) { //Find stroke number
-        radkfile_ptr = g_utf8_next_char (radkfile_ptr);
-      }
-
-      rad_info->strokes = atoi (radkfile_ptr);  //Store the stroke number
-      kanjiDic->rad_info_list = g_list_append (kanjiDic->rad_info_list, rad_info);
-      g_hash_table_insert (kanjiDic->rad_info_hash, TO_POINTER(rad_info->radical), rad_info);
-      radkfile_ptr = get_eof_line (radkfile_ptr, radkfile_end); //Goto next line
-    }
-    //Kanji info line ?
-    else
-    {
-      while ((*radkfile_ptr != '$') && (radkfile_ptr < radkfile_end))
-      {
-        if (*radkfile_ptr == '\n')
-        {
-          radkfile_ptr++;
-          continue;
-        }
-        kanji = g_utf8_get_char (radkfile_ptr);
-        kanji_info = g_hash_table_lookup (kanjiDic->kanji_info_hash, TO_CONST_POINTER (kanji));
-        if (kanji_info == NULL)
-        {
-          kanji_info = g_new0(KanjiInfo, 1);
-          kanji_info->kanji = kanji;
-          g_hash_table_insert (kanjiDic->kanji_info_hash, TO_POINTER (kanji), TO_POINTER (kanji_info));
-        }
-        kanji_info->rad_info_list = g_list_prepend (kanji_info->rad_info_list, rad_info);
-        rad_info->kanji_info_list = g_list_prepend (rad_info->kanji_info_list, kanji_info);
-        radkfile_ptr = g_utf8_next_char (radkfile_ptr);
-      }
     }
   }
 }
@@ -955,7 +846,6 @@ create_window_radicals()
   RadInfo *rad_info = NULL;
   GList *rad_info_list;
 
-  radical_hashtables_init ();
 
   if (kanjiDic->window_radicals != NULL) {
     gtk_widget_hide (kanjiDic->window_radicals);
@@ -977,7 +867,7 @@ create_window_radicals()
   gtk_container_add (GTK_CONTAINER (kanjiDic->window_radicals), radtable);
   gtk_widget_show (radtable);
 
-  for (rad_info_list = kanjiDic->rad_info_list; rad_info_list != NULL; rad_info_list = g_list_next (rad_info_list)) {
+  for (rad_info_list = radicals_the_instance ()->rad_info_list; rad_info_list != NULL; rad_info_list = g_list_next (rad_info_list)) {
     if (i == RADLISTLEN) {
       i = 0;
       j++;
@@ -1031,12 +921,7 @@ kanjidic_destruct()
   // don't free elements: contain information of rad_info
   if (kanjiDic->rad_button_hash)
     g_hash_table_destroy (kanjiDic->rad_button_hash);
-  if (kanjiDic->kanji_info_hash)
-    g_hash_table_destroy (kanjiDic->kanji_info_hash);
-  if (kanjiDic->rad_info_hash)
-    g_hash_table_destroy (kanjiDic->rad_info_hash);
 
-  g_list_free_full (kanjiDic->rad_info_list, free);
 }
 
 
@@ -1187,8 +1072,6 @@ _create_gui(GjKanjidicWindow* self)
   GtkWidget *vpane;
 
   GjKanjidicWindowPrivate * kanjiDic = gj_kanjidic_window_get_instance_private (self);
-
-  radical_hashtables_init ();
 
   if (kdic_line == NULL)
     kdic_line = (gchar *)g_malloc (KCFGNUM * KBUFSIZE);

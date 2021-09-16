@@ -6,9 +6,15 @@
 typedef struct {
   const gchar *radkfile;
   gsize radkfile_size;
+
+  GHashTable *kanji_info_hash;
+  GHashTable *rad_info_hash;
+  GList      *rad_info_list;
 } Radicals;
 
 Radicals *
-radicals_new();
+radicals_new(gboolean unicode_radicals);
+void
+radicals_free (Radicals *self);
 
 #endif
