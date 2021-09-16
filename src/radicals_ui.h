@@ -3,9 +3,11 @@
 
 #include <gtk/gtk.h>
 #include "radicals.h"
+#include "kanjidic.h"
 
 GtkWidget *
-radicals_window_new(Radicals * radicals,
+radicals_window_new(GjKanjidicWindow* kanjidic_window,
+                    Radicals * radicals,
                     GHashTable **rad_button_hash);
 
 

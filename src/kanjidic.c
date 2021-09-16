@@ -833,7 +833,8 @@ kanjidic_lookup (const gchar*  kanji)
 static void
 radicals_window_close()
 {
-  kanjiDic->window_radicals = NULL;
+  if (kanjiDic)
+    kanjiDic->window_radicals = NULL;
 }
 
 
@@ -849,7 +850,7 @@ show_window_radicals()
   }
 
   kanjiDic->window_radicals =
-  radicals_window_new (radicals_the_instance (),
+  radicals_window_new (self, radicals_the_instance (),
                       &(kanjiDic->rad_button_hash));
 
   g_signal_connect (kanjiDic->window_radicals, "destroy", G_CALLBACK (radicals_window_close), NULL);
@@ -882,13 +883,20 @@ kanjidic_close()
   GJITEN_DEBUG ("KANJIDIC_CLOSE\n");
   if (kanjiDic != NULL)
   {
+    // destroy radical selection window, if it's still open
+    if (kanjiDic->window_radicals)
+      gtk_widget_destroy (kanjiDic->window_radicals);
+
     kanjidic_destruct ();
+
     kanjiDic = NULL;
     self = NULL;
     gjitenApp->kanjidic = NULL;
   }
   gjiten_quit_if_all_windows_closed ();
 }
+
+
 
 void
 shade_kanjidic_widgets()

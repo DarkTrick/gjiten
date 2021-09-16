@@ -1,15 +1,33 @@
 
 #include "radicals_ui.h"
-#include "kanjidic.h"
+
 #include "utils.h"
+
+
+/**
+ * Disconnect signals to foreign objects,
+ * so they don't run with this (already destroyed)
+ * widget as parameter.
+ **/
+static void
+_disconnect_signals (GtkWidget *self,
+          GjKanjidicWindow* kanjidic_window)
+{
+  g_signal_handlers_disconnect_by_func (kanjidic_window, gtk_widget_destroy, self);
+}
 
 
 
 GtkWidget *
-radicals_window_new(Radicals * radicals,
+radicals_window_new(GjKanjidicWindow* kanjidic_window,
+                    Radicals * radicals,
                     GHashTable **rad_button_hash)
 {
   GtkWidget *self = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+
+  g_signal_connect_swapped (kanjidic_window, "destroy", G_CALLBACK (gtk_widget_destroy), self);
+  g_signal_connect (self, "destroy", G_CALLBACK (_disconnect_signals), kanjidic_window);
+
 
   int i = 0, j = 0;
   int curr_strokecount = 0;
@@ -63,8 +81,9 @@ radicals_window_new(Radicals * radicals,
     gtk_widget_show (radical_label);
     tmpwidget = gtk_button_new ();
     gtk_container_add (GTK_CONTAINER (tmpwidget), radical_label);
-    g_signal_connect_swapped (G_OBJECT (tmpwidget), "clicked", G_CALLBACK (kanjidic_radical_selected),
-                             TO_POINTER (rad_info->radical));
+    g_signal_connect_swapped (G_OBJECT (tmpwidget), "clicked",
+                              G_CALLBACK (kanjidic_radical_selected),
+                              TO_POINTER (rad_info->radical));
 
     gtk_grid_attach (GTK_GRID (radtable), tmpwidget, i, j, 1, 1);
     gtk_widget_show (tmpwidget);
