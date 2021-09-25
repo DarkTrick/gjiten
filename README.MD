@@ -5,6 +5,10 @@ GJiten is a dictionary
 Gjiten is a Japanese dictionary program for `edict` files.
 It also contains a kanji dictionary.
 
+<img src="./screenshots/word_dictionary.png" width="70%">
+<img src="./screenshots/kanji_dictionary.png" width="60%">
+
+
 
 ## Installation
 
