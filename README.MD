@@ -5,46 +5,36 @@ GJiten is a dictionary
 Gjiten is a Japanese dictionary program for `edict` files.
 It also contains a kanji dictionary.
 
-<img src="./screenshots/word_dictionary.png" width="70%">
-<img src="./screenshots/kanji_dictionary.png" width="60%">
+<img src="./screenshots/word_dictionary.png" height="250"> <img src="./screenshots/kanji_dictionary.png" height="250">
 
 
 
-## Installation
-
-### Ubuntu
-    % # Add `universe` repository
-    % sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe"
-    % sudo apt update
-    % # install all dependencies
-    % sudo apt install build-essential libglib2.0-dev intltool-debian libtool libtool-bin intltool libgtk-3-dev gnome-common
-
-    % ./autogen.sh
-    % make
-    % sudo make install
-
-## How to build
+## Building / Installing
 
 On Ubuntu:
 
-    % # Add `universe` repository
-    % sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe"
     % sudo apt update
     % # install all dependencies
-    % sudo apt install build-essential libglib2.0-dev intltool-debian libtool libtool-bin intltool libgtk-3-dev gnome-common
+    % sudo apt install build-essential libgtk-3-dev
 
-
-    % ./autogen.sh
+    % sh ./autogen.sh
     % make
+    % sudo make install
+
+## Ubuntu: Official Repos / Sponsoring 
+
+I'm trying to get this GTK3-Port into the official repos. If you can help me with that, please contact me.
+
 
 ## How to Develop
+
 Use the `--enable-debug` while developing
 
     % # Add `universe` repository
     % sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe"
     % sudo apt update
     % # install all dependencies
-    % sudo apt install build-essential libglib2.0-dev intltool-debian libtool libtool-bin intltool libgtk-3-dev gnome-common
+    % sudo apt install build-essential libgtk-3-dev
 
     % # build it with
     % ./autogen.sh --enable-debug
