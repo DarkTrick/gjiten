@@ -38,9 +38,9 @@ struct _GjitenApp {
 
 GtkApplication * gjiten_new();
 
-void gjiten_start_kanjipad();
-void gjiten_start_worddic();
-void gjiten_start_kanjidic();
+void gjiten_start_kanjipad(GSimpleAction *, GVariant *, void *);
+void gjiten_start_worddic(GtkApplication *);
+void gjiten_start_kanjidic(GtkApplication *);
 void gjiten_start_kanjidic_with_search(gunichar kanji);
 
 void gjiten_apply_fonts(GjitenApp * gjitenApp);

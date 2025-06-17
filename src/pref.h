@@ -24,7 +24,7 @@
 #ifndef __PREF_H__
 #define __PREF_H__
 
-void create_dialog_preferences();
+void create_dialog_preferences(GSimpleAction *, GVariant *, void *);
 
 
 #endif

@@ -167,7 +167,7 @@ gjiten_quit_if_all_windows_closed()
  * Cleanly close gjiten from anywhere in the code
  **/
 void
-gjiten_quit()
+gjiten_quit(GSimpleAction *xa, GVariant *xb, void *xc)
 {
   // Close all windows
   // (gjiten_quit_if_all_windows_closed () will be called inside there)
@@ -178,7 +178,7 @@ gjiten_quit()
 
 
 void
-gjiten_start_kanjipad()
+gjiten_start_kanjipad(GSimpleAction *xa, GVariant *xb, void *xc)
 {
   FILE *kanjipad_binary;
   char *kpad_cmd;
@@ -239,8 +239,8 @@ gjiten_display_manual(GtkWidget *parent_window_nullable,
 
 
 
-void
-gjiten_show_whatsnew()
+static void
+gjiten_show_whatsnew(GSimpleAction *xa, GVariant *xb, void *xc)
 {
   GtkTextBuffer *textbuffer = gtk_text_buffer_new (NULL);
 
@@ -298,8 +298,8 @@ gjiten_show_whatsnew()
 
 
 
-void
-gjiten_create_about()
+static void
+gjiten_create_about(GSimpleAction *, GVariant *, void *)
 {
   const gchar *authors[] = { "Botond Botyanszki <boti@rocketmail.com>, DarkTrick", NULL };
   const gchar *documenters[] = { NULL };
@@ -483,7 +483,7 @@ gjiten_start_worddic(GtkApplication *app){
     gtk_window_present (GTK_WINDOW (gjitenApp->worddic));
   }
 
-  GjWorddicWindow *window = worddic_create (app);
+  GjWorddicWindow *window = worddic_create ();
   gjitenApp->worddic = window;
   _start_window (GTK_WINDOW (window));
 }
@@ -497,7 +497,7 @@ gjiten_start_kanjidic(GtkApplication *app)
     gtk_window_present (GTK_WINDOW (gjitenApp->kanjidic));
   }
 
-  GjKanjidicWindow *window = kanjidic_create (app);
+  GjKanjidicWindow *window = kanjidic_create ();
   gjitenApp->kanjidic = window;
   _start_window (GTK_WINDOW (window));
 }
