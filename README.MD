@@ -18,11 +18,12 @@ On Ubuntu:
 sudo apt update
 sudo apt install build-essential libgtk-3-dev
 
+# init
+meson setup build
 # build
-sh ./autogen.sh
-make
+ninja -C build
 # install
-sudo make install
+ninja -C build install
 ```
 
 ## Ubuntu: Official Repos / Sponsoring
@@ -32,7 +33,7 @@ I'm trying to get this GTK3-Port into the official repos. If you can help me wit
 
 ## How to Develop
 
-Use the `--enable-debug` while developing
+Use the option `-Denable_debug=true` while developing
 
 ```bash
 # Add `universe` repository
@@ -42,16 +43,17 @@ sudo apt update
 sudo apt install build-essential libgtk-3-dev
 
 # build it with
-./autogen.sh --enable-debug
-make
+meson setup -Denable_debug=true build
+ninja -C build
 
 # run it
-cd ./src
+cd build/src
 ./gjiten
 ```
 
-With `--enable-debug` you have to start gjiten from within `src`. Otherwise static paths will be invalid and you'll encounter various problems
+With `-Denable_debug=true` you have to start gjiten from within `src`. Otherwise static paths will be invalid and you'll encounter various problems.
 
+If you change the debug settings, run `meson setup -Denable_debug=true --reconfigure build`
 
 
 # Reporting Bugs
