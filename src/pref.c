@@ -459,7 +459,7 @@ checkbutton_envvar_cb(GtkWidget *button)
 
 
 void
-create_dialog_preferences()
+create_dialog_preferences(GSimpleAction *xa, GVariant *xb, void *xc)
 {
   GtkWidget *button;
   GtkWidget *tmpwidget;

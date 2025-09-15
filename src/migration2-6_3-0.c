@@ -384,7 +384,7 @@ migrate_2_6_to_3_0(const gchar *new_storage_dir,
     if (_store_available_gsettings())
       succ = _migrate_gsettings (&self, new_storage_dir, new_storage_file);
     else
-    if (_store_available_gconf (&self))
+    if (_store_available_gconf ())
       succ = _migrate_gconf (&self, new_storage_dir, new_storage_file);
   }
 
