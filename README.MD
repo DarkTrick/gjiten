@@ -13,15 +13,19 @@ It also contains a kanji dictionary.
 
 On Ubuntu:
 
-    % sudo apt update
-    % # install all dependencies
-    % sudo apt install build-essential libgtk-3-dev
+```bash
+# install all dependencies
+sudo apt update
+sudo apt install build-essential libgtk-3-dev
 
-    % sh ./autogen.sh
-    % make
-    % sudo make install
+# build
+sh ./autogen.sh
+make
+# install
+sudo make install
+```
 
-## Ubuntu: Official Repos / Sponsoring 
+## Ubuntu: Official Repos / Sponsoring
 
 I'm trying to get this GTK3-Port into the official repos. If you can help me with that, please contact me.
 
@@ -30,19 +34,21 @@ I'm trying to get this GTK3-Port into the official repos. If you can help me wit
 
 Use the `--enable-debug` while developing
 
-    % # Add `universe` repository
-    % sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe"
-    % sudo apt update
-    % # install all dependencies
-    % sudo apt install build-essential libgtk-3-dev
+```bash
+# Add `universe` repository
+sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe"
+sudo apt update
+# install all dependencies
+sudo apt install build-essential libgtk-3-dev
 
-    % # build it with
-    % ./autogen.sh --enable-debug
-    % make
+# build it with
+./autogen.sh --enable-debug
+make
 
-    % # run it
-    % cd ./src
-    % ./gjiten
+# run it
+cd ./src
+./gjiten
+```
 
 With `--enable-debug` you have to start gjiten from within `src`. Otherwise static paths will be invalid and you'll encounter various problems
 
