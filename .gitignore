@@ -65,3 +65,6 @@ missing
 pixmaps/Makefile.in
 po/Makefile.in.in
 src/Makefile.in
+
+builddir
+build
